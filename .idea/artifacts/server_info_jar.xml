@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="server_info:jar">
+    <output-path>$PROJECT_DIR$/../../rkfcl_Playground/plugins</output-path>
+    <root id="archive" name="server_info.jar">
+      <element id="module-output" name="server_info" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,23 @@
+name: server_info
+version: '${project.version}'
+main: com.rkfcl.server_info.test
+api-version: 1.19
+commands:
+  메뉴:
+    description: menu command
+  수표:
+    description: give check
+  setmoney:
+    description: set money
+    usage: /setmoney [이름] [값]
+    permission: myplugin.setnpcshop
+  setnpcshop:
+    description: Set NPC shop
+    usage: /setnpcshop [npc 이름] [x] [y] [z]
+    permission: myplugin.setnpcshop
+  rmnpcshop:
+    description: Remove NPC shop
+    usage: /rmnpcshop [이름]
+    permission: myplugin.rmnpcshop
+listeners:
+  - com.rkfcl.server_info.MenuClickListener
