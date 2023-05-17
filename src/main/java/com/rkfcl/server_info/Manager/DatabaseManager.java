@@ -18,6 +18,7 @@ public class DatabaseManager {
     public Connection getConnection() {
         return connection;
     }
+
     public String getPlayerJob(UUID playerUUID) {
         String job = null;
 

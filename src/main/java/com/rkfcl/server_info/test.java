@@ -63,7 +63,10 @@ public class test extends JavaPlugin implements Listener {
 
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-            createTable(); // 테이블 생성
+            databaseManager.createTables(); // 테이블 생성
+
+
+
             loadMoneyMap(); // 데이터베이스에서 HashMap 로드
 
             // 이벤트 리스너 등록 및 명령어 등록
@@ -74,6 +77,7 @@ public class test extends JavaPlugin implements Listener {
 
 
     }
+
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -130,7 +134,7 @@ public class test extends JavaPlugin implements Listener {
         Score scoreLine2 = objective.getScore("직업: " + job);
         scoreLine2.setScore(2);
 
-        int money = getMoneyFromDatabase(player); // 데이터베이스에서 소지금 가져오기
+        int money = databaseManager.getPlayerMoney(player); // 데이터베이스에서 소지금 가져오기
         Score scoreLine3 = objective.getScore("소지금: " + money);
         scoreLine3.setScore(1);
 
@@ -187,85 +191,12 @@ public class test extends JavaPlugin implements Listener {
         }
     }
 
-    public int getMoney(Player player) {
-        // HashMap에서 플레이어의 소지금 정보 가져오기
-        int money = moneyMap.getOrDefault(player, 0);
-        return money;
-    }
-    public int getMoneyFromDatabase(Player player) {
-        int money = 0;
-        try (PreparedStatement statement = connection.prepareStatement("SELECT amount FROM money WHERE player_uuid = ?")) {
-            statement.setString(1, player.getUniqueId().toString());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                money = resultSet.getInt("amount");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 데이터베이스 조회 실패 처리
-        }
-        return money;
-    }
     public void setMoney(Player player, int amount) {
         moneyMap.put(player, amount);
         updateScoreboard(player); // 소지금 변경 후 스코어보드 업데이트
     }
 
-    public void setMoneyInDatabase(Player player, int amount) {
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = ? WHERE player_uuid = ?")) {
-            statement.setInt(1, amount);
-            statement.setString(2, player.getUniqueId().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void increaseMoney(Player player, int amount) {
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = amount + ? WHERE player_uuid = ?")) {
-            statement.setInt(1, amount);
-            statement.setString(2, player.getUniqueId().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public void decreaseMoney(Player player, int amount) {
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = amount - ? WHERE player_uuid = ?")) {
-            statement.setInt(1, amount);
-            statement.setString(2, player.getUniqueId().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void updateMoneyInDatabase(Player player, int amount) {
-        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO money (player_uuid, amount) VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE amount = ?")) {
-            statement.setString(1, player.getUniqueId().toString());
-            statement.setInt(2, amount);
-            statement.setInt(3, amount);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 데이터베이스 업데이트 실패 처리
-        }
-    }
-    private void createTable() {
-        try (Statement statement = connection.createStatement()) {
-            // 돈 테이블 생성 쿼리 실행
-            String createMoneyTableQuery = "CREATE TABLE IF NOT EXISTS money (player_uuid VARCHAR(36) PRIMARY KEY, amount INT)";
-            statement.executeUpdate(createMoneyTableQuery);
-            // 직업 테이블 생성 쿼리 실행
-            String createPlayerDataTableQuery = "CREATE TABLE IF NOT EXISTS player_data (player_uuid VARCHAR(36) PRIMARY KEY, job VARCHAR(255))";
-            statement.executeUpdate(createPlayerDataTableQuery);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 테이블 생성 실패 처리
-        }
-    }
 
     private void loadMoneyMap() {
         try (Statement statement = connection.createStatement()) {
@@ -299,5 +230,9 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
             // 데이터 저장 실패 처리
         }
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }
