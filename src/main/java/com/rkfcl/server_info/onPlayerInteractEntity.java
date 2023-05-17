@@ -28,7 +28,6 @@ public class onPlayerInteractEntity implements Listener {
             Villager villager = (Villager) rightClickedEntity;
             String villagerName = villager.getCustomName();
 
-
             if (villagerName != null && villagerName.equals("전직교관")) {
                 shopInventoryManager.openShopJobInventory(player);
 

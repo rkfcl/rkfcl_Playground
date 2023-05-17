@@ -3,7 +3,6 @@ package com.rkfcl.server_info.ItemManagerCost;
 import org.bukkit.Material;
 
 public class OreCost {
-
     public int calculateIndividualCost(Material itemType) {
         if (itemType == Material.FLINT) {
             return 1;

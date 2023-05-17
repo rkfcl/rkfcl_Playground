@@ -69,7 +69,6 @@ public class NPCShopCommand implements CommandExecutor {
 
         return true;
     }
-
     private void spawnNPC(Location location, String npcName) {
         Villager npc = (Villager) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
         npc.setAI(false); // NPC가 움직이지 않도록 설정

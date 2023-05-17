@@ -7,7 +7,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopInventoryManager {
-
     public void openShopJobInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, "전직교관 상점");
         inventory.setItem(39, ItemManager.createresetJobItem());

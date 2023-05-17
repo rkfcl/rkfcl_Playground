@@ -243,9 +243,6 @@ public class MenuClickListener implements Listener {
         }
     }
 
-
-
-
     private boolean isMineralItem(Material itemType) {
         return itemType == Material.FLINT || itemType == Material.IRON_INGOT || itemType == Material.GOLD_INGOT || itemType == Material.DIAMOND ||
                 itemType == Material.QUARTZ || itemType == Material.AMETHYST_SHARD || itemType == Material.COPPER_INGOT ||

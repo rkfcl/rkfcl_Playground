@@ -32,7 +32,6 @@ public class PlayerManager {
         }
     }
 
-
     public String getJob(Player player) {
         String job = null;
 

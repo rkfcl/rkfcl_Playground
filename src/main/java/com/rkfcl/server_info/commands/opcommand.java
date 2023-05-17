@@ -17,7 +17,6 @@ public class opcommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "사용법: /setmoney [플레이어] [값]");
             return true;

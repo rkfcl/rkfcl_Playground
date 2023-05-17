@@ -166,7 +166,6 @@ public class AbilityManager implements Listener {
                         default:
                             return;
                     }
-
                     // 광물 추가 아이템 생성
                     ItemStack additionalOreItem = new ItemStack(additionalOreMaterial, additionalOreAmount);
 
