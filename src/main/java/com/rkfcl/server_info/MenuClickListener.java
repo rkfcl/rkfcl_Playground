@@ -30,7 +30,6 @@ import java.util.UUID;
 public class MenuClickListener implements Listener {
 
     test pluginInstance = (test) Bukkit.getPluginManager().getPlugin("server_info");
-    DatabaseManager databaseManager = (DatabaseManager) Bukkit.getPluginManager().getPlugin("server_info");
     private final PlayerManager playerManager;
     private final AbilityManager abilityManager;
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
@@ -88,12 +87,12 @@ public class MenuClickListener implements Listener {
                                 }
 
 
-                                if (databaseManager.getPlayerMoney(player) < totalCost) {
+                                if (pluginInstance.getMoneyFromDatabase(player) < totalCost) {
                                     player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
                                     return;
                                 }
 
-                                databaseManager.decreasePlayerMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                                pluginInstance.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
                                 pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
 
                                 for (int i = 0; i < setCount; i++) {
@@ -169,7 +168,7 @@ public class MenuClickListener implements Listener {
 
                                 player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 판매 하였습니다.","§e(+"+totalCost+"$)");
                                 HashMap<Integer, ItemStack> removedItems = player.getInventory().removeItem(new ItemStack(itemType, setCount));
-                                databaseManager.increasePlayerMoney(player, totalCost);
+                                pluginInstance.increaseMoney(player, totalCost);
                                 pluginInstance.updateScoreboard(player);
 
                             } else if (clickEvent.isLeftClick()) {
@@ -228,7 +227,7 @@ public class MenuClickListener implements Listener {
                     if (amount <= 0) {
                         player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
                     } else {
-                        databaseManager.decreasePlayerMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                        pluginInstance.decreaseMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
                         pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
                         ItemStack check = ItemManager.createCheck(amount);
                         player.getInventory().addItem(check);
@@ -302,7 +301,7 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    databaseManager.increasePlayerMoney(player, amount);
+                    pluginInstance.increaseMoney(player, amount);
                     pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "수표 사용 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
