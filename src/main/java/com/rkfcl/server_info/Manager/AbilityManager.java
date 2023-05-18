@@ -84,7 +84,7 @@ public class AbilityManager implements Listener {
                 applySwiftnessEffect(player);
                 player.sendMessage("성급함 1 효과를 획득하였습니다!");
             }
-        }else if(job.equals("광부 3차")){
+        }else if(job.equals("광부 3차")||job.equals("광부 4차")){
             int blockBreakCount = getBlockBreakCount(player);
             if (blockBreakCount % 50 == 0) {
                 blockBreakCounts.put(player, 0);
@@ -93,7 +93,6 @@ public class AbilityManager implements Listener {
             }
         }
         if (job.equals("광부 2차")||job.equals("광부 3차")||job.equals("광부 4차")) {
-            // 플레이어가 캐는 광물이 타겟 광물인지 확인
             // 플레이어가 캐는 광물이 타겟 광물인지 확인
             if (targetOreTypes.contains(brokenBlockType)) {
                 // 10%의 확률로 광물 추가
@@ -176,7 +175,6 @@ public class AbilityManager implements Listener {
             }
         }
         if (job.equals("광부 3차")||job.equals("광부 4차")) {
-            // 플레이어가 캐는 광물이 타겟 광물인지 확인
             // 플레이어가 캐는 광물이 타겟 광물인지 확인
             if (targetOreTypes.contains(brokenBlockType)) {
                 // 10%의 확률로 광물 추가

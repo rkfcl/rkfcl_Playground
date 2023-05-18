@@ -34,6 +34,9 @@ public class test extends JavaPlugin implements Listener {
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
     @Override
     public void onEnable() {
+        databaseManager = new DatabaseManager(connection);
+        databaseManager.initializeDatabase();
+
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -41,7 +44,7 @@ public class test extends JavaPlugin implements Listener {
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         System.out.println("plugin on");
-        getServer().getPluginCommand("메뉴").setExecutor(new menu());
+        getServer().getPluginCommand("메뉴").setExecutor(new menu(this));
         getServer().getPluginCommand("수표").setExecutor(new givecheck(this));
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
@@ -54,26 +57,26 @@ public class test extends JavaPlugin implements Listener {
         interactEntity = new onPlayerInteractEntity(this); // 수정된 인수 전달
         interactEntity.enableTrade(); // 주민 거래 비활성화
 
-        // 데이터베이스 연결 설정
-        String host = "localhost";
-        String port = "3306";
-        String database = "rkfcl_server";
-        String username = "rkfcl";
-        String password = "haking767@";
-
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-            createTable(); // 테이블 생성
-
-
-
-            loadMoneyMap(); // 데이터베이스에서 HashMap 로드
-
-            // 이벤트 리스너 등록 및 명령어 등록
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 데이터베이스 연결 실패 처리
-        }
+//        // 데이터베이스 연결 설정
+//        String host = "localhost";
+//        String port = "3306";
+//        String database = "rkfcl_server";
+//        String username = "rkfcl";
+//        String password = "haking767@";
+//
+//        try {
+//            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+//            createTable(); // 테이블 생성
+//
+//
+//
+//            loadMoneyMap(); // 데이터베이스에서 HashMap 로드
+//
+//            // 이벤트 리스너 등록 및 명령어 등록
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            // 데이터베이스 연결 실패 처리
+//        }
 
 
     }

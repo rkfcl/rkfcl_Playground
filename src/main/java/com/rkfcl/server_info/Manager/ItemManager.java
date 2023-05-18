@@ -24,8 +24,30 @@ public class ItemManager {
         stack.setItemMeta(meta);
         return stack;
     }
+    public static ItemStack InvenDecoWHITE_STAINED_GLASS_PANE () {
+        ItemStack check = new ItemStack(Material.WHITE_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenDecoBLACK_STAINED_GLASS_PANE () {
+        ItemStack check = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack MenuCheck() {
+        ItemStack check = new ItemStack(Material.HEART_OF_THE_SEA, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("§3[ 수표 ]");
+        meta.setLore(Arrays.asList("§f클릭 후 숫자를 입력하시면 수표가 발행됩니다."));
+        check.setItemMeta(meta);
+        return check;
+    }
     public static ItemStack createCheck(int value) {
-        ItemStack check = new ItemStack(Material.PAPER, 1);
+        ItemStack check = new ItemStack(Material.HEART_OF_THE_SEA, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("§6"+value + "골드");
 //        meta.setLore(Arrays.asList(value + "골드"));

@@ -196,7 +196,7 @@ public class MenuClickListener implements Listener {
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
             }
 
-            if (event.getCurrentItem().getType() == Material.PAPER) {
+            if (event.getCurrentItem().getType() == Material.HEART_OF_THE_SEA) {
                 event.setCancelled(true);
                 player.closeInventory();
                 player.sendMessage(ChatColor.YELLOW + "발행할 금액을 채팅으로 입력해주세요.");
