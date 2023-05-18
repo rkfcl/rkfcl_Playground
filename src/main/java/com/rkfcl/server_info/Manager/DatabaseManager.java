@@ -22,7 +22,6 @@ public class DatabaseManager {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
             createTable(); // 테이블 생성
-            loadMoneyMap(); // 데이터베이스에서 HashMap 로드
 
             // 이벤트 리스너 등록 및 명령어 등록
         } catch (SQLException e) {
@@ -30,6 +29,19 @@ public class DatabaseManager {
             // 데이터베이스 연결 실패 처리
         }
     }
+    public void closeDatabase() {
+        // 데이터베이스 연결 종료
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     private void createTable() {
         try (Statement statement = connection.createStatement()) {
@@ -45,24 +57,6 @@ public class DatabaseManager {
         }
     }
 
-    private void loadMoneyMap() {
-        try (Statement statement = connection.createStatement()) {
-            // 데이터베이스에서 모든 플레이어의 돈 정보 가져오기
-            String query = "SELECT * FROM money";
-            ResultSet resultSet = statement.executeQuery(query);
-
-            while (resultSet.next()) {
-                String playerUUID = resultSet.getString("player_uuid");
-                int amount = resultSet.getInt("amount");
-                // HashMap에 플레이어와 돈 정보 추가
-                moneyMap.put(Bukkit.getPlayer(UUID.fromString(playerUUID)), amount);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 데이터 로드 실패 처리
-        }
-    }
-
     // 다른 데이터베이스 관련 메서드들...
 
     public DatabaseManager(Connection connection) {
@@ -73,11 +67,11 @@ public class DatabaseManager {
         return connection;
     }
 
-    public String getPlayerJob(UUID playerUUID) {
+    public String getPlayerJob(Player player) {
         String job = null;
 
         try (PreparedStatement statement = connection.prepareStatement("SELECT job FROM player_data WHERE player_uuid = ?")) {
-            statement.setString(1, playerUUID.toString());
+            statement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 job = resultSet.getString("job");
@@ -86,22 +80,62 @@ public class DatabaseManager {
             e.printStackTrace();
         }
 
-        return job;
+        return job != null ? job : "초보자"; // 직업 정보가 없을 경우 "초보자"로 설정
     }
 
-    public void setPlayerJob(UUID playerUUID, String job) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO player_data (player_uuid, job) VALUES (?, ?) ON DUPLICATE KEY UPDATE job = ?")) {
-            statement.setString(1, playerUUID.toString());
+    public void setPlayerJob(Player player, String job) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO player_data (player_uuid, job) VALUES (?, ?) " +
+                "ON DUPLICATE KEY UPDATE job = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, job);
             statement.setString(3, job);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            // 직업 정보 업데이트 실패 처리
         }
     }
 
-    public void setDefaultPlayerJob(UUID playerUUID) {
-        setPlayerJob(playerUUID, "초보자");
+    public int getPlayerMoney(Player player) {
+        int money = 0;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT amount FROM money WHERE player_uuid = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                money = resultSet.getInt("amount");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 데이터베이스 조회 실패 처리
+        }
+        return money;
+    }
+
+    public void setPlayerMoney(Player player, int amount) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = ? WHERE player_uuid = ?")) {
+            statement.setInt(1, amount);
+            statement.setString(2, player.getUniqueId().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void increaseMoney(Player player, int amount) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = amount + ? WHERE player_uuid = ?")) {
+            statement.setInt(1, amount);
+            statement.setString(2, player.getUniqueId().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void decreaseMoney(Player player, int amount) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = amount - ? WHERE player_uuid = ?")) {
+            statement.setInt(1, amount);
+            statement.setString(2, player.getUniqueId().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

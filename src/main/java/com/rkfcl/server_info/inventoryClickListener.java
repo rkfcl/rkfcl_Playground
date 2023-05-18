@@ -5,11 +5,9 @@ import com.rkfcl.server_info.Manager.AbilityManager;
 import com.rkfcl.server_info.Manager.DatabaseManager;
 import com.rkfcl.server_info.Manager.ItemManager;
 import com.rkfcl.server_info.Manager.PlayerManager;
-import com.rkfcl.server_info.commands.givecheck;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,18 +25,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MenuClickListener implements Listener {
+public class inventoryClickListener implements Listener {
 
-    test pluginInstance = (test) Bukkit.getPluginManager().getPlugin("server_info");
+    private test pluginInstance;
+
+    private  DatabaseManager databaseManager;
     private final PlayerManager playerManager;
     private final AbilityManager abilityManager;
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
 
     ItemManager itemManager = new ItemManager();
     OreCost oreCost = new OreCost();
-    public MenuClickListener(DatabaseManager databaseManager) {
+    public inventoryClickListener(test pluginInstance,DatabaseManager databaseManager) {
         this.playerManager = new PlayerManager(databaseManager);
-        this.abilityManager = new AbilityManager();
+        this.abilityManager = new AbilityManager(databaseManager);
+        this.pluginInstance = pluginInstance;
+        this.databaseManager = databaseManager;
     }
 
 
@@ -87,12 +89,12 @@ public class MenuClickListener implements Listener {
                                 }
 
 
-                                if (pluginInstance.getMoneyFromDatabase(player) < totalCost) {
+                                if (databaseManager.getPlayerMoney(player) < totalCost) {
                                     player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
                                     return;
                                 }
 
-                                pluginInstance.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                                databaseManager.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
                                 pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
 
                                 for (int i = 0; i < setCount; i++) {
@@ -168,7 +170,7 @@ public class MenuClickListener implements Listener {
 
                                 player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 판매 하였습니다.","§e(+"+totalCost+"$)");
                                 HashMap<Integer, ItemStack> removedItems = player.getInventory().removeItem(new ItemStack(itemType, setCount));
-                                pluginInstance.increaseMoney(player, totalCost);
+                                databaseManager.increaseMoney(player, totalCost);
                                 pluginInstance.updateScoreboard(player);
 
                             } else if (clickEvent.isLeftClick()) {
@@ -227,7 +229,7 @@ public class MenuClickListener implements Listener {
                     if (amount <= 0) {
                         player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
                     } else {
-                        pluginInstance.decreaseMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                        databaseManager.decreaseMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
                         pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
                         ItemStack check = ItemManager.createCheck(amount);
                         player.getInventory().addItem(check);
@@ -298,14 +300,14 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    pluginInstance.increaseMoney(player, amount);
+                    databaseManager.increaseMoney(player, amount);
                     pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "수표 사용 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
                 }
             }
             if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 1차")) {
-                if (!pluginInstance.getJob(player).equals("초보자") && !pluginInstance.getJob(player).equals("백수")) {
+                if (!databaseManager.getPlayerJob(player).equals("초보자") && !databaseManager.getPlayerJob(player).equals("백수")) {
                     player.sendMessage("직업을 초기화 해야 합니다");
                     return;
                 }
@@ -319,14 +321,14 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    pluginInstance.setJob(player, "광부 1차");
+                    databaseManager.setPlayerJob(player, "광부 1차");
                     pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
 
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
                 }
             }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 2차")) {
-                if(!pluginInstance.getJob(player).equals("광부 1차")){
+                if(!databaseManager.getPlayerJob(player).equals("광부 1차")){
                     player.sendMessage("광부 1차만 전직 가능합니다.");
                     return;
                 }
@@ -338,14 +340,14 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    pluginInstance.setJob(player, "광부 2차");
+                    databaseManager.setPlayerJob(player, "광부 2차");
                     pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
 
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
                 }
             }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 3차")) {
-                if(!pluginInstance.getJob(player).equals("광부 2차")){
+                if(!databaseManager.getPlayerJob(player).equals("광부 2차")){
                     player.sendMessage("광부 2차만 전직 가능합니다.");
                     return;
                 }
@@ -358,14 +360,14 @@ public class MenuClickListener implements Listener {
                         player.getInventory().remove(item);
                     }
                     abilityManager.applyFireResistance(player); // 화염 저항 버프 함수 호출
-                    pluginInstance.setJob(player, "광부 3차");
+                    databaseManager.setPlayerJob(player, "광부 3차");
                     pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
 
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
                 }
             }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 4차")) {
-                if(!pluginInstance.getJob(player).equals("광부 3차")){
+                if(!databaseManager.getPlayerJob(player).equals("광부 3차")){
                     player.sendMessage("광부 3차만 전직 가능합니다.");
                     return;
                 }
@@ -377,7 +379,7 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    pluginInstance.setJob(player, "광부 4차");
+                    databaseManager.setPlayerJob(player, "광부 4차");
                     pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
 
                 } catch (NumberFormatException e) {
@@ -393,7 +395,7 @@ public class MenuClickListener implements Listener {
                         // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
                         player.getInventory().remove(item);
                     }
-                    pluginInstance.setJob(player, "백수");
+                    databaseManager.setPlayerJob(player, "백수");
                     pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
 
                 } catch (NumberFormatException e) {
@@ -403,11 +405,4 @@ public class MenuClickListener implements Listener {
 
         }
     }
-
-
-
-    public void setJob(Player player, String job) {
-        playerManager.setJob(player, job);
-    }
-
 }

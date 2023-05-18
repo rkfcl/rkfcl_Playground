@@ -1,5 +1,6 @@
 package com.rkfcl.server_info.commands;
 
+import com.rkfcl.server_info.Manager.DatabaseManager;
 import com.rkfcl.server_info.test;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,10 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class opcommand implements CommandExecutor {
-    private final test plugin;
+    private test plugin;
+    private DatabaseManager databaseManager;
 
-    public opcommand(test plugin) {
+    public opcommand(test plugin, DatabaseManager databaseManager) {
         this.plugin = plugin;
+        this.databaseManager = databaseManager;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class opcommand implements CommandExecutor {
                 return true;
             }
 
-            plugin.setMoneyInDatabase(targetPlayer, amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
+            databaseManager.setPlayerMoney(targetPlayer, amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
             plugin.updateScoreboard(targetPlayer); // 플레이어의 스코어보드를 업데이트합니다.
             sender.sendMessage(ChatColor.GREEN + targetPlayer.getName() + "의 소지금이 설정되었습니다.");
         } catch (NumberFormatException e) {

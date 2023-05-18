@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbilityManager implements Listener {
+
+    private DatabaseManager databaseManager;
+    public AbilityManager(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
     private final List<Material> targetOreTypes = Arrays.asList(
             Material.COAL_ORE,
             Material.DEEPSLATE_COAL_ORE,
@@ -75,8 +80,9 @@ public class AbilityManager implements Listener {
         // 추가적인 로직을 수행할 수 있음
         // 직업별로 능력을 부여하는 로직을 작성
         Plugin pluginInstance = Bukkit.getPluginManager().getPlugin("server_info");
+
         // 플레이어의 직업을 가져옴
-        String job = ((test) pluginInstance).getJob(player);
+        String job = databaseManager.getPlayerJob(player);
         if (job.equals("광부 1차")) { // 블록 50개 캘 때마다 성급함 1 10초 부여
             int blockBreakCount = getBlockBreakCount(player);
             if (blockBreakCount % 50 == 0) {

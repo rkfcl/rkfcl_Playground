@@ -2,7 +2,7 @@ package com.rkfcl.server_info.Manager;
 
 
 import com.rkfcl.server_info.ItemManagerCost.OreCost;
-import com.rkfcl.server_info.MenuClickListener;
+import com.rkfcl.server_info.inventoryClickListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
