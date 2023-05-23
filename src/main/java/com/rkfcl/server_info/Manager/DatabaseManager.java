@@ -4,9 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DatabaseManager {
     private Map<Player, Integer> moneyMap = new HashMap<>();
@@ -22,7 +20,7 @@ public class DatabaseManager {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
             createTable(); // 테이블 생성
-
+            System.out.println("database connect");
             // 이벤트 리스너 등록 및 명령어 등록
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,6 +49,9 @@ public class DatabaseManager {
             // 직업 테이블 생성 쿼리 실행
             String createPlayerDataTableQuery = "CREATE TABLE IF NOT EXISTS player_data (player_uuid VARCHAR(36) PRIMARY KEY, job VARCHAR(255))";
             statement.executeUpdate(createPlayerDataTableQuery);
+            // 플레이버 직업 버프 저장 쿼리 실행
+            String createPlayerBuffTableQuery = "CREATE TABLE IF NOT EXISTS player_buff (id INT AUTO_INCREMENT PRIMARY KEY, player_uuid VARCHAR(36), buff VARCHAR(255))";
+            statement.executeUpdate(createPlayerBuffTableQuery);
         } catch (SQLException e) {
             e.printStackTrace();
             // 테이블 생성 실패 처리
@@ -112,14 +113,17 @@ public class DatabaseManager {
     }
 
     public void setPlayerMoney(Player player, int amount) {
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = ? WHERE player_uuid = ?")) {
-            statement.setInt(1, amount);
-            statement.setString(2, player.getUniqueId().toString());
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO money (player_uuid, amount) VALUES (?, ?) " +
+                "ON DUPLICATE KEY UPDATE amount = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setInt(2, amount);
+            statement.setInt(3, amount);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public void increaseMoney(Player player, int amount) {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE money SET amount = amount + ? WHERE player_uuid = ?")) {
             statement.setInt(1, amount);
@@ -137,5 +141,30 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addPlayerBuff(Player player, String buff) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO player_buff (player_uuid, buff) VALUES (?, ?)")) {
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, buff);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getPlayerBuffs(Player player) {
+        List<String> buffs = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT buff FROM player_buff WHERE player_uuid = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String buff = resultSet.getString("buff");
+                buffs.add(buff);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return buffs;
     }
 }

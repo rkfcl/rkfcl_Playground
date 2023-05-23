@@ -47,7 +47,63 @@ public class inventoryClickListener implements Listener {
 
 
 
+    private void handleJobPurchase(Player player, InventoryClickEvent clickEvent, ClickType clickType, int jobType, int jobCost, int itemCount) {
+        if (clickEvent.isLeftClick()) {
+            try {
+                int setCount = (clickType == ClickType.SHIFT_LEFT) ? 64 : 1; // 구입할 세트 수
+                int totalCost = jobCost * setCount; // 총 비용 계산
 
+                if (databaseManager.getPlayerMoney(player) < totalCost) {
+                    player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
+                    return;
+                }
+
+                databaseManager.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
+
+                for (int i = 0; i < setCount; i++) {
+                    switch (jobType) {
+                        case 1:
+                            player.getInventory().addItem(ItemManager.createMineJob1Item());
+                            break;
+                        case 2:
+                            player.getInventory().addItem(ItemManager.createMineJob2Item());
+                            break;
+                        case 3:
+                            player.getInventory().addItem(ItemManager.createMineJob3Item());
+                            break;
+                        case 4:
+                            player.getInventory().addItem(ItemManager.createMineJob4Item());
+                            break;
+                        case 5:
+                            player.getInventory().addItem(ItemManager.createFarmerJob1Item());
+                            break;
+                        case 6:
+                            player.getInventory().addItem(ItemManager.createFarmerJob2Item());
+                            break;
+                        case 7:
+                            player.getInventory().addItem(ItemManager.createFarmerJob3Item());
+                            break;
+                        case 8:
+                            player.getInventory().addItem(ItemManager.createFarmerJob4Item());
+                            break;
+                        case 9:
+                            player.getInventory().addItem(ItemManager.createresetJobItem());
+                            break;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
+                return;
+            }
+        } else if (clickEvent.isRightClick()) {
+            if (clickEvent.isShiftClick()) {
+                player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
+            } else {
+                player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
+            }
+        }
+    }
     @EventHandler
     public void ShopJobInventory(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
@@ -65,71 +121,38 @@ public class inventoryClickListener implements Listener {
 
             if (event.getCurrentItem().getType() == Material.PAPER) {
                 event.setCancelled(true);
-                // 플레이어에게 광부 전직 종이 주기
+                // 플레이어에게 전직 종이 주기
                 ItemMeta meta = event.getCurrentItem().getItemMeta();
 
-                if (meta != null && (meta.getDisplayName().equals("§6[ 직업 ] §f광부 1차")||meta.getDisplayName().equals("§6[ 직업 ] §f광부 2차")||meta.getDisplayName().equals("§6[ 직업 ] §f광부 3차")||meta.getDisplayName().equals("§6[ 직업 ] §f광부 4차"))) {
-                    if (clickEvent.isLeftClick()) {
-                            try {
-                                int setCount = 1; // 구입할 세트 수
-                                if (clickType == ClickType.LEFT) {
-                                    setCount = 1;
-                                } else if (clickType == ClickType.SHIFT_LEFT) {
-                                    setCount = 64; // 한 번에 64세트 구입
-                                }
-                                int totalCost=0;
-                                if(meta.getDisplayName().equals("§6[ 직업 ] §f광부 1차")){
-                                    totalCost = 3000 * setCount; // 총 비용 계산
-                                }else if(meta.getDisplayName().equals("§6[ 직업 ] §f광부 2차")){
-                                    totalCost = 7000 * setCount; // 총 비용 계산
-                                } else if (meta.getDisplayName().equals("§6[ 직업 ] §f광부 3차")) {
-                                    totalCost = 30000 * setCount; // 총 비용 계산
-                                } else if (meta.getDisplayName().equals("§6[ 직업 ] §f광부 4차")) {
-                                    totalCost = 55000 * setCount; // 총 비용 계산
-                                }
+                if (meta != null) {
+                    String displayName = meta.getDisplayName();
 
-
-                                if (databaseManager.getPlayerMoney(player) < totalCost) {
-                                    player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
-                                    return;
-                                }
-
-                                databaseManager.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
-                                pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
-
-                                for (int i = 0; i < setCount; i++) {
-                                    if(totalCost==3000) {
-                                        player.getInventory().addItem(ItemManager.createMineJobItem());
-                                    } else if (totalCost==7000) {
-                                        player.getInventory().addItem(ItemManager.createMineJob2Item());
-                                    } else if (totalCost==30000) {
-                                        player.getInventory().addItem(ItemManager.createMineJob3Item());
-                                    } else if (totalCost==55000) {
-                                        player.getInventory().addItem(ItemManager.createMineJob4Item());
-                                    }
-                                }
-                                player.closeInventory();
-                            } catch (NumberFormatException e) {
-                                player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
-                                return;
-                            }
-
-                    } else if (clickEvent.isRightClick()) {
-                        if(clickEvent.isShiftClick()){
-                            player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
-                        }else{
-                            player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
+                    if (displayName.startsWith("§6[ 직업 ] §f광부")) {
+                        if (displayName.endsWith("1차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 1, 3000, 1);
+                        } else if (displayName.endsWith("2차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 2, 7000, 1);
+                        } else if (displayName.endsWith("3차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 3, 30000, 1);
+                        } else if (displayName.endsWith("4차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 4, 55000, 1);
                         }
-
+                    } else if (displayName.startsWith("§6[ 직업 ] §f농부")) {
+                        if (displayName.endsWith("1차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 5, 5000, 1);
+                        } else if (displayName.endsWith("2차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 6, 10000, 1);
+                        } else if (displayName.endsWith("3차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 7, 30000, 1);
+                        } else if (displayName.endsWith("4차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 8, 55000, 1);
+                        }
                     }
                 }
 
 
-
-
-                if (meta != null && meta.getDisplayName().equals("§6[ 직업 초기화권 ]")) {
-                    player.getInventory().addItem(ItemManager.createresetJobItem());
-                    player.closeInventory();
+                if (meta != null && meta.getDisplayName().equals("§6[ 직업 ] §f초기화권")) {
+                    handleJobPurchase(player, clickEvent, clickType, 9, 30000, 1);
                 }
             }
         }
@@ -193,6 +216,7 @@ public class inventoryClickListener implements Listener {
 
         // 메뉴 상점
         if (event.getView().getTitle().equalsIgnoreCase("[ 갈치의 놀이터 ] 메뉴")) {
+            event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
@@ -281,128 +305,110 @@ public class inventoryClickListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return; // 좌클릭인 경우 처리하지 않음
         }
+
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-
         // 아이템이 존재하고 아이템 메타데이터가 존재하는 경우 처리
-        if (item != null && item.getItemMeta() != null) {
-            // 아이템의 메타데이터 가져오기
-            ItemMeta meta = item.getItemMeta();
-            if (meta.getDisplayName().contains("골드")) { //수표 사용
-                String amountString = ChatColor.stripColor(meta.getDisplayName()).replace("골드", "");
-                try {
-                    int amount = Integer.parseInt(amountString);
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    databaseManager.increaseMoney(player, amount);
-                    pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "수표 사용 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }
-            if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 1차")) {
-                if (!databaseManager.getPlayerJob(player).equals("초보자") && !databaseManager.getPlayerJob(player).equals("백수")) {
-                    player.sendMessage("직업을 초기화 해야 합니다");
-                    return;
-                }
-
-
-                try {
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    databaseManager.setPlayerJob(player, "광부 1차");
-                    pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 2차")) {
-                if(!databaseManager.getPlayerJob(player).equals("광부 1차")){
-                    player.sendMessage("광부 1차만 전직 가능합니다.");
-                    return;
-                }
-                try {
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    databaseManager.setPlayerJob(player, "광부 2차");
-                    pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 3차")) {
-                if(!databaseManager.getPlayerJob(player).equals("광부 2차")){
-                    player.sendMessage("광부 2차만 전직 가능합니다.");
-                    return;
-                }
-                try {
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    abilityManager.applyFireResistance(player); // 화염 저항 버프 함수 호출
-                    databaseManager.setPlayerJob(player, "광부 3차");
-                    pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }else if (meta.getDisplayName().contains("§6[ 직업 ] §f광부 4차")) {
-                if(!databaseManager.getPlayerJob(player).equals("광부 3차")){
-                    player.sendMessage("광부 3차만 전직 가능합니다.");
-                    return;
-                }
-                try {
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    databaseManager.setPlayerJob(player, "광부 4차");
-                    pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }
-            if (meta.getDisplayName().contains("§6[ 직업 초기화권 ]")) {
-                try {
-                    if (event.getItem().getAmount() > 1) {
-                        // 아이템 스택에 수표가 여러 개 있는 경우 스택 크기 감소
-                        event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    } else {
-                        // 아이템 스택에 수표가 하나만 있는 경우 플레이어 인벤토리에서 제거
-                        player.getInventory().remove(item);
-                    }
-                    databaseManager.setPlayerJob(player, "백수");
-                    pluginInstance.updateScoreboard(player); // 스코어보드 업데이트
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "전직 중 오류가 발생했습니다."); // 금액 변환 실패 시 오류 처리
-                }
-            }
-
+        if (item == null || item.getItemMeta() == null) {
+            return;
         }
+
+        ItemMeta meta = item.getItemMeta();
+        String displayName = meta.getDisplayName();
+
+        if (displayName.contains("골드")) {
+            handleGoldItem(player, item, displayName);
+        } else if (displayName.contains("§6[ 직업 ]")) {
+            handleJobItem(player, item, displayName);
+        }
+    }
+
+    private void handleGoldItem(Player player, ItemStack item, String displayName) {
+        String amountString = ChatColor.stripColor(displayName).replace("골드", "");
+        try {
+            int amount = Integer.parseInt(amountString);
+            if (item.getAmount() > 1) {
+                item.setAmount(item.getAmount() - 1);
+            } else {
+                player.getInventory().remove(item);
+            }
+            databaseManager.increaseMoney(player, amount);
+            pluginInstance.updateScoreboard(player);
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "수표 사용 중 오류가 발생했습니다.");
+        }
+    }
+
+    private void handleJobItem(Player player, ItemStack item, String displayName) {
+        String jobName = displayName.replace("§6[ 직업 ] §f", "");
+        String playerJob = databaseManager.getPlayerJob(player);
+
+        if (jobName.equals("광부 1차")) {
+            if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
+                player.sendMessage("직업을 초기화 해야 합니다");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "광부 1차");
+        } else if (jobName.equals("광부 2차")) {
+            if (!playerJob.equals("광부 1차")) {
+                player.sendMessage("광부 1차만 전직 가능합니다.");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "광부 2차");
+        } else if (jobName.equals("광부 3차")) {
+            if (!playerJob.equals("광부 2차")) {
+                player.sendMessage("광부 2차만 전직 가능합니다.");
+                return;
+            }
+            abilityManager.applyFireResistance(player);
+            databaseManager.addPlayerBuff(player, "화염저항");
+            databaseManager.setPlayerJob(player, "광부 3차");
+        } else if (jobName.equals("광부 4차")) {
+            if (!playerJob.equals("광부 3차")) {
+                player.sendMessage("광부 3차만 전직 가능합니다.");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "광부 4차");
+        } else if (jobName.equals("농부 1차")) {
+            if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
+                player.sendMessage("직업을 초기화 해야 합니다");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "농부 1차");
+        } else if (jobName.equals("농부 2차")) {
+            if (!playerJob.equals("농부 1차")) {
+                player.sendMessage("농부 1차만 전직 가능합니다.");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "농부 2차");
+        } else if (jobName.equals("농부 3차")) {
+            if (!playerJob.equals("농부 2차")) {
+                player.sendMessage("농부 2차만 전직 가능합니다.");
+                return;
+            }
+            abilityManager.applyFireResistance(player);
+            databaseManager.setPlayerJob(player, "농부 3차");
+        } else if (jobName.equals("농부 4차")) {
+            if (!playerJob.equals("농부 3차")) {
+                player.sendMessage("농부 3차만 전직 가능합니다.");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "농부 4차");
+        } else if (jobName.equals("초기화권")) {
+            if (playerJob.equals("백수")) {
+                player.sendMessage("직업이 없습니다.");
+                return;
+            }
+            databaseManager.setPlayerJob(player, "백수");
+        }
+
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            player.getInventory().remove(item);
+        }
+
+        pluginInstance.updateScoreboard(player);
     }
 }

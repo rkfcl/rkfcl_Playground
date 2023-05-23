@@ -2,16 +2,20 @@ package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.test;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.block.data.Ageable;
+
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbilityManager implements Listener {
-
+    private Plugin plugin;
     private DatabaseManager databaseManager;
     public AbilityManager(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
@@ -40,6 +44,11 @@ public class AbilityManager implements Listener {
             Material.EMERALD_ORE,
             Material.DEEPSLATE_EMERALD_ORE,
             Material.NETHER_QUARTZ_ORE
+
+    );
+
+    private final List<Material> targetCropsTypes = Arrays.asList(
+            Material.WHEAT
 
     );
     private static HashMap<Player, Integer> blockBreakCounts = new HashMap<>();
@@ -264,6 +273,68 @@ public class AbilityManager implements Listener {
             }
         }
 
+    }
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onCropsBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        Material brokenCropsType = event.getBlock().getType();
+
+        // 추가적인 로직을 수행할 수 있음
+        // 직업별로 능력을 부여하는 로직을 작성
+        Plugin pluginInstance = Bukkit.getPluginManager().getPlugin("server_info");
+
+        // 플레이어의 직업을 가져옴
+        String job = databaseManager.getPlayerJob(player);
+        if (job.equals("농부 1차")) { // 10% 확률로 농작물 추가+1
+            // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
+            if (brokenCropsType == Material.WHEAT) {
+                player.sendMessage("작물확인");
+                // 농작물이 다 자란 상태인지 확인
+                BlockState blockState = event.getBlock().getState();
+                if (blockState instanceof Ageable) {
+                    Ageable ageable = (Ageable) blockState;
+                    if (ageable.getAge() >= ageable.getMaximumAge()) {
+                        player.sendMessage("다자란지 확인");
+                        // 추가될 광물의 종류와 양
+                        Material additionalCropsMaterial = Material.COAL;
+                        int additionalCropsAmount = 1;
+
+                        // 10%의 확률로 농작물 추가
+                        if (ThreadLocalRandom.current().nextDouble() < 0.9) {
+                            // 농작물 추가 아이템 생성
+                            ItemStack additionalCropsItem = new ItemStack(additionalCropsMaterial, additionalCropsAmount);
+
+                            // 플레이어에게 농작물 추가 아이템 주기
+                            player.getInventory().addItem(additionalCropsItem);
+                            player.sendMessage("추가 농작물이 주어졌습니다!");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        String job = databaseManager.getPlayerJob(player);
+
+        if (job.equals("초보자")) {
+            // 아이템 드롭 방지
+            event.setKeepInventory(true);
+            event.getDrops().clear();
+            //착용장비 드랍
+            for (ItemStack item : player.getInventory().getArmorContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                }
+            }
+            player.getInventory().setArmorContents(null);
+        }
     }
 }
 

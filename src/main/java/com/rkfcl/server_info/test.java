@@ -10,9 +10,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
-
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.*;
 import java.sql.*;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -34,13 +38,14 @@ public class test extends JavaPlugin implements Listener {
     public void onEnable() {
         databaseManager = new DatabaseManager(connection);
         databaseManager.initializeDatabase();
+        abilityManager = new AbilityManager(databaseManager);
 
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         objective = scoreboard.registerNewObjective("RPGScoreboard", "dummy", "갈치의 놀이터");
-
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
         System.out.println("plugin on");
         getServer().getPluginCommand("메뉴").setExecutor(new menu(this));
         getServer().getPluginCommand("수표").setExecutor(new givecheck(this,databaseManager));
@@ -54,6 +59,11 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new AbilityManager(databaseManager), this);
         interactEntity = new onPlayerInteractEntity(this); // 수정된 인수 전달
         interactEntity.enableTrade(); // 주민 거래 비활성화
+        // 플레이어별 스코어보드 업데이트
+        List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
+        for (Player player : players) {
+            updateScoreboard(player);
+        }
     }
 
     @Override
@@ -70,6 +80,9 @@ public class test extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
+        if(databaseManager.getPlayerBuffs(player).contains("화염저항")){
+            abilityManager.applyFireResistance(player); // 화염 저항 버프 함수 호출
+        }
     }
 
 
@@ -80,15 +93,31 @@ public class test extends JavaPlugin implements Listener {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        final Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            if(databaseManager.getPlayerBuffs(player).contains("화염저항")){
+                abilityManager.applyFireResistance(player);
+            }
+        }, 20); // 1초 후에 실행되도록 지연 작업 예약
+    }
+
+
 
 
     public void updateScoreboard(Player player) {
+        Scoreboard scoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
+        Objective objective = scoreboard.getObjective("money");
+        if (objective == null) {
+            objective = scoreboard.registerNewObjective("money", "dummy", "소지금");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
+
         for (String entry : scoreboard.getEntries()) {
             if (entry.startsWith("소지금: ")) {
                 scoreboard.resetScores(entry);
             }
-        }
-        for (String entry : scoreboard.getEntries()) {
             if (entry.startsWith("직업: ")) {
                 scoreboard.resetScores(entry);
             }
@@ -107,7 +136,10 @@ public class test extends JavaPlugin implements Listener {
 
         Score scoreLine4 = objective.getScore("---------------");
         scoreLine4.setScore(0);
+
+        player.setScoreboard(scoreboard);
     }
+
     public String getJob(Player player) {
         String job = null;
 

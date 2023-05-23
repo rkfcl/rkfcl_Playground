@@ -9,11 +9,15 @@ import org.bukkit.inventory.ItemStack;
 public class ShopInventoryManager {
     public void openShopJobInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, "전직교관 상점");
-        inventory.setItem(39, ItemManager.createresetJobItem());
-        inventory.setItem(4, ItemManager.createMineJobItem());
+        inventory.setItem(4, ItemManager.createMineJob1Item());
         inventory.setItem(13, ItemManager.createMineJob2Item());
         inventory.setItem(22, ItemManager.createMineJob3Item());
         inventory.setItem(31, ItemManager.createMineJob4Item());
+        inventory.setItem(2, ItemManager.createFarmerJob1Item());
+        inventory.setItem(11, ItemManager.createFarmerJob2Item());
+        inventory.setItem(20, ItemManager.createFarmerJob3Item());
+        inventory.setItem(29, ItemManager.createFarmerJob4Item());
+        inventory.setItem(39, ItemManager.createresetJobItem());
 
         player.openInventory(inventory);
     }
