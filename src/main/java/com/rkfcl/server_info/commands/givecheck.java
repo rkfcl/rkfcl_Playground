@@ -1,7 +1,7 @@
 package com.rkfcl.server_info.commands;
 
-import com.rkfcl.server_info.Manager.DatabaseManager;
 import com.rkfcl.server_info.Manager.ItemManager;
+import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.test;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class givecheck implements CommandExecutor {
-    private DatabaseManager databaseManager;
+    private PlayerDataManager playerDataManager;
     private test plugin;
 
-    public givecheck(test plugin, DatabaseManager databaseManager) {
+    public givecheck(test plugin, PlayerDataManager playerDataManager) {
         this.plugin = plugin;
-        this.databaseManager = databaseManager;
+        this.playerDataManager = playerDataManager;
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -39,12 +39,12 @@ public class givecheck implements CommandExecutor {
                 return true;
             }
 
-            if (databaseManager.getPlayerMoney(player) < amount) {
+            if (playerDataManager.getPlayerBalance(player.getUniqueId()) < amount) {
                 player.sendMessage(ChatColor.RED + "보유한 소지금보다 큰 금액은 사용할 수 없습니다.");
                 return true;
             }
 
-            databaseManager.decreaseMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+            playerDataManager.decreaseMoney(player.getUniqueId(), amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
             issueCheck(player, amount); // 수표 발행
             plugin.updateScoreboard(player); // 새로운 잔액으로 스코어보드를 업데이트합니다.
         } catch (NumberFormatException e) {

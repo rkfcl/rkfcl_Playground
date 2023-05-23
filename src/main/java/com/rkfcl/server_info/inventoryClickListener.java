@@ -1,10 +1,7 @@
 package com.rkfcl.server_info;
 
 import com.rkfcl.server_info.ItemManagerCost.OreCost;
-import com.rkfcl.server_info.Manager.AbilityManager;
-import com.rkfcl.server_info.Manager.DatabaseManager;
-import com.rkfcl.server_info.Manager.ItemManager;
-import com.rkfcl.server_info.Manager.PlayerManager;
+import com.rkfcl.server_info.Manager.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,19 +25,16 @@ import java.util.UUID;
 public class inventoryClickListener implements Listener {
 
     private test pluginInstance;
-
-    private  DatabaseManager databaseManager;
-    private final PlayerManager playerManager;
+    private PlayerDataManager playerDataManager;
     private final AbilityManager abilityManager;
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
 
     ItemManager itemManager = new ItemManager();
     OreCost oreCost = new OreCost();
-    public inventoryClickListener(test pluginInstance,DatabaseManager databaseManager) {
-        this.playerManager = new PlayerManager(databaseManager);
-        this.abilityManager = new AbilityManager(databaseManager);
+    public inventoryClickListener(test pluginInstance,PlayerDataManager playerDataManager) {
+        this.abilityManager = new AbilityManager(playerDataManager);
         this.pluginInstance = pluginInstance;
-        this.databaseManager = databaseManager;
+        this.playerDataManager = playerDataManager;
     }
 
 
@@ -53,12 +47,12 @@ public class inventoryClickListener implements Listener {
                 int setCount = (clickType == ClickType.SHIFT_LEFT) ? 64 : 1; // 구입할 세트 수
                 int totalCost = jobCost * setCount; // 총 비용 계산
 
-                if (databaseManager.getPlayerMoney(player) < totalCost) {
+                if (playerDataManager.getPlayerBalance(player.getUniqueId()) < totalCost) {
                     player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
                     return;
                 }
 
-                databaseManager.decreaseMoney(player, totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+                playerDataManager.decreaseMoney(player.getUniqueId(), totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
                 pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
 
                 for (int i = 0; i < setCount; i++) {
@@ -193,7 +187,7 @@ public class inventoryClickListener implements Listener {
 
                                 player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 판매 하였습니다.","§e(+"+totalCost+"$)");
                                 HashMap<Integer, ItemStack> removedItems = player.getInventory().removeItem(new ItemStack(itemType, setCount));
-                                databaseManager.increaseMoney(player, totalCost);
+                                playerDataManager.increaseMoney(player.getUniqueId(), totalCost);
                                 pluginInstance.updateScoreboard(player);
 
                             } else if (clickEvent.isLeftClick()) {
@@ -250,13 +244,18 @@ public class inventoryClickListener implements Listener {
                 int amount;
                 try {
                     amount = Integer.parseInt(message);
-                    if (amount <= 0) {
+                    if (amount <= 0 && amount > playerDataManager.getPlayerBalance(playerUUID)) {
                         player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
                     } else {
-                        databaseManager.decreaseMoney(player, amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
-                        pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
+                        playerDataManager.decreaseMoney(player.getUniqueId(), amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
+
+                        Bukkit.getScheduler().runTask(pluginInstance, () -> {
+                            pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
+                        });
+
                         ItemStack check = ItemManager.createCheck(amount);
                         player.getInventory().addItem(check);
+                        System.out.println("heck");
                         // 수표 발행 처리
                     }
                 } catch (NumberFormatException e) {
@@ -268,6 +267,7 @@ public class inventoryClickListener implements Listener {
             isAwaitingChat.remove(playerUUID);
         }
     }
+
 
     private boolean isMineralItem(Material itemType) {
         return itemType == Material.FLINT || itemType == Material.IRON_INGOT || itemType == Material.GOLD_INGOT || itemType == Material.DIAMOND ||
@@ -333,7 +333,7 @@ public class inventoryClickListener implements Listener {
             } else {
                 player.getInventory().remove(item);
             }
-            databaseManager.increaseMoney(player, amount);
+            playerDataManager.increaseMoney(player.getUniqueId(), amount);
             pluginInstance.updateScoreboard(player);
         } catch (NumberFormatException e) {
             player.sendMessage(ChatColor.RED + "수표 사용 중 오류가 발생했습니다.");
@@ -342,65 +342,64 @@ public class inventoryClickListener implements Listener {
 
     private void handleJobItem(Player player, ItemStack item, String displayName) {
         String jobName = displayName.replace("§6[ 직업 ] §f", "");
-        String playerJob = databaseManager.getPlayerJob(player);
+        String playerJob = playerDataManager.getPlayerJob(player.getUniqueId());
 
         if (jobName.equals("광부 1차")) {
             if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
                 player.sendMessage("직업을 초기화 해야 합니다");
                 return;
             }
-            databaseManager.setPlayerJob(player, "광부 1차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "광부 1차");
         } else if (jobName.equals("광부 2차")) {
             if (!playerJob.equals("광부 1차")) {
                 player.sendMessage("광부 1차만 전직 가능합니다.");
                 return;
             }
-            databaseManager.setPlayerJob(player, "광부 2차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "광부 2차");
         } else if (jobName.equals("광부 3차")) {
             if (!playerJob.equals("광부 2차")) {
                 player.sendMessage("광부 2차만 전직 가능합니다.");
                 return;
             }
             abilityManager.applyFireResistance(player);
-            databaseManager.addPlayerBuff(player, "화염저항");
-            databaseManager.setPlayerJob(player, "광부 3차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "광부 3차");
         } else if (jobName.equals("광부 4차")) {
             if (!playerJob.equals("광부 3차")) {
                 player.sendMessage("광부 3차만 전직 가능합니다.");
                 return;
             }
-            databaseManager.setPlayerJob(player, "광부 4차");
+           playerDataManager.setPlayerJob(player.getUniqueId(), "광부 4차");
         } else if (jobName.equals("농부 1차")) {
             if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
                 player.sendMessage("직업을 초기화 해야 합니다");
                 return;
             }
-            databaseManager.setPlayerJob(player, "농부 1차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "농부 1차");
         } else if (jobName.equals("농부 2차")) {
             if (!playerJob.equals("농부 1차")) {
                 player.sendMessage("농부 1차만 전직 가능합니다.");
                 return;
             }
-            databaseManager.setPlayerJob(player, "농부 2차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "농부 2차");
         } else if (jobName.equals("농부 3차")) {
             if (!playerJob.equals("농부 2차")) {
                 player.sendMessage("농부 2차만 전직 가능합니다.");
                 return;
             }
             abilityManager.applyFireResistance(player);
-            databaseManager.setPlayerJob(player, "농부 3차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "농부 3차");
         } else if (jobName.equals("농부 4차")) {
             if (!playerJob.equals("농부 3차")) {
                 player.sendMessage("농부 3차만 전직 가능합니다.");
                 return;
             }
-            databaseManager.setPlayerJob(player, "농부 4차");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "농부 4차");
         } else if (jobName.equals("초기화권")) {
             if (playerJob.equals("백수")) {
                 player.sendMessage("직업이 없습니다.");
                 return;
             }
-            databaseManager.setPlayerJob(player, "백수");
+            playerDataManager.setPlayerJob(player.getUniqueId(), "백수");
         }
 
         if (item.getAmount() > 1) {

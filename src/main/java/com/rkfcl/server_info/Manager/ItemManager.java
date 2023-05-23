@@ -57,6 +57,7 @@ public class ItemManager {
         return check;
     }
     public static ItemStack createCheck(int value) {
+        System.out.println("createCheck on");
         ItemStack check = new ItemStack(Material.HEART_OF_THE_SEA, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("§6" + value + "골드");

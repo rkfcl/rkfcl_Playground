@@ -12,9 +12,6 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-
 public class menu implements CommandExecutor, Listener {
     private JavaPlugin plugin;
 

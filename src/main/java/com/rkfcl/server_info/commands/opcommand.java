@@ -1,6 +1,7 @@
 package com.rkfcl.server_info.commands;
 
-import com.rkfcl.server_info.Manager.DatabaseManager;
+
+import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.test;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,13 +9,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+
 public class opcommand implements CommandExecutor {
     private test plugin;
-    private DatabaseManager databaseManager;
+    private PlayerDataManager playerDataManager;
 
-    public opcommand(test plugin, DatabaseManager databaseManager) {
+    public opcommand(test plugin, PlayerDataManager playerDataManager) {
         this.plugin = plugin;
-        this.databaseManager = databaseManager;
+        this.playerDataManager = playerDataManager;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class opcommand implements CommandExecutor {
                     return true;
                 }
 
-                databaseManager.setPlayerMoney(targetPlayer, amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
+                playerDataManager.setPlayerBalance(targetPlayer.getUniqueId(), amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
                 plugin.updateScoreboard(targetPlayer); // 플레이어의 스코어보드를 업데이트합니다.
                 sender.sendMessage(ChatColor.GREEN + targetPlayer.getName() + "의 소지금이 설정되었습니다.");
             } catch (NumberFormatException e) {
@@ -74,7 +76,7 @@ public class opcommand implements CommandExecutor {
                 return true;
             }
 
-            databaseManager.setPlayerMoney(targetPlayer, amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
+            playerDataManager.setPlayerBalance(targetPlayer.getUniqueId(), amount); // 플레이어의 데이터베이스 소지금을 설정합니다.
             plugin.updateScoreboard(targetPlayer); // 플레이어의 스코어보드를 업데이트합니다.
             player.sendMessage(ChatColor.GREEN + targetPlayer.getName() + "의 소지금이 설정되었습니다.");
         } catch (NumberFormatException e) {

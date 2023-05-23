@@ -24,9 +24,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class AbilityManager implements Listener {
     private Plugin plugin;
-    private DatabaseManager databaseManager;
-    public AbilityManager(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
+    private PlayerDataManager playerDataManager;
+    public AbilityManager(PlayerDataManager playerDataManager) {
+        this.playerDataManager = playerDataManager;
     }
     private final List<Material> targetOreTypes = Arrays.asList(
             Material.COAL_ORE,
@@ -52,14 +52,6 @@ public class AbilityManager implements Listener {
 
     );
     private static HashMap<Player, Integer> blockBreakCounts = new HashMap<>();
-
-    public static void grantAbility(Player player) {
-        Plugin pluginInstance = Bukkit.getPluginManager().getPlugin("server_info");
-        // 플레이어의 직업을 가져옴
-        String job = ((test) pluginInstance).getJob(player);
-        // 직업별로 능력을 부여하는 로직을 작성
-
-    }
 
     private static void applySwiftnessEffect(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 200, 0));
@@ -91,7 +83,7 @@ public class AbilityManager implements Listener {
         Plugin pluginInstance = Bukkit.getPluginManager().getPlugin("server_info");
 
         // 플레이어의 직업을 가져옴
-        String job = databaseManager.getPlayerJob(player);
+        String job = playerDataManager.getPlayerJob(player.getUniqueId());
         if (job.equals("광부 1차")) { // 블록 50개 캘 때마다 성급함 1 10초 부여
             int blockBreakCount = getBlockBreakCount(player);
             if (blockBreakCount % 50 == 0) {
@@ -284,7 +276,7 @@ public class AbilityManager implements Listener {
         Plugin pluginInstance = Bukkit.getPluginManager().getPlugin("server_info");
 
         // 플레이어의 직업을 가져옴
-        String job = databaseManager.getPlayerJob(player);
+        String job = playerDataManager.getPlayerJob(player.getUniqueId());
         if (job.equals("농부 1차")) { // 10% 확률로 농작물 추가+1
             // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
             if (brokenCropsType == Material.WHEAT) {
@@ -321,7 +313,7 @@ public class AbilityManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        String job = databaseManager.getPlayerJob(player);
+        String job = playerDataManager.getPlayerJob(player.getUniqueId());
 
         if (job.equals("초보자")) {
             // 아이템 드롭 방지
