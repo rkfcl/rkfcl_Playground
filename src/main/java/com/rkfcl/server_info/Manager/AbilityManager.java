@@ -3,18 +3,23 @@ package com.rkfcl.server_info.Manager;
 import com.rkfcl.server_info.test;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 import java.util.Arrays;
@@ -23,11 +28,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbilityManager implements Listener {
-    private Plugin plugin;
-    private PlayerDataManager playerDataManager;
-    public AbilityManager(PlayerDataManager playerDataManager) {
+    private test plugin;
+    private final PlayerDataManager playerDataManager;
+
+    public AbilityManager(PlayerDataManager playerDataManager,test plugin) {
         this.playerDataManager = playerDataManager;
+        this.plugin = plugin;
     }
+
     private final List<Material> targetOreTypes = Arrays.asList(
             Material.COAL_ORE,
             Material.DEEPSLATE_COAL_ORE,
@@ -48,10 +56,24 @@ public class AbilityManager implements Listener {
     );
 
     private final List<Material> targetCropsTypes = Arrays.asList(
-            Material.WHEAT
+            Material.WHEAT,
+            Material.BEETROOTS,
+            Material.MELON,
+            Material.PUMPKIN,
+            Material.CARROTS,
+            Material.COCOA,
+            Material.POTATOES
 
     );
-    private static HashMap<Player, Integer> blockBreakCounts = new HashMap<>();
+    private final List<Material> targetSeedTypes = Arrays.asList(
+            Material.WHEAT,
+            Material.BEETROOTS,
+            Material.CARROTS,
+            Material.COCOA,
+            Material.POTATOES
+
+    );
+    private static final HashMap<Player, Integer> blockBreakCounts = new HashMap<>();
 
     private static void applySwiftnessEffect(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 200, 0));
@@ -91,7 +113,7 @@ public class AbilityManager implements Listener {
                 applySwiftnessEffect(player);
                 player.sendMessage("성급함 1 효과를 획득하였습니다!");
             }
-        }else if(job.equals("광부 3차")||job.equals("광부 4차")){
+        } else if (job.equals("광부 3차") || job.equals("광부 4차")) {
             int blockBreakCount = getBlockBreakCount(player);
             if (blockBreakCount % 50 == 0) {
                 blockBreakCounts.put(player, 0);
@@ -99,7 +121,7 @@ public class AbilityManager implements Listener {
                 player.sendMessage("성급함 2 효과를 획득하였습니다!");
             }
         }
-        if (job.equals("광부 2차")||job.equals("광부 3차")||job.equals("광부 4차")) {
+        if (job.equals("광부 2차") || job.equals("광부 3차")) {
             // 플레이어가 캐는 광물이 타겟 광물인지 확인
             if (targetOreTypes.contains(brokenBlockType)) {
                 // 10%의 확률로 광물 추가
@@ -181,7 +203,7 @@ public class AbilityManager implements Listener {
                 }
             }
         }
-        if (job.equals("광부 3차")||job.equals("광부 4차")) {
+        if (job.equals("광부 4차")) {
             // 플레이어가 캐는 광물이 타겟 광물인지 확인
             if (targetOreTypes.contains(brokenBlockType)) {
                 // 10%의 확률로 광물 추가
@@ -266,8 +288,10 @@ public class AbilityManager implements Listener {
         }
 
     }
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCropsBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
         Player player = event.getPlayer();
         Material brokenCropsType = event.getBlock().getType();
 
@@ -277,38 +301,178 @@ public class AbilityManager implements Listener {
 
         // 플레이어의 직업을 가져옴
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
-        if (job.equals("농부 1차")) { // 10% 확률로 농작물 추가+1
+        if (job.equals("농부 1차") || job.equals("농부 2차") || job.equals("농부 3차")) { // 10% 확률로 농작물 추가+1
             // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
-            if (brokenCropsType == Material.WHEAT) {
-                player.sendMessage("작물확인");
+            if (targetCropsTypes.contains(brokenCropsType)) {
                 // 농작물이 다 자란 상태인지 확인
-                BlockState blockState = event.getBlock().getState();
-                if (blockState instanceof Ageable) {
-                    Ageable ageable = (Ageable) blockState;
-                    if (ageable.getAge() >= ageable.getMaximumAge()) {
-                        player.sendMessage("다자란지 확인");
-                        // 추가될 광물의 종류와 양
-                        Material additionalCropsMaterial = Material.COAL;
-                        int additionalCropsAmount = 1;
+                boolean isFullyGrown = checkIfFullyGrown(block);
+                System.out.println(isFullyGrown);
+                // 농작물이 다 자란 상태일 때의 처리
+                if (isFullyGrown) {
+                    // 추가될 작물의 종류와 양
+                    Material additionalCropsMaterial;
+                    int additionalCropsAmount;
 
-                        // 10%의 확률로 농작물 추가
-                        if (ThreadLocalRandom.current().nextDouble() < 0.9) {
-                            // 농작물 추가 아이템 생성
-                            ItemStack additionalCropsItem = new ItemStack(additionalCropsMaterial, additionalCropsAmount);
-
-                            // 플레이어에게 농작물 추가 아이템 주기
-                            player.getInventory().addItem(additionalCropsItem);
-                            player.sendMessage("추가 농작물이 주어졌습니다!");
+                    // 10%의 확률로 농작물 추가
+                    if (ThreadLocalRandom.current().nextDouble() < 0.1) {
+                        switch (brokenCropsType) {
+                            case WHEAT:
+                                additionalCropsMaterial = Material.WHEAT;
+                                additionalCropsAmount = 1;
+                                break;
+                            case CARROTS:
+                                additionalCropsMaterial = Material.CARROTS;
+                                additionalCropsAmount = 1;
+                                break;
+                            case PUMPKIN:
+                                additionalCropsMaterial = Material.PUMPKIN;
+                                additionalCropsAmount = 1;
+                                break;
+                            case MELON:
+                                additionalCropsMaterial = Material.MELON;
+                                additionalCropsAmount = 1;
+                                break;
+                            case BEETROOTS:
+                                additionalCropsMaterial = Material.BEETROOT;
+                                additionalCropsAmount = 1;
+                                break;
+                            case COCOA:
+                                additionalCropsMaterial = Material.COCOA_BEANS;
+                                additionalCropsAmount = 1;
+                                break;
+                            case POTATOES:
+                                additionalCropsMaterial = Material.POTATO;
+                                additionalCropsAmount = 1;
+                                break;
+                            default:
+                                return;
                         }
+                        // 농작물 추가 아이템 생성
+                        ItemStack additionalCropsItem = new ItemStack(additionalCropsMaterial, additionalCropsAmount);
+
+                        // 플레이어에게 농작물 추가 아이템 주기
+                        player.getInventory().addItem(additionalCropsItem);
+                        player.sendMessage("추가 농작물이 주어졌습니다!");
+                    }
+                }
+            }
+        }
+        if (job.equals("농부 3차") || job.equals("농부 4차")) { // 일반 작물 자동 심기
+            // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
+
+            if (targetSeedTypes.contains(brokenCropsType)) {
+                boolean isFullyGrown = checkIfFullyGrown(block);
+                if (isFullyGrown) {
+//                        event.setCancelled(true);
+                    switch (brokenCropsType) {
+                        case WHEAT:
+                            if (player.getInventory().contains(Material.WHEAT_SEEDS)) {
+                                player.getInventory().removeItem(new ItemStack(Material.WHEAT_SEEDS, 1));
+
+                            }
+                            break;
+                        case CARROTS:
+                            if (player.getInventory().contains(Material.CARROT)) {
+                                player.getInventory().removeItem(new ItemStack(Material.CARROT, 1));
+                            }
+                            break;
+                        case BEETROOTS:
+                            if (player.getInventory().contains(Material.BEETROOT_SEEDS)) {
+                                player.getInventory().removeItem(new ItemStack(Material.BEETROOT_SEEDS, 1));
+
+                            }
+                            break;
+                        case POTATOES:
+                            if (player.getInventory().contains(Material.POTATO)) {
+                                player.getInventory().removeItem(new ItemStack(Material.POTATO, 1));
+
+                            }
+                            break;
+                    }
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // 클릭한 위치에 씨앗 다시 심기
+                            Block soilBlock = block.getRelative(BlockFace.DOWN);
+                            if (soilBlock.getType() == Material.FARMLAND) {
+                                soilBlock.getRelative(BlockFace.UP).setType(brokenCropsType);
+                            }
+                        }
+                    }.runTaskLater(this.plugin, 1);
+                }
+
+
+            }
+
+        }
+
+        if (job.equals("농부 4차")) { // 10% 확률로 농작물 추가+2
+            // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
+            if (targetCropsTypes.contains(brokenCropsType)) {
+                // 농작물이 다 자란 상태인지 확인
+                boolean isFullyGrown = checkIfFullyGrown(block);
+                // 농작물이 다 자란 상태일 때의 처리
+                if (isFullyGrown) {
+                    // 추가될 작물의 종류와 양
+                    Material additionalCropsMaterial;
+                    int additionalCropsAmount;
+
+                    // 10%의 확률로 농작물 추가
+                    if (ThreadLocalRandom.current().nextDouble() < 0.1) {
+                        switch (brokenCropsType) {
+                            case WHEAT:
+                                additionalCropsMaterial = Material.WHEAT;
+                                additionalCropsAmount = 2;
+                                break;
+                            case CARROTS:
+                                additionalCropsMaterial = Material.CARROTS;
+                                additionalCropsAmount = 2;
+                                break;
+                            case PUMPKIN:
+                                additionalCropsMaterial = Material.PUMPKIN;
+                                additionalCropsAmount = 2;
+                                break;
+                            case MELON:
+                                additionalCropsMaterial = Material.MELON;
+                                additionalCropsAmount = 2;
+                                break;
+                            case BEETROOTS:
+                                additionalCropsMaterial = Material.BEETROOT;
+                                additionalCropsAmount = 2;
+                                break;
+                            case COCOA:
+                                additionalCropsMaterial = Material.COCOA_BEANS;
+                                additionalCropsAmount = 2;
+                                break;
+                            case POTATOES:
+                                additionalCropsMaterial = Material.POTATO;
+                                additionalCropsAmount = 2;
+                                break;
+                            default:
+                                return;
+                        }
+                        // 농작물 추가 아이템 생성
+                        ItemStack additionalCropsItem = new ItemStack(additionalCropsMaterial, additionalCropsAmount);
+
+                        // 플레이어에게 농작물 추가 아이템 주기
+                        player.getInventory().addItem(additionalCropsItem);
+                        player.sendMessage("추가 농작물이 주어졌습니다!");
                     }
                 }
             }
         }
     }
-
-
-
-
+    private boolean checkIfFullyGrown(Block block) {
+        BlockState blockState = block.getState();
+        if(block.getType()==Material.MELON||block.getType()==Material.PUMPKIN){
+            return true;
+        }
+        if (blockState.getBlockData() instanceof Ageable) {
+            Ageable ageable = (Ageable) blockState.getBlockData();
+            return ageable.getAge() == ageable.getMaximumAge();
+        }
+        return false;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -329,4 +493,3 @@ public class AbilityManager implements Listener {
         }
     }
 }
-

@@ -34,7 +34,7 @@ public class test extends JavaPlugin implements Listener {
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
     @Override
     public void onEnable() {
-        abilityManager = new AbilityManager(playerDataManager);
+        abilityManager = new AbilityManager(playerDataManager,this);
         playerDataManager = new PlayerDataManager();
         makeFile(PlayerBalanceFile);
         makeFile(PlayerJobFile);
@@ -57,7 +57,7 @@ public class test extends JavaPlugin implements Listener {
 
         inventoryClickListener inventoryClickListener = new inventoryClickListener(this,playerDataManager);
         getServer().getPluginManager().registerEvents(inventoryClickListener, this);
-        getServer().getPluginManager().registerEvents(new AbilityManager(playerDataManager), this);
+        getServer().getPluginManager().registerEvents(new AbilityManager(playerDataManager,this), this);
         interactEntity = new onPlayerInteractEntity(this); // 수정된 인수 전달
         interactEntity.enableTrade(); // 주민 거래 비활성화
         // 플레이어별 스코어보드 업데이트

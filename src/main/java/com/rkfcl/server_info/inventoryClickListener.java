@@ -32,7 +32,7 @@ public class inventoryClickListener implements Listener {
     ItemManager itemManager = new ItemManager();
     OreCost oreCost = new OreCost();
     public inventoryClickListener(test pluginInstance,PlayerDataManager playerDataManager) {
-        this.abilityManager = new AbilityManager(playerDataManager);
+        this.abilityManager = new AbilityManager(playerDataManager,pluginInstance);
         this.pluginInstance = pluginInstance;
         this.playerDataManager = playerDataManager;
     }
