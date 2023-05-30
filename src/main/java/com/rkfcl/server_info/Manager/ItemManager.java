@@ -167,4 +167,15 @@ public class ItemManager {
                 55000
         );
     }
+
+    public static ItemStack namechange() {
+        ItemStack check = new ItemStack(Material.PAPER, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("이름 설정권");
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = 10; // 커스텀 모델 데이터 값 1로 설정
+        meta.setCustomModelData(customModelDataValue);
+        check.setItemMeta(meta);
+        return check;
+    }
 }

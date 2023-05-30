@@ -5,6 +5,7 @@ import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.conversations.PlayerNamePrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,10 +30,9 @@ public class test extends JavaPlugin implements Listener {
     // 플레이어별 소지금을 저장하는 HashMap
     private Connection connection;
     private PlayerDataManager playerDataManager;
-
     private AbilityManager abilityManager; // AbilityManager 인스턴스 추가
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
-    private ProtectBlock protectBlock; // ProtectBlock 인스턴스 추가
+    private NameChange nameChange; // NameChange 인스턴스 추가
     @Override
     public void onEnable() {
         abilityManager = new AbilityManager(playerDataManager,this);
@@ -55,14 +55,15 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("rmnpcshop").setExecutor(new NPCShopCommand(this));
-
         inventoryClickListener inventoryClickListener = new inventoryClickListener(this,playerDataManager);
         getServer().getPluginManager().registerEvents(inventoryClickListener, this);
         getServer().getPluginManager().registerEvents(new AbilityManager(playerDataManager,this), this);
-        ProtectBlock protectBlock = new ProtectBlock();
-        getServer().getPluginManager().registerEvents(protectBlock, this);
         interactEntity = new onPlayerInteractEntity(this); // 수정된 인수 전달
         interactEntity.enableTrade(); // 주민 거래 비활성화
+        NameChange nameChange = new NameChange(this);
+        getServer().getPluginManager().registerEvents(nameChange, this);
+
+        // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
         for (Player player : players) {

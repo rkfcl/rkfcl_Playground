@@ -5,6 +5,7 @@ import com.rkfcl.server_info.Manager.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +22,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.rkfcl.server_info.Manager.ItemManager.namechange;
+import static org.bukkit.Bukkit.getServer;
 
 public class inventoryClickListener implements Listener {
 
@@ -59,6 +63,7 @@ public class inventoryClickListener implements Listener {
                     switch (jobType) {
                         case 1:
                             player.getInventory().addItem(ItemManager.createMineJob1Item());
+                            player.getInventory().addItem(ItemManager.namechange());
                             break;
                         case 2:
                             player.getInventory().addItem(ItemManager.createMineJob2Item());
@@ -255,7 +260,6 @@ public class inventoryClickListener implements Listener {
 
                         ItemStack check = ItemManager.createCheck(amount);
                         player.getInventory().addItem(check);
-                        System.out.println("heck");
                         // 수표 발행 처리
                     }
                 } catch (NumberFormatException e) {
