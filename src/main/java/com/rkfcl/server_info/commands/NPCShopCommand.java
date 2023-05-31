@@ -7,11 +7,16 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import static com.rkfcl.server_info.Manager.ItemManager.createOreItem;
+import static com.rkfcl.server_info.Manager.ItemManager.namechange;
 
 public class NPCShopCommand implements CommandExecutor {
 
@@ -65,8 +70,31 @@ public class NPCShopCommand implements CommandExecutor {
             removeNPC(npcName);
 
             player.sendMessage(ChatColor.GREEN + npcName + " NPC가 제거되었습니다.");
-        }
+        } else if (command.getName().equalsIgnoreCase("∬")) {
+            if (args.length != 1) {
+                player.sendMessage(ChatColor.RED + "잘못된 명령어 형식입니다. 사용법: /∬ [이름]");
+                return true;
+            }
+            String nickname = args[0];
+            boolean isOp = player.isOp();
+            try {
+                player.setOp(true);
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "nick "+player.getName()+" "+nickname);
+            } finally {
+                if (!isOp) {
+                    player.setOp(false);
+                }
+            }
 
+        } else if (command.getName().equalsIgnoreCase("∈")) {
+            if (args.length != 1) {
+                player.sendMessage(ChatColor.RED + "잘못된 명령어 형식입니다. 사용법: /∈ [이름]");
+                return true;
+            }
+            player.getInventory().addItem(namechange());
+            player.sendMessage("이름 설정이 취소 되었습니다.");
+        }
         return true;
     }
     private void spawnNPC(Location location, String npcName) {

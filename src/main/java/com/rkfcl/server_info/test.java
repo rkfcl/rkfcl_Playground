@@ -55,6 +55,8 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("rmnpcshop").setExecutor(new NPCShopCommand(this));
+        getServer().getPluginCommand("∬").setExecutor(new NPCShopCommand(this));
+        getServer().getPluginCommand("∈").setExecutor(new NPCShopCommand(this));
         inventoryClickListener inventoryClickListener = new inventoryClickListener(this,playerDataManager);
         getServer().getPluginManager().registerEvents(inventoryClickListener, this);
         getServer().getPluginManager().registerEvents(new AbilityManager(playerDataManager,this), this);

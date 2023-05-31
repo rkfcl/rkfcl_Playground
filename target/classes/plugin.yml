@@ -19,5 +19,11 @@ commands:
     description: Remove NPC shop
     usage: /rmnpcshop [이름]
     permission: myplugin.rmnpcshop
+  ∬:
+    description: ∬
+    usage: /∬ [이름]
+  ∈:
+    description: ∈
+    usage: /∈ [이름]
 listeners:
   - com.rkfcl.server_info.MenuClickListener
