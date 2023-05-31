@@ -13,12 +13,24 @@ public class ShopInventoryManager {
         inventory.setItem(13, ItemManager.createMineJob2Item());
         inventory.setItem(22, ItemManager.createMineJob3Item());
         inventory.setItem(31, ItemManager.createMineJob4Item());
+
         inventory.setItem(2, ItemManager.createFarmerJob1Item());
         inventory.setItem(11, ItemManager.createFarmerJob2Item());
         inventory.setItem(20, ItemManager.createFarmerJob3Item());
         inventory.setItem(29, ItemManager.createFarmerJob4Item());
-        inventory.setItem(39, ItemManager.createresetJobItem());
 
+        inventory.setItem(0, ItemManager.createFisherJob1Item());
+        inventory.setItem(9, ItemManager.createFisherJob2Item());
+        inventory.setItem(18, ItemManager.createFisherJob3Item());
+        inventory.setItem(27, ItemManager.createFisherJob4Item());
+
+        inventory.setItem(6, ItemManager.createCookerJob1Item());
+        inventory.setItem(15, ItemManager.createCookerJob2Item());
+        inventory.setItem(24, ItemManager.createCookerJob3Item());
+        inventory.setItem(33, ItemManager.createCookerJob4Item());
+
+
+        inventory.setItem(39, ItemManager.createresetJobItem());
         player.openInventory(inventory);
     }
 

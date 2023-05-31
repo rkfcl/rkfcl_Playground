@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.rkfcl.server_info.Manager.ItemManager.createCheck;
 import static com.rkfcl.server_info.Manager.ItemManager.namechange;
 import static org.bukkit.Bukkit.getServer;
 
@@ -145,6 +146,16 @@ public class inventoryClickListener implements Listener {
                             handleJobPurchase(player, clickEvent, clickType, 7, 30000, 1);
                         } else if (displayName.endsWith("4차")) {
                             handleJobPurchase(player, clickEvent, clickType, 8, 55000, 1);
+                        }
+                    } else if (displayName.startsWith("§6[ 직업 ] §f어부")) {
+                        if (displayName.endsWith("1차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 5, 5000, 1);
+                        } else if (displayName.endsWith("2차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 6, 8000, 1);
+                        } else if (displayName.endsWith("3차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 7, 30000, 1);
+                        } else if (displayName.endsWith("4차")) {
+                            handleJobPurchase(player, clickEvent, clickType, 8, 45000, 1);
                         }
                     }
                 }
@@ -321,7 +332,7 @@ public class inventoryClickListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         String displayName = meta.getDisplayName();
 
-        if (displayName.contains("골드")) {
+        if (displayName.contains("§6골드")) {
             handleGoldItem(player, item, displayName);
         } else if (displayName.contains("§6[ 직업 ]")) {
             handleJobItem(player, item, displayName);
@@ -398,7 +409,55 @@ public class inventoryClickListener implements Listener {
                 return;
             }
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 4차");
-        } else if (jobName.equals("초기화권")) {
+        } else if (jobName.equals("어부 1차")) {
+            if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
+                player.sendMessage("직업을 초기화 해야 합니다");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "어부 1차");
+        }else if (jobName.equals("어부 2차")) {
+            if (!playerJob.equals("어부 1차")) {
+                player.sendMessage("어부 1차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "어부 2차");
+        }else if (jobName.equals("어부 3차")) {
+            if (!playerJob.equals("어부 2차")) {
+                player.sendMessage("어부 2차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "어부 3차");
+        }else if (jobName.equals("어부 4차")) {
+            if (!playerJob.equals("어부 3차")) {
+                player.sendMessage("어부 3차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "어부 4차");
+        } else if (jobName.equals("요리사 1차")) {
+            if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
+                player.sendMessage("직업을 초기화 해야 합니다");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "요리사 1차");
+        }else if (jobName.equals("요리사 2차")) {
+            if (!playerJob.equals("요리사 1차")) {
+                player.sendMessage("요리사 1차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "요리사 2차");
+        }else if (jobName.equals("요리사 3차")) {
+            if (!playerJob.equals("요리사 2차")) {
+                player.sendMessage("요리사 2차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "요리사 3차");
+        }else if (jobName.equals("요리사 4차")) {
+            if (!playerJob.equals("요리사 3차")) {
+                player.sendMessage("요리사 3차만 전직 가능합니다.");
+                return;
+            }
+            playerDataManager.setPlayerJob(player.getUniqueId(), "요리사 4차");
+        }else if (jobName.equals("초기화권")) {
             if (playerJob.equals("백수")) {
                 player.sendMessage("직업이 없습니다.");
                 return;

@@ -57,10 +57,9 @@ public class ItemManager {
         return check;
     }
     public static ItemStack createCheck(int value) {
-        System.out.println("createCheck on");
         ItemStack check = new ItemStack(Material.HEART_OF_THE_SEA, 1);
         ItemMeta meta = check.getItemMeta();
-        meta.setDisplayName("§6" + value + "골드");
+        meta.setDisplayName(value + "§6골드");
 
         // 커스텀 모델 데이터 값 설정
         int customModelDataValue = 1; // 커스텀 모델 데이터 값 1로 설정
@@ -168,6 +167,62 @@ public class ItemManager {
         );
     }
 
+    public static ItemStack createFisherJob1Item() {
+        return createJobItem(
+                "§f어부 1차",
+                "§7어부 : §f잡을 수 있는 물고기 개체 수 증가",
+                5000
+        );
+    }
+    public static ItemStack createFisherJob2Item() {
+        return createJobItem(
+                "§f어부 2차",
+                "§7어부 : §f10% 확률로 추가 물고기+1",
+                8000
+        );
+    }
+    public static ItemStack createFisherJob3Item() {
+        return createJobItem(
+                "§f어부 3차",
+                "§7어부 : §f잡을 수 있는 물고기 개체 수 증가",
+                30000
+        );
+    }
+    public static ItemStack createFisherJob4Item() {
+        return createJobItem(
+                "§f어부 4차",
+                "§7어부 : §f10% 확률로 추가 물고기+2",
+                45000
+        );
+    }
+    public static ItemStack createCookerJob1Item() {
+        return createJobItem(
+                "§f요리사 1차",
+                "§7요리사 : §f10% 확률로 요리 추가 +1",
+                7000
+        );
+    }
+    public static ItemStack createCookerJob2Item() {
+        return createJobItem(
+                "§f요리사 2차",
+                "§7요리사 : §f요리 한번에 5개 가능",
+                7000
+        );
+    }
+    public static ItemStack createCookerJob3Item() {
+        return createJobItem(
+                "§f요리사 3차",
+                "§7요리사 : §f랜덤 레시피 북 1개+ 요리 한번에 10개 가능",
+                7000
+        );
+    }
+    public static ItemStack createCookerJob4Item() {
+        return createJobItem(
+                "§f요리사 4차",
+                "§7요리사 : §f10% 확률로 요리 추가 +2",
+                7000
+        );
+    }
     public static ItemStack namechange() {
         ItemStack check = new ItemStack(Material.PAPER, 1);
         ItemMeta meta = check.getItemMeta();
