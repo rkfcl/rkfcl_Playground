@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,8 +16,10 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -41,8 +45,6 @@ public class inventoryClickListener implements Listener {
         this.pluginInstance = pluginInstance;
         this.playerDataManager = playerDataManager;
     }
-
-
 
 
 
@@ -89,6 +91,18 @@ public class inventoryClickListener implements Listener {
                             break;
                         case 9:
                             player.getInventory().addItem(ItemManager.createresetJobItem());
+                            break;
+                        case 10:
+                            player.getInventory().addItem(ItemManager.createFisherJob1Item());
+                            break;
+                        case 11:
+                            player.getInventory().addItem(ItemManager.createFisherJob2Item());
+                            break;
+                        case 12:
+                            player.getInventory().addItem(ItemManager.createFisherJob3Item());
+                            break;
+                        case 13:
+                            player.getInventory().addItem(ItemManager.createFisherJob4Item());
                             break;
                     }
                 }
@@ -149,13 +163,13 @@ public class inventoryClickListener implements Listener {
                         }
                     } else if (displayName.startsWith("§6[ 직업 ] §f어부")) {
                         if (displayName.endsWith("1차")) {
-                            handleJobPurchase(player, clickEvent, clickType, 5, 5000, 1);
+                            handleJobPurchase(player, clickEvent, clickType, 10, 5000, 1);
                         } else if (displayName.endsWith("2차")) {
-                            handleJobPurchase(player, clickEvent, clickType, 6, 8000, 1);
+                            handleJobPurchase(player, clickEvent, clickType, 11, 8000, 1);
                         } else if (displayName.endsWith("3차")) {
-                            handleJobPurchase(player, clickEvent, clickType, 7, 30000, 1);
+                            handleJobPurchase(player, clickEvent, clickType, 12, 30000, 1);
                         } else if (displayName.endsWith("4차")) {
-                            handleJobPurchase(player, clickEvent, clickType, 8, 45000, 1);
+                            handleJobPurchase(player, clickEvent, clickType, 13, 45000, 1);
                         }
                     }
                 }

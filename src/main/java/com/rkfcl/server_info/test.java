@@ -1,6 +1,7 @@
 package com.rkfcl.server_info;
 
 import com.rkfcl.server_info.Manager.AbilityManager;
+import com.rkfcl.server_info.Manager.FishingManager;
 import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.commands.*;
 import org.bukkit.Bukkit;
@@ -33,6 +34,7 @@ public class test extends JavaPlugin implements Listener {
     private AbilityManager abilityManager; // AbilityManager 인스턴스 추가
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
     private NameChange nameChange; // NameChange 인스턴스 추가
+    private FishingManager fishingManager;
     @Override
     public void onEnable() {
         abilityManager = new AbilityManager(playerDataManager,this);
@@ -64,7 +66,8 @@ public class test extends JavaPlugin implements Listener {
         interactEntity.enableTrade(); // 주민 거래 비활성화
         NameChange nameChange = new NameChange(this);
         getServer().getPluginManager().registerEvents(nameChange, this);
-
+        fishingManager = new FishingManager(playerDataManager);
+        getServer().getPluginManager().registerEvents(fishingManager, this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
