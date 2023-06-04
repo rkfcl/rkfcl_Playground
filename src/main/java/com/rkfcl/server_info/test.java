@@ -66,7 +66,7 @@ public class test extends JavaPlugin implements Listener {
         interactEntity.enableTrade(); // 주민 거래 비활성화
         NameChange nameChange = new NameChange(this);
         getServer().getPluginManager().registerEvents(nameChange, this);
-        fishingManager = new FishingManager(playerDataManager);
+        fishingManager = new FishingManager(playerDataManager,this);
         getServer().getPluginManager().registerEvents(fishingManager, this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
@@ -94,7 +94,7 @@ public class test extends JavaPlugin implements Listener {
                     e.printStackTrace();
                 }
             }
-        }, 20 * 30, 20 * 30);
+        }, 20 * 60, 20 * 60);
 
     }
     public void fileToMap(File f, HashMap<UUID, Integer> map) {
@@ -132,7 +132,7 @@ public class test extends JavaPlugin implements Listener {
                     e.printStackTrace();
                 }
             }
-        }, 20 * 30, 20 * 30);
+        }, 20 * 60, 20 * 60);
 
     }
     public void fileToMapString(File f, HashMap<UUID, String> map) {
@@ -171,6 +171,8 @@ public class test extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
+        mapToFile(PlayerBalanceFile,playerBalances);
+        mapToFileString(PlayerJobFile,playerJob);
         System.out.println("plugin off");
     }
 
