@@ -1,13 +1,11 @@
 package com.rkfcl.server_info;
 
-import com.rkfcl.server_info.ItemManagerCost.OreCost;
+import com.rkfcl.server_info.ItemManagerCost.ItemCost;
 import com.rkfcl.server_info.Manager.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.FishHook;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,20 +14,14 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.rkfcl.server_info.Manager.ItemManager.createCheck;
-import static com.rkfcl.server_info.Manager.ItemManager.namechange;
-import static org.bukkit.Bukkit.getServer;
 
 public class inventoryClickListener implements Listener {
 
@@ -38,8 +30,7 @@ public class inventoryClickListener implements Listener {
     private final AbilityManager abilityManager;
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
 
-    ItemManager itemManager = new ItemManager();
-    OreCost oreCost = new OreCost();
+    ItemCost itemCost = new ItemCost();
     public inventoryClickListener(test pluginInstance,PlayerDataManager playerDataManager) {
         this.abilityManager = new AbilityManager(playerDataManager,pluginInstance);
         this.pluginInstance = pluginInstance;
@@ -131,6 +122,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             }
 
             if (event.getCurrentItem().getType() == Material.PAPER) {
@@ -181,47 +173,71 @@ public class inventoryClickListener implements Listener {
             }
         }
     }
-
     @EventHandler
-    public void ShopMineInventory(InventoryClickEvent event) {
+    public void ShopFishInventory(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         Player player = (Player) event.getWhoClicked();
         InventoryClickEvent clickEvent = (InventoryClickEvent) event;
         ClickType clickType = event.getClick();
+
         if (event.getClickedInventory() == null) return;
 
-        // 광부 상점
-        if (event.getView().getTitle().equalsIgnoreCase("광부 상점")) {
+        // 어부 상점
+        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")) {
             event.setCancelled(true);
+
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
             } else {
                 event.setCancelled(true);
                 ItemStack clickedItem = event.getCurrentItem();
+
                 if (clickedItem != null) {
                     ItemMeta meta = clickedItem.getItemMeta();
+
                     if (meta != null) {
                         Material itemType = clickedItem.getType();
-                        if (isMineralItem(itemType)) {
+                        int customModelData = clickedItem.getItemMeta().getCustomModelData();
+
+                        if (customModelData == getCustomModelData(clickedItem)) {
                             if (clickEvent.isRightClick()) {
                                 // 판매 처리
-                                int itemCount = countItems(player.getInventory(), itemType);
+                                int itemCount = countItems(player.getInventory(), itemType, customModelData);
+
                                 if (itemCount == 0) {
+                                    player.sendMessage("§6[상점] §f판매할 아이템이 없습니다.");
                                     return; // 판매할 아이템이 없는 경우 처리 중단
                                 }
 
+
                                 int setCount = calculateSetCount(clickType, itemCount);
-                                int individualCost = oreCost.calculateIndividualCost(itemType);
+                                int individualCost= itemCost.itemCost(clickedItem,customModelData);;
                                 int totalCost = individualCost * setCount;
 
-                                player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 판매 하였습니다.","§e(+"+totalCost+"$)");
-                                HashMap<Integer, ItemStack> removedItems = player.getInventory().removeItem(new ItemStack(itemType, setCount));
-                                playerDataManager.increaseMoney(player.getUniqueId(), totalCost);
-                                pluginInstance.updateScoreboard(player);
+                                // 판매할 아이템과 동일한 종류와 커스텀 모델 데이터 값을 가진 아이템을 찾아서 개수 확인
+                                int availableItemCount = countItems(player.getInventory(), itemType, customModelData);
 
+                                if (availableItemCount >= setCount) {
+                                    // 판매 가능한 개수 이상인 경우 판매 처리
+                                    ItemStack sellItem = new ItemStack(itemType);
+                                    ItemMeta sellItemMeta = sellItem.getItemMeta();
+                                    sellItemMeta.setCustomModelData(customModelData);
+                                    sellItem.setItemMeta(sellItemMeta);
+                                    sellItem.setAmount(setCount);
+
+                                    // 판매한 아이템 개수만큼 플레이어 인벤토리에서 제거
+                                    removeItems(player.getInventory(), itemType,customModelData,setCount);
+                                    player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 판매하였습니다. §e(+" + totalCost + "$)");
+
+                                    // 플레이어의 돈 증가 및 스코어보드 업데이트 등 추가 처리
+                                    playerDataManager.increaseMoney(player.getUniqueId(), totalCost);
+                                    pluginInstance.updateScoreboard(player);
+                                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                                } else {
+                                    player.sendMessage("§6[상점] §f판매할 아이템이 충분하지 않습니다.");
+                                }
                             } else if (clickEvent.isLeftClick()) {
-                                // 구매 불가능한 아이템 처리
                                 player.sendMessage("§6[상점] §f구매가 불가능한 아이템입니다.");
                             }
                         }
@@ -230,6 +246,9 @@ public class inventoryClickListener implements Listener {
             }
         }
     }
+
+
+
     @EventHandler
     public void ShopMenuInventory(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
@@ -305,18 +324,45 @@ public class inventoryClickListener implements Listener {
                 itemType == Material.LAPIS_BLOCK || itemType == Material.REDSTONE_BLOCK || itemType == Material.OBSIDIAN ||
                 itemType == Material.CRYING_OBSIDIAN || itemType == Material.GLOWSTONE;
     }
-
-
-    private int countItems(Inventory inventory, Material itemType) {
-        int itemCount = 0;
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null && item.getType() == itemType) {
-                itemCount += item.getAmount();
-            }
-        }
-        return itemCount;
+    private boolean isFishItem(Material itemType) {
+        return itemType == Material.COD || itemType == Material.SALMON || itemType == Material.TROPICAL_FISH || itemType == Material.PUFFERFISH ||
+                itemType == Material.ROTTEN_FLESH;
     }
 
+    private int countItems(Inventory inventory, Material itemType, int customModelData) {
+        int count = 0;
+        for (ItemStack itemStack : inventory.getContents()) {
+            if (itemStack != null && itemStack.getType() == itemType && getCustomModelData(itemStack) == customModelData) {
+                count += itemStack.getAmount();
+            }
+        }
+        return count;
+    }
+    private void removeItems(Inventory inventory, Material itemType, int customModelData, int count) {
+        int remaining = count; // 남은 개수를 추적하기 위한 변수
+
+        for (ItemStack itemStack : inventory.getContents()) {
+            if (itemStack != null && itemStack.getType() == itemType && getCustomModelData(itemStack) == customModelData) {
+                int amount = itemStack.getAmount();
+
+                if (amount <= remaining) {
+                    inventory.remove(itemStack);
+                    remaining -= amount;
+                } else {
+                    itemStack.setAmount(amount - remaining);
+                    break; // 남은 개수만큼 제거하고 반복 종료
+                }
+            }
+        }
+    }
+
+    // 아이템의 CustomModelData 값을 가져오는 메서드
+    private int getCustomModelData(ItemStack itemStack) {
+        if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
+            return itemStack.getItemMeta().getCustomModelData();
+        }
+        return 0;
+    }
     private int calculateSetCount(ClickType clickType, int itemCount) {
         int setCount = 0;
         if (clickType == ClickType.RIGHT) {

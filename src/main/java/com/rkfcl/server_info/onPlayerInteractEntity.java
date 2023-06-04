@@ -40,6 +40,12 @@ public class onPlayerInteractEntity implements Listener {
 
                 event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
             }else event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
+
+            if (villagerName != null && villagerName.equals("어부")) {
+                shopInventoryManager.openShopFishInventory(player);
+
+                event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
+            }else event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
         }
 
     }

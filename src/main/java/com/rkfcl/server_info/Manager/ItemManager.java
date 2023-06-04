@@ -1,27 +1,22 @@
 package com.rkfcl.server_info.Manager;
 
 
-import com.rkfcl.server_info.ItemManagerCost.OreCost;
-import com.rkfcl.server_info.inventoryClickListener;
-import com.rkfcl.server_info.test;
+import com.rkfcl.server_info.ItemManagerCost.ItemCost;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
-import org.bukkit.inventory.meta.tags.ItemTagType;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
+
 
 import java.util.Arrays;
 
 public class ItemManager {
 
-    private static OreCost orecost; // 정적 변수로 변경
+    private static ItemCost itemCost;
 
     public ItemManager() {
-        orecost = new OreCost(); // 정적 변수로 초기화
+        itemCost = new ItemCost();
     }
     private static ItemStack buildItem(Material type, int amount, String displayName, String... lore) {
         ItemStack stack = new ItemStack(type, amount);
@@ -127,13 +122,44 @@ public class ItemManager {
                 30000
         );
     }
-    public static ItemStack createOreItem(Material material) {
+    public static ItemStack createOreItem(Material material,int data) {
         ItemStack oreItem = new ItemStack(material, 1);
         ItemMeta meta = oreItem.getItemMeta();
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + orecost.calculateIndividualCost(material) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(oreItem,customModelDataValue) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        meta.setCustomModelData(customModelDataValue);
         oreItem.setItemMeta(meta);
+
         return oreItem;
     }
+
+    public static ItemStack createFishItem(Material material, int data) {
+        ItemStack fishItem = new ItemStack(material, 1);
+        ItemMeta meta = fishItem.getItemMeta();
+
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(fishItem,customModelDataValue) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        meta.setCustomModelData(customModelDataValue);
+        fishItem.setItemMeta(meta);
+
+        return fishItem;
+    }
+    public static ItemStack createItemsAdderFishItem(String itemId) {
+        // itemsadder에서 생성한 아이템을 가져오는 코드
+        ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
+        ItemMeta meta = fishItem.getItemMeta();
+        int customModelData = meta.getCustomModelData();
+        // 커스텀 모델 데이터 값 사용
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(fishItem,customModelData) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        fishItem.setItemMeta(meta);
+        // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
+
+        return fishItem;
+    }
+
 
     public static ItemStack createFarmerJob1Item() {
         return createJobItem(
