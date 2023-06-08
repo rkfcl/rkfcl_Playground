@@ -210,7 +210,7 @@ public class ItemManager {
     public static ItemStack createFisherJob3Item() {
         return createJobItem(
                 "§f어부 3차",
-                "§7어부 : §f잡을 수 있는 물고기 개체 수 증가",
+                "§7어부 : §기본 패시브 수중호흡 적용",
                 30000
         );
     }

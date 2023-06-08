@@ -1,7 +1,10 @@
 package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.test;
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -10,11 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -91,7 +97,9 @@ public class AbilityManager implements Listener {
         return blockBreakCounts.getOrDefault(player, 0);
     }
 
+
     // 블록 파괴 이벤트를 추적하여 블록 파괴 카운트를 증가시키는 메서드
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();

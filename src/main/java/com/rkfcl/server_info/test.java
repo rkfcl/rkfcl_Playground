@@ -4,9 +4,10 @@ import com.rkfcl.server_info.Manager.AbilityManager;
 import com.rkfcl.server_info.Manager.FishingManager;
 import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.commands.*;
+import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.conversations.PlayerNamePrompt;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.io.*;
@@ -22,10 +24,12 @@ import java.sql.*;
 
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
+import static com.rkfcl.server_info.customcrops.*;
 
 public class test extends JavaPlugin implements Listener {
     private final File PlayerBalanceFile = new File(getDataFolder(), "/playerdata.txt");
     private final File PlayerJobFile = new File(getDataFolder(), "/playerJobdata.txt");
+    private final File CropFile = new File(getDataFolder(), "/crops.txt");
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
@@ -35,16 +39,20 @@ public class test extends JavaPlugin implements Listener {
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
     private NameChange nameChange; // NameChange 인스턴스 추가
     private FishingManager fishingManager;
+    private LetterOfReturn letterOfReturn;
+    private customcrops customcrops;
     @Override
     public void onEnable() {
-        abilityManager = new AbilityManager(playerDataManager,this);
         playerDataManager = new PlayerDataManager();
+        abilityManager = new AbilityManager(playerDataManager,this);
         makeFile(PlayerBalanceFile);
         makeFile(PlayerJobFile);
+        makeFile(CropFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
         fileToMapString(PlayerJobFile,playerJob);
+
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -68,12 +76,17 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(nameChange, this);
         fishingManager = new FishingManager(playerDataManager,this);
         getServer().getPluginManager().registerEvents(fishingManager, this);
+        letterOfReturn = new LetterOfReturn(this);
+        getServer().getPluginManager().registerEvents(letterOfReturn,this);
+        customcrops = new customcrops(this);
+        getServer().getPluginManager().registerEvents(customcrops,this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
         for (Player player : players) {
             updateScoreboard(player);
         }
+        loadTasks(CropFile,cornstageMap);
     }
 
 
@@ -166,15 +179,59 @@ public class test extends JavaPlugin implements Listener {
             }
         }
     }
+    public void saveTasks(File f, HashMap<Location, Integer> map) {
+
+        try (FileWriter writer = new FileWriter(f)) {
+            for (Map.Entry<Location, Integer> entry : map.entrySet()) {
+                Location location = entry.getKey();
+                int taskId = entry.getValue();
+                String taskLine = location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + "," + taskId;
+                writer.write(taskLine + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadTasks(File f, HashMap<Location, Integer> map) {
+        taskMap.clear();
+        cornstageMap.clear();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    String worldName = parts[0];
+                    int x = Integer.parseInt(parts[1]);
+                    int y = Integer.parseInt(parts[2]);
+                    int z = Integer.parseInt(parts[3]);
+                    int stage = Integer.parseInt(parts[4]);
+                    Location location = new Location(Bukkit.getWorld(worldName), x, y, z);
+                    int taskId = customcrops.createGrowthTask(location, stage, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+                    taskMap.put(location, taskId);
+                    cornstageMap.put(location,stage);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onDisable() {
+        saveTasks(CropFile,cornstageMap);
+        customcrops.cancelAllTasks();
+
+        System.out.println("plugin off");
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
         mapToFile(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
-        System.out.println("plugin off");
+
     }
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

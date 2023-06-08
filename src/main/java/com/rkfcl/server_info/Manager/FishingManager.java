@@ -1,6 +1,7 @@
 package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.test;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -20,7 +21,24 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FishingManager implements Listener {
+    List<String> fisher3rd = Arrays.asList(
+            "anglerfish",
+            "electric_eel",
+            "gar",
+            "halibut",
+            "herring",
+            "minnow",
+            "muskellunge",
+            "perch",
+            "pink_salmon",
+            "pollock",
+            "red_bellied_piranha",
+            "tuna"
+    );
     PlayerDataManager playerDataManager;
     private test plugin;
     final int[] currentPosition = {0}; // 현재 물고기 위치 (final 배열로 선언)
@@ -56,8 +74,12 @@ public class FishingManager implements Listener {
                             caughtFish.getType() == Material.TROPICAL_FISH ||
                             caughtFish.getType() == Material.PUFFERFISH) {
                         // 어부인 경우 물고기를 잡았을 때만 작동
-                        if (Math.random() <= 0.1) { // 10% 확률로 작동
-                            giveRandomFish(player);
+                        ItemStack fishItem = ItemsAdder.getCustomItem("tuna");
+                        player.getInventory().addItem(fishItem);
+                        if (!isFisher(player).contains("1차")) {
+                            if (Math.random() <= 0.1) { // 10% 확률로 작동
+                                giveRandomFish(player);
+                            }
                         }
                     }
                 } else {
@@ -170,7 +192,12 @@ public class FishingManager implements Listener {
 
                         if (fishUnder != null) {
                             if (fishUnder.getType() == Material.RED_STAINED_GLASS_PANE) {
-                                player.getInventory().addItem(additionalItem); // 플레이어 인벤토리에 아이템 추가
+                                if (isFisher(player).contains("2차")||isFisher(player).contains("3차")) {
+                                    player.getInventory().addItem(additionalItem); // 플레이어 인벤토리에 아이템 추가
+                                }else if (isFisher(player).contains("4차")) {
+                                    player.getInventory().addItem(additionalItem); // 플레이어 인벤토리에 아이템 추가
+                                    player.getInventory().addItem(additionalItem);
+                                }
                                 player.sendMessage("성공적으로 추가 물고기를 획득했습니다!"); // 성공 메시지 출력
                                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                                 if (task != null) {
@@ -203,6 +230,14 @@ public class FishingManager implements Listener {
 
         if (entity instanceof Player) {
             Player player = (Player) entity;
+            if (isFisher(player).contains("어부 1차")) {
+                if (additionalItem.isSimilar(ItemsAdder.getCustomItem("arapaima"))) {
+                    player.getInventory().removeItem(additionalItem);
+                    additionalItem = ItemsAdder.getCustomItem("tuna");
+                    player.getInventory().addItem(additionalItem);
+                }
+
+            }
 
             additionalItem = item.clone(); // 주워진 아이템을 복제하여 추가 아이템 생성
         }
