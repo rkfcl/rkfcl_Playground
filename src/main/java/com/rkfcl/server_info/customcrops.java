@@ -1,7 +1,6 @@
 package com.rkfcl.server_info;
 
 import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -92,7 +91,6 @@ public class customcrops implements Listener {
             }
         }
     }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
@@ -110,25 +108,33 @@ public class customcrops implements Listener {
         }
     }
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return; // 좌클릭인 경우 처리하지 않음
+    public void watering_can(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return; // 우클릭한 블럭이 아닌 경우 무시합니다.
         }
-
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
-
-        // 아이템이 존재하고 아이템 메타데이터가 존재하는 경우 처리
-        if (item == null || item.getItemMeta() == null) {
+        Block clickBlock = event.getClickedBlock();
+        Block water = event.getClickedBlock().getRelative(event.getBlockFace());
+        // 아이템과 블럭이 null이 아닌지 확인합니다.
+        if (item == null || item.getItemMeta() == null || event.getClickedBlock() == null) {
             return;
         }
-
         ItemMeta itemMeta = item.getItemMeta();
-        if (item.getType().toString().equalsIgnoreCase("shears") && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
-            player.sendMessage("우클릭한 아이템은 커스텀모델데이터가 10인 shears 입니다.");
+        player.sendMessage(String.valueOf(itemMeta.getCustomModelData()));
+        if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
+            if (item.getDurability() == 212){
+                ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
+                player.getInventory().setItemInMainHand(watering_can);
+            }
+        }
+        if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 101) {
+            if (water.getType() == Material.WATER) {
+                ItemStack watering_can = ItemsAdder.getCustomItem("watering_can_fill");
+                player.getInventory().setItemInMainHand(watering_can);
+            }
         }
     }
-
     public int createGrowthTask(Location location,HashMap<Location, Integer> map, int initialStage, String... growthStages) {
         int delay = 500; // 작물이 자라는 시간 간격 (틱 단위)
 
