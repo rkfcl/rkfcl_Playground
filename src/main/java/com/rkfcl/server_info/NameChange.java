@@ -1,8 +1,8 @@
 package com.rkfcl.server_info;
 
-import com.rkfcl.server_info.Manager.ItemManager;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.rkfcl.server_info.Manager.ItemManager.namechange;
-import static org.bukkit.Bukkit.getServer;
+
 
 public class NameChange implements Listener {
     private final test plugin;

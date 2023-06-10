@@ -4,7 +4,6 @@ import com.rkfcl.server_info.Manager.AbilityManager;
 import com.rkfcl.server_info.Manager.FishingManager;
 import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.commands.*;
-import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,7 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.io.*;
@@ -29,7 +27,11 @@ import static com.rkfcl.server_info.customcrops.*;
 public class test extends JavaPlugin implements Listener {
     private final File PlayerBalanceFile = new File(getDataFolder(), "/playerdata.txt");
     private final File PlayerJobFile = new File(getDataFolder(), "/playerJobdata.txt");
-    private final File CropFile = new File(getDataFolder(), "/crops.txt");
+    private final File CornFile = new File(getDataFolder(), "/corn.txt");
+    private final File CabbageFile = new File(getDataFolder(), "/cabbage.txt");
+    private final File OnionFile = new File(getDataFolder(), "/Onion.txt");
+    private final File Sweet_potatoFile = new File(getDataFolder(), "/Sweet_potato.txt");
+    private final File TomatoFile = new File(getDataFolder(), "/Tomato.txt");
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
@@ -47,7 +49,11 @@ public class test extends JavaPlugin implements Listener {
         abilityManager = new AbilityManager(playerDataManager,this);
         makeFile(PlayerBalanceFile);
         makeFile(PlayerJobFile);
-        makeFile(CropFile);
+        makeFile(CornFile);
+        makeFile(CabbageFile);
+        makeFile(OnionFile);
+        makeFile(Sweet_potatoFile);
+        makeFile(TomatoFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
@@ -86,7 +92,11 @@ public class test extends JavaPlugin implements Listener {
         for (Player player : players) {
             updateScoreboard(player);
         }
-        loadTasks(CropFile,cornstageMap);
+        loadTasks(CornFile,cornstageMap,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+        loadTasks(CabbageFile,CabbageMap,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
+        loadTasks(OnionFile,OnionMap,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
+        loadTasks(Sweet_potatoFile,Sweet_potatoMap,"sweet_potato_stage_2", "sweet_potato_stage_3");
+        loadTasks(TomatoFile,TomatoMap,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
     }
 
 
@@ -192,9 +202,13 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
-    public void loadTasks(File f, HashMap<Location, Integer> map) {
+    public void loadTasks(File f, HashMap<Location, Integer> map,String... growthStages) {
         taskMap.clear();
         cornstageMap.clear();
+        CabbageMap.clear();
+        OnionMap.clear();
+        Sweet_potatoMap.clear();
+        TomatoMap.clear();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
             String line;
@@ -207,9 +221,9 @@ public class test extends JavaPlugin implements Listener {
                     int z = Integer.parseInt(parts[3]);
                     int stage = Integer.parseInt(parts[4]);
                     Location location = new Location(Bukkit.getWorld(worldName), x, y, z);
-                    int taskId = customcrops.createGrowthTask(location, stage, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+                    int taskId = customcrops.createGrowthTask(location,map, stage, growthStages);
                     taskMap.put(location, taskId);
-                    cornstageMap.put(location,stage);
+                    map.put(location,stage);
                 }
             }
 
@@ -220,7 +234,11 @@ public class test extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        saveTasks(CropFile,cornstageMap);
+        saveTasks(CornFile,cornstageMap);
+        saveTasks(CabbageFile,CabbageMap);
+        saveTasks(OnionFile,OnionMap);
+        saveTasks(Sweet_potatoFile,Sweet_potatoMap);
+        saveTasks(TomatoFile,TomatoMap);
         customcrops.cancelAllTasks();
 
         System.out.println("plugin off");

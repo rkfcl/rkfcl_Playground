@@ -1,14 +1,20 @@
 package com.rkfcl.server_info;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +28,10 @@ public class customcrops implements Listener {
     private Plugin plugin;
     public static HashMap<Location, Integer> taskMap= new HashMap<Location, Integer>() ;
     public static HashMap<Location, Integer> cornstageMap= new HashMap<Location, Integer>() ;
+    public static HashMap<Location, Integer> CabbageMap= new HashMap<Location, Integer>() ;
+    public static HashMap<Location, Integer> OnionMap= new HashMap<Location, Integer>() ;
+    public static HashMap<Location, Integer> Sweet_potatoMap= new HashMap<Location, Integer>() ;
+    public static HashMap<Location, Integer> TomatoMap= new HashMap<Location, Integer>() ;
 
     public customcrops(Plugin plugin) {
         this.plugin = plugin;
@@ -39,9 +49,45 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location, initialStage, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+                    int taskId = createGrowthTask(location,cornstageMap, initialStage, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
                     taskMap.put(location, taskId);
                     cornstageMap.put(location,initialStage);
+                }
+            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10002) {
+                CustomBlock customBlock = CustomBlock.getInstance("cabbage_seed_stage_1");
+                int initialStage = 0;
+                if (customBlock != null) {
+                    customBlock.place(location);
+                    int taskId = createGrowthTask(location,CabbageMap, initialStage, "cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
+                    taskMap.put(location, taskId);
+                    CabbageMap.put(location,initialStage);
+                }
+            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10003) {
+                CustomBlock customBlock = CustomBlock.getInstance("onion_seed_stage_1");
+                int initialStage = 0;
+                if (customBlock != null) {
+                    customBlock.place(location);
+                    int taskId = createGrowthTask(location,OnionMap, initialStage, "onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
+                    taskMap.put(location, taskId);
+                    OnionMap.put(location,initialStage);
+                }
+            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10004) {
+                CustomBlock customBlock = CustomBlock.getInstance("sweet_potato_stage_1");
+                int initialStage = 0;
+                if (customBlock != null) {
+                    customBlock.place(location);
+                    int taskId = createGrowthTask(location,Sweet_potatoMap, initialStage, "sweet_potato_stage_2", "sweet_potato_stage_3");
+                    taskMap.put(location, taskId);
+                    Sweet_potatoMap.put(location,initialStage);
+                }
+            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10005) {
+                CustomBlock customBlock = CustomBlock.getInstance("tomato_stage_1");
+                int initialStage = 0;
+                if (customBlock != null) {
+                    customBlock.place(location);
+                    int taskId = createGrowthTask(location,TomatoMap, initialStage, "tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
+                    taskMap.put(location, taskId);
+                    TomatoMap.put(location,initialStage);
                 }
             }
         }
@@ -63,9 +109,27 @@ public class customcrops implements Listener {
             cancelTask(location);
         }
     }
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return; // 좌클릭인 경우 처리하지 않음
+        }
 
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
 
-    public int createGrowthTask(Location location, int initialStage, String... growthStages) {
+        // 아이템이 존재하고 아이템 메타데이터가 존재하는 경우 처리
+        if (item == null || item.getItemMeta() == null) {
+            return;
+        }
+
+        ItemMeta itemMeta = item.getItemMeta();
+        if (item.getType().toString().equalsIgnoreCase("shears") && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
+            player.sendMessage("우클릭한 아이템은 커스텀모델데이터가 10인 shears 입니다.");
+        }
+    }
+
+    public int createGrowthTask(Location location,HashMap<Location, Integer> map, int initialStage, String... growthStages) {
         int delay = 500; // 작물이 자라는 시간 간격 (틱 단위)
 
         int taskId = new BukkitRunnable() {
@@ -80,7 +144,7 @@ public class customcrops implements Listener {
                 }
 
                 stageIndex++;
-                cornstageMap.put(location,stageIndex);
+                map.put(location,stageIndex);
                 if (stageIndex >= growthStages.length) {
                     // 마지막 성장 단계에 도달했을 때 태스크 종료
                     cancelTask(location);
@@ -97,6 +161,10 @@ public class customcrops implements Listener {
             Bukkit.getScheduler().cancelTask(taskId);
             taskMap.remove(location);
             cornstageMap.remove(location);
+            CabbageMap.remove(location);
+            OnionMap.remove(location);
+            Sweet_potatoMap.remove(location);
+            TomatoMap.remove(location);
         }
     }
 
@@ -106,6 +174,10 @@ public class customcrops implements Listener {
         }
         taskMap.clear();
         cornstageMap.clear();
+        CabbageMap.clear();
+        OnionMap.clear();
+        Sweet_potatoMap.clear();
+        TomatoMap.clear();
     }
 
 
