@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,11 +39,18 @@ public class customcrops implements Listener {
 
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        Block block = event.getBlock();
-        Location location = block.getLocation();
-        if (block.getType() == Material.WHEAT) {
-            ItemMeta itemMeta = event.getItemInHand().getItemMeta();
+    public void onBlockPlace(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return; // 우클릭한 블럭이 아닌 경우 무시합니다.
+        }
+        Block clickedBlock = event.getClickedBlock();
+        CustomBlock custom = CustomBlock.getInstance("water_farmland");
+
+        if (clickedBlock == null || !clickedBlock.getBlockData().equals(custom.getBaseBlockData())) {
+            return; // 블럭이 없거나 Material.DIRT가 아닌 경우 무시합니다.
+        }
+        Location location = clickedBlock.getLocation().add(0, 1, 0);
+        ItemMeta itemMeta = event.getItem().getItemMeta();
             if (itemMeta != null && itemMeta.getCustomModelData() == 10001) {
                 CustomBlock customBlock = CustomBlock.getInstance("corn_seed_stage_1");
                 int initialStage = 0;
@@ -89,7 +97,7 @@ public class customcrops implements Listener {
                     TomatoMap.put(location,initialStage);
                 }
             }
-        }
+//        }
     }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -114,24 +122,43 @@ public class customcrops implements Listener {
         }
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
-        Block clickBlock = event.getClickedBlock();
         Block water = event.getClickedBlock().getRelative(event.getBlockFace());
         // 아이템과 블럭이 null이 아닌지 확인합니다.
         if (item == null || item.getItemMeta() == null || event.getClickedBlock() == null) {
             return;
         }
+        boolean hasBindingCurse = false;
         ItemMeta itemMeta = item.getItemMeta();
-        player.sendMessage(String.valueOf(itemMeta.getCustomModelData()));
-        if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
-            if (item.getDurability() == 212){
-                ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
-                player.getInventory().setItemInMainHand(watering_can);
-            }
+        if (itemMeta.hasEnchant(Enchantment.BINDING_CURSE)) {
+            hasBindingCurse = true;
         }
-        if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 101) {
-            if (water.getType() == Material.WATER) {
-                ItemStack watering_can = ItemsAdder.getCustomItem("watering_can_fill");
-                player.getInventory().setItemInMainHand(watering_can);
+        if(hasBindingCurse) {
+            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
+                if (item.getDurability() == 212 || item.getDurability() == 238) {
+                    ItemStack cursedItem = ItemsAdder.getCustomItem("watering_can"); // 아이템 가져오기
+                    cursedItem.addUnsafeEnchantment(Enchantment.BINDING_CURSE, 1); // 귀속저주(enchantment.binding_curse) 추가
+                    player.getInventory().setItemInMainHand(cursedItem);
+                }
+            }
+            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 101) {
+                if (water.getType() == Material.WATER) {
+                    ItemStack cursedItem = ItemsAdder.getCustomItem("watering_can_fill"); // 아이템 가져오기
+                    cursedItem.addUnsafeEnchantment(Enchantment.BINDING_CURSE, 1); // 귀속저주(enchantment.binding_curse) 추가
+                    player.getInventory().setItemInMainHand(cursedItem);
+                }
+            }
+        } else {
+            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
+                if (item.getDurability() == 212 || item.getDurability() == 238) {
+                    ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
+                    player.getInventory().setItemInMainHand(watering_can);
+                }
+            }
+            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 101) {
+                if (water.getType() == Material.WATER) {
+                    ItemStack watering_can = ItemsAdder.getCustomItem("watering_can_fill");
+                    player.getInventory().setItemInMainHand(watering_can);
+                }
             }
         }
     }
@@ -152,7 +179,9 @@ public class customcrops implements Listener {
                 stageIndex++;
                 map.put(location,stageIndex);
                 if (stageIndex >= growthStages.length) {
-                    // 마지막 성장 단계에 도달했을 때 태스크 종료
+                    // 마지막 성장 단계에 도달했을 때 태스크 종료 및 농토 건조하게 바꿈
+                    location.subtract(0,1,0);
+                    CustomBlock.getInstance("farmland").place(location);
                     cancelTask(location);
                 }
             }

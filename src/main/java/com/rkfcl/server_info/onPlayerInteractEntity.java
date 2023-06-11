@@ -29,28 +29,34 @@ public class onPlayerInteractEntity implements Listener {
             Villager villager = (Villager) rightClickedEntity;
             String villagerName = villager.getCustomName();
 
-            if (villagerName != null && villagerName.equals("전직교관")) {
-                shopInventoryManager.openShopJobInventory(player);
+            if (villagerName != null) {
+                switch (villagerName) {
+                    case "전직교관":
+                        shopInventoryManager.openShopJobInventory(player);
+                        break;
+                    case "광부":
+                        shopInventoryManager.openShopMineInventory(player);
+                        break;
+                    case "어부":
+                        shopInventoryManager.openShopFishInventory(player);
+                        break;
+                    case "농부":
+                        shopInventoryManager.openShopFarmer1Inventory(player);
+                        break;
+                    case "농부2":
+                        shopInventoryManager.openShopFarmer2Inventory(player);
+                        break;
+                    default:
+                        event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
+                        return;
+                }
 
                 event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
-            }else event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
-
-            if (villagerName != null && villagerName.equals("광부")) {
-                shopInventoryManager.openShopMineInventory(player);
-
-                event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
-            }else event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
-
-            if (villagerName != null && villagerName.equals("어부")) {
-                shopInventoryManager.openShopFishInventory(player);
-
-                event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
-            }else event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
+            }
         }
-
     }
 
-    @EventHandler
+        @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damagedEntity = event.getEntity();
         Entity damager = event.getDamager();

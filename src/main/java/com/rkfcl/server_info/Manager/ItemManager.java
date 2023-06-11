@@ -5,6 +5,8 @@ import com.rkfcl.server_info.ItemManagerCost.ItemCost;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -147,7 +149,21 @@ public class ItemManager {
 
         return fishItem;
     }
-    public static ItemStack createItemsAdderFishItem(String itemId) {
+    public static ItemStack createSaleItem(Material material, int data,String displayName) {
+        ItemStack SaleItem = new ItemStack(material, 1);
+        ItemMeta meta = SaleItem.getItemMeta();
+
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCost(SaleItem,customModelDataValue) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        meta.setCustomModelData(customModelDataValue);
+        // 디스플레이 이름 설정
+        meta.setDisplayName(displayName);
+        SaleItem.setItemMeta(meta);
+
+        return SaleItem;
+    }
+    public static ItemStack createItemsAdderItem(String itemId) {
         // itemsadder에서 생성한 아이템을 가져오는 코드
         ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
         ItemMeta meta = fishItem.getItemMeta();
@@ -159,7 +175,18 @@ public class ItemManager {
 
         return fishItem;
     }
+    public static ItemStack createSaleItemsAdderItem(String itemId) {
+        // itemsadder에서 생성한 아이템을 가져오는 코드
+        ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
+        ItemMeta meta = fishItem.getItemMeta();
+        int customModelData = meta.getCustomModelData();
+        // 커스텀 모델 데이터 값 사용
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCost(fishItem,customModelData) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        fishItem.setItemMeta(meta);
+        // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
 
+        return fishItem;
+    }
 
     public static ItemStack createFarmerJob1Item() {
         return createJobItem(
@@ -210,7 +237,7 @@ public class ItemManager {
     public static ItemStack createFisherJob3Item() {
         return createJobItem(
                 "§f어부 3차",
-                "§7어부 : §기본 패시브 수중호흡 적용",
+                "§7어부 : §f기본 패시브 수중호흡 적용",
                 30000
         );
     }
@@ -254,7 +281,7 @@ public class ItemManager {
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("이름 설정권");
         // 커스텀 모델 데이터 값 설정
-        int customModelDataValue = 10; // 커스텀 모델 데이터 값 1로 설정
+        int customModelDataValue = 1000; // 커스텀 모델 데이터 값 1000로 설정
         meta.setCustomModelData(customModelDataValue);
         check.setItemMeta(meta);
         return check;
