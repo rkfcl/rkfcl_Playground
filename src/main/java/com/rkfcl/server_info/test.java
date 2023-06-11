@@ -221,7 +221,7 @@ public class test extends JavaPlugin implements Listener {
                     int z = Integer.parseInt(parts[3]);
                     int stage = Integer.parseInt(parts[4]);
                     Location location = new Location(Bukkit.getWorld(worldName), x, y, z);
-                    int taskId = customcrops.createGrowthTask(location,map, stage, growthStages);
+                    int taskId = customcrops.createGrowthTask(location,map, stage,3000, growthStages);
                     taskMap.put(location, taskId);
                     map.put(location,stage);
                 }

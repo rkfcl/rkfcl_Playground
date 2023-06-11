@@ -56,7 +56,7 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location,cornstageMap, initialStage, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+                    int taskId = createGrowthTask(location,cornstageMap, initialStage,3000, "corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
                     taskMap.put(location, taskId);
                     cornstageMap.put(location,initialStage);
                 }
@@ -65,7 +65,7 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location,CabbageMap, initialStage, "cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
+                    int taskId = createGrowthTask(location,CabbageMap, initialStage,3800, "cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
                     taskMap.put(location, taskId);
                     CabbageMap.put(location,initialStage);
                 }
@@ -74,7 +74,7 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location,OnionMap, initialStage, "onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
+                    int taskId = createGrowthTask(location,OnionMap, initialStage,4000,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
                     taskMap.put(location, taskId);
                     OnionMap.put(location,initialStage);
                 }
@@ -83,7 +83,7 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location,Sweet_potatoMap, initialStage, "sweet_potato_stage_2", "sweet_potato_stage_3");
+                    int taskId = createGrowthTask(location,Sweet_potatoMap, initialStage,5000, "sweet_potato_stage_2", "sweet_potato_stage_3");
                     taskMap.put(location, taskId);
                     Sweet_potatoMap.put(location,initialStage);
                 }
@@ -92,7 +92,7 @@ public class customcrops implements Listener {
                 int initialStage = 0;
                 if (customBlock != null) {
                     customBlock.place(location);
-                    int taskId = createGrowthTask(location,TomatoMap, initialStage, "tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
+                    int taskId = createGrowthTask(location,TomatoMap, initialStage,2400, "tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
                     taskMap.put(location, taskId);
                     TomatoMap.put(location,initialStage);
                 }
@@ -162,8 +162,8 @@ public class customcrops implements Listener {
             }
         }
     }
-    public int createGrowthTask(Location location,HashMap<Location, Integer> map, int initialStage, String... growthStages) {
-        int delay = 500; // 작물이 자라는 시간 간격 (틱 단위)
+    public int createGrowthTask(Location location,HashMap<Location, Integer> map, int initialStage,int delay, String... growthStages) {
+
 
         int taskId = new BukkitRunnable() {
             int stageIndex = initialStage;
