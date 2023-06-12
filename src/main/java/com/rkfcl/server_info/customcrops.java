@@ -127,27 +127,7 @@ public class customcrops implements Listener {
         if (item == null || item.getItemMeta() == null || event.getClickedBlock() == null) {
             return;
         }
-        boolean hasBindingCurse = false;
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta.hasEnchant(Enchantment.BINDING_CURSE)) {
-            hasBindingCurse = true;
-        }
-        if(hasBindingCurse) {
-            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
-                if (item.getDurability() == 212 || item.getDurability() == 238) {
-                    ItemStack cursedItem = ItemsAdder.getCustomItem("watering_can"); // 아이템 가져오기
-                    cursedItem.addUnsafeEnchantment(Enchantment.BINDING_CURSE, 1); // 귀속저주(enchantment.binding_curse) 추가
-                    player.getInventory().setItemInMainHand(cursedItem);
-                }
-            }
-            if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 101) {
-                if (water.getType() == Material.WATER) {
-                    ItemStack cursedItem = ItemsAdder.getCustomItem("watering_can_fill"); // 아이템 가져오기
-                    cursedItem.addUnsafeEnchantment(Enchantment.BINDING_CURSE, 1); // 귀속저주(enchantment.binding_curse) 추가
-                    player.getInventory().setItemInMainHand(cursedItem);
-                }
-            }
-        } else {
             if (item.getType() == Material.SHEARS && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 10) {
                 if (item.getDurability() == 212 || item.getDurability() == 238) {
                     ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
@@ -160,7 +140,7 @@ public class customcrops implements Listener {
                     player.getInventory().setItemInMainHand(watering_can);
                 }
             }
-        }
+
     }
     public int createGrowthTask(Location location,HashMap<Location, Integer> map, int initialStage,int delay, String... growthStages) {
 

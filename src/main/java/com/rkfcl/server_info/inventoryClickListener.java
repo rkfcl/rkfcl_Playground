@@ -517,9 +517,8 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("농부 1차만 전직 가능합니다.");
                 return;
             }
-            ItemStack cursedItem = ItemsAdder.getCustomItem("watering_can"); // 아이템 가져오기
-            cursedItem.addUnsafeEnchantment(Enchantment.BINDING_CURSE, 1); // 귀속저주(enchantment.binding_curse) 추가
-            player.getInventory().addItem(cursedItem); // 플레이어의 인벤토리에 아이템 추가
+            ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
+            player.getInventory().setItemInMainHand(watering_can);
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 2차");
         } else if (jobName.equals("농부 3차")) {
             if (!playerJob.equals("농부 2차")) {

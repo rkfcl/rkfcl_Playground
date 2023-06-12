@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,12 +29,11 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbilityManager implements Listener {
+    private Map<UUID,ItemMeta> playerItems = new HashMap<>();
     private test plugin;
     private final PlayerDataManager playerDataManager;
 
@@ -499,5 +499,19 @@ public class AbilityManager implements Listener {
             }
             player.getInventory().setArmorContents(null);
         }
+        // 특정 아이템 드롭 방지 및 인벤토리에 추가
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == Material.SHEARS && (item.getItemMeta().getCustomModelData() == 10 || item.getItemMeta().getCustomModelData() == 101)) {
+                event.getDrops().remove(item);
+                playerItemsMap.put(player.getUniqueId(), item);
+            }
+        }
     }
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        player.getInventory().addItem(playerItemsMap.get(player.getUniqueId()));
+    }
+    private Map<UUID, ItemStack> playerItemsMap = new HashMap<>();
+
 }
