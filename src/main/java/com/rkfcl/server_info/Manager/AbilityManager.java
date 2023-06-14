@@ -1,5 +1,6 @@
 package com.rkfcl.server_info.Manager;
 
+import com.rkfcl.server_info.commands.GiveCheckCommand;
 import com.rkfcl.server_info.test;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
@@ -486,7 +487,8 @@ public class AbilityManager implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
-
+        int amount = playerDataManager.getPlayerBalance(player.getUniqueId());
+        playerItemsMap.clear();
         if (job.equals("초보자")) {
             // 아이템 드롭 방지
             event.setKeepInventory(true);
@@ -498,6 +500,11 @@ public class AbilityManager implements Listener {
                 }
             }
             player.getInventory().setArmorContents(null);
+        }else{
+            ItemStack check = ItemManager.createCheck(amount);
+            event.getDrops().add(check);
+            playerDataManager.setPlayerBalance(player.getUniqueId(),0);
+            plugin.updateScoreboard(player);
         }
         // 특정 아이템 드롭 방지 및 인벤토리에 추가
         for (ItemStack item : player.getInventory().getContents()) {
@@ -506,11 +513,13 @@ public class AbilityManager implements Listener {
                 playerItemsMap.put(player.getUniqueId(), item);
             }
         }
+
     }
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
         player.getInventory().addItem(playerItemsMap.get(player.getUniqueId()));
+
     }
     private Map<UUID, ItemStack> playerItemsMap = new HashMap<>();
 

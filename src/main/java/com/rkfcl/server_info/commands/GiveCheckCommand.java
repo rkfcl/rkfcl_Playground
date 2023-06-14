@@ -10,14 +10,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class givecheck implements CommandExecutor {
+public class GiveCheckCommand implements CommandExecutor {
     private PlayerDataManager playerDataManager;
     private test plugin;
 
-    public givecheck(test plugin, PlayerDataManager playerDataManager) {
+    public GiveCheckCommand(test plugin, PlayerDataManager playerDataManager) {
         this.plugin = plugin;
         this.playerDataManager = playerDataManager;
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -39,7 +40,8 @@ public class givecheck implements CommandExecutor {
                 return true;
             }
 
-            if (playerDataManager.getPlayerBalance(player.getUniqueId()) < amount) {
+            int playerBalance = playerDataManager.getPlayerBalance(player.getUniqueId());
+            if (playerBalance < amount) {
                 player.sendMessage(ChatColor.RED + "보유한 소지금보다 큰 금액은 사용할 수 없습니다.");
                 return true;
             }
@@ -53,11 +55,9 @@ public class givecheck implements CommandExecutor {
 
         return true;
     }
+
     private void issueCheck(Player player, int amount) {
         ItemStack check = ItemManager.createCheck(amount);
         player.getInventory().addItem(check);
-
     }
-
-
 }

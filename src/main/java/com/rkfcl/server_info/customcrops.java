@@ -32,6 +32,7 @@ public class customcrops implements Listener {
     public static HashMap<Location, Integer> OnionMap= new HashMap<Location, Integer>() ;
     public static HashMap<Location, Integer> Sweet_potatoMap= new HashMap<Location, Integer>() ;
     public static HashMap<Location, Integer> TomatoMap= new HashMap<Location, Integer>() ;
+    public static HashMap<Location, Integer> RiceMap= new HashMap<Location, Integer>() ;
 
     public customcrops(Plugin plugin) {
         this.plugin = plugin;
@@ -95,6 +96,15 @@ public class customcrops implements Listener {
                     int taskId = createGrowthTask(location,TomatoMap, initialStage,2400, "tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
                     taskMap.put(location, taskId);
                     TomatoMap.put(location,initialStage);
+                }
+            }else if (itemMeta != null && itemMeta.getCustomModelData() == 5) {
+                CustomBlock customBlock = CustomBlock.getInstance("rice_stage_0");
+                int initialStage = 0;
+                if (customBlock != null) {
+                    customBlock.place(location);
+                    int taskId = createGrowthTask(location,TomatoMap, initialStage,2000, "rice_stage_1", "rice_stage_2", "rice_stage_3","rice_stage_4","rice_stage_5","rice_stage_6","rice_stage_7");
+                    taskMap.put(location, taskId);
+                    RiceMap.put(location,initialStage);
                 }
             }
 //        }
@@ -180,6 +190,7 @@ public class customcrops implements Listener {
             OnionMap.remove(location);
             Sweet_potatoMap.remove(location);
             TomatoMap.remove(location);
+            RiceMap.remove(location);
         }
     }
 
@@ -193,6 +204,7 @@ public class customcrops implements Listener {
         OnionMap.clear();
         Sweet_potatoMap.clear();
         TomatoMap.clear();
+        RiceMap.clear();
     }
 
 

@@ -32,6 +32,7 @@ public class test extends JavaPlugin implements Listener {
     private final File OnionFile = new File(getDataFolder(), "/Onion.txt");
     private final File Sweet_potatoFile = new File(getDataFolder(), "/Sweet_potato.txt");
     private final File TomatoFile = new File(getDataFolder(), "/Tomato.txt");
+    private final File RiceFile = new File(getDataFolder(), "/Rice.txt");
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
@@ -43,6 +44,8 @@ public class test extends JavaPlugin implements Listener {
     private FishingManager fishingManager;
     private LetterOfReturn letterOfReturn;
     private customcrops customcrops;
+    private ProtectBlock protectBlock;
+
     @Override
     public void onEnable() {
         playerDataManager = new PlayerDataManager();
@@ -54,6 +57,7 @@ public class test extends JavaPlugin implements Listener {
         makeFile(OnionFile);
         makeFile(Sweet_potatoFile);
         makeFile(TomatoFile);
+        makeFile(RiceFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
@@ -66,8 +70,8 @@ public class test extends JavaPlugin implements Listener {
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         System.out.println("plugin on");
-        getServer().getPluginCommand("메뉴").setExecutor(new menu(this));
-        getServer().getPluginCommand("수표").setExecutor(new givecheck(this,playerDataManager));
+        getServer().getPluginCommand("메뉴").setExecutor(new MenuCommand(this));
+        getServer().getPluginCommand("수표").setExecutor(new GiveCheckCommand(this,playerDataManager));
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("rmnpcshop").setExecutor(new NPCShopCommand(this));
@@ -86,6 +90,8 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(letterOfReturn,this);
         customcrops = new customcrops(this);
         getServer().getPluginManager().registerEvents(customcrops,this);
+        protectBlock = new ProtectBlock(this);
+        getServer().getPluginManager().registerEvents(protectBlock,this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
@@ -97,6 +103,7 @@ public class test extends JavaPlugin implements Listener {
         loadTasks(OnionFile,OnionMap,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
         loadTasks(Sweet_potatoFile,Sweet_potatoMap,"sweet_potato_stage_2", "sweet_potato_stage_3");
         loadTasks(TomatoFile,TomatoMap,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
+        loadTasks(RiceFile,RiceMap,"Rice_stage_1", "Rice_stage_2", "Rice_stage_3","Rice_stage_4","Rice_stage_5","Rice_stage_6","Rice_stage_7");
     }
 
 
@@ -209,6 +216,7 @@ public class test extends JavaPlugin implements Listener {
         OnionMap.clear();
         Sweet_potatoMap.clear();
         TomatoMap.clear();
+        RiceMap.clear();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
             String line;
@@ -239,6 +247,7 @@ public class test extends JavaPlugin implements Listener {
         saveTasks(OnionFile,OnionMap);
         saveTasks(Sweet_potatoFile,Sweet_potatoMap);
         saveTasks(TomatoFile,TomatoMap);
+        saveTasks(RiceFile,RiceMap);
         customcrops.cancelAllTasks();
 
         System.out.println("plugin off");
