@@ -3,17 +3,21 @@ package com.rkfcl.server_info.Manager;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.rkfcl.server_info.Manager.ItemManager.createItemsAdderItem;
 import static com.rkfcl.server_info.Manager.ItemManager.createSaleItemsAdderItem;
+import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
+import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
 public class ShopInventoryManager {
     ItemManager itemManager;
@@ -178,13 +182,94 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+    public void AccountInventory(Player player, Location location) {
+        Inventory inventory = Bukkit.createInventory(null, 36, Bukkit.getPlayer(player.getUniqueId()).getDisplayName()+"님의 소유");
+
+        // 플레이어 머리 아이템 생성
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+        skullMeta.setOwningPlayer(player);
+        skullMeta.setDisplayName(player.getDisplayName());
+        playerHead.setItemMeta(skullMeta);
+
+
+        inventory.setItem(0, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(1, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(2, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(3, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(4, playerHead);
+        inventory.setItem(5, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(6, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(7, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(8, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+
+        int slot = 9;
+        List<UUID> playerList = AccountprotectMap.get(location);
+        for (int i = 1; i < playerList.size(); i++) {
+            UUID uuid = playerList.get(i);
+            player.sendMessage(uuid);
+            Player targetPlayer = Bukkit.getPlayer(uuid);
+            if (targetPlayer != null) {
+                ItemStack targetPlayerHead = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta targetSkullMeta = (SkullMeta) targetPlayerHead.getItemMeta();
+                targetSkullMeta.setOwningPlayer(targetPlayer);
+                targetSkullMeta.setDisplayName(targetPlayer.getDisplayName());
+                targetPlayerHead.setItemMeta(targetSkullMeta);
+
+
+                // [ 쉬프트 좌클릭시 해당 플레이어의 권한을 제거합니다 ] 설명 추가
+                ItemMeta itemMeta = targetPlayerHead.getItemMeta();
+                itemMeta.setLore(Collections.singletonList("§7[ 쉬프트 좌클릭시 해당 플레이어의 권한을 제거합니다 ]"));
+                targetPlayerHead.setItemMeta(itemMeta);
+
+                inventory.setItem(slot, targetPlayerHead);
+                slot++;
+            }
+        }
+
+        inventory.setItem(27, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(28, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(29, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(30, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(31, ItemManager.InvenDecoGREEN_STAINED_GLASS_PANE());
+        inventory.setItem(32, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(33, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(34, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(35, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        player.openInventory(inventory);
+    }
+    public void AccountAddInventory(Player player) {
+        Inventory inventory = Bukkit.createInventory(null, 54, "권한을 추가할 플레이어를 선택해 주세요");
+        int slot = 0;
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+            skullMeta.setOwningPlayer(onlinePlayer);
+            playerHead.setItemMeta(skullMeta);
+
+            ItemMeta itemMeta = playerHead.getItemMeta();
+            itemMeta.setDisplayName(onlinePlayer.getDisplayName());
+            List<String> lore = new ArrayList<>();
+            lore.add("클릭시 건차에 권한을 추가합니다");
+            itemMeta.setLore(lore);
+            playerHead.setItemMeta(itemMeta);
+
+            inventory.setItem(slot, playerHead);
+            slot++;
+        }
+
+        setGlassPanes(inventory);
+        setClock(inventory, 49);
+
+        player.openInventory(inventory);
+    }
     private void setItem(Inventory inventory, int slot, ItemStack item) {
         inventory.setItem(slot, item);
     }
 
     private void setGlassPanes(Inventory inventory) {
         for (int i = 45; i <= 53; i++) {
-            inventory.setItem(i, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+            inventory.setItem(i, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         }
     }
 

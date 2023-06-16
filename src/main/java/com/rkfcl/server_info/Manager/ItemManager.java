@@ -31,14 +31,21 @@ public class ItemManager {
     public static ItemStack InvenDecoWHITE_STAINED_GLASS_PANE () {
         ItemStack check = new ItemStack(Material.WHITE_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
-        meta.setDisplayName("");
+        meta.setDisplayName(" ");
         check.setItemMeta(meta);
         return check;
     }
     public static ItemStack InvenDecoBLACK_STAINED_GLASS_PANE () {
         ItemStack check = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
-        meta.setDisplayName("");
+        meta.setDisplayName(" ");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenDecoGREEN_STAINED_GLASS_PANE () {
+        ItemStack check = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("§a권한 부여");
         check.setItemMeta(meta);
         return check;
     }
@@ -281,8 +288,8 @@ public class ItemManager {
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("이름 설정권");
         // 커스텀 모델 데이터 값 설정
-        int customModelDataValue = 1000; // 커스텀 모델 데이터 값 1000로 설정
-        meta.setCustomModelData(customModelDataValue);
+//        int customModelDataValue = 5000; // 커스텀 모델 데이터 값 1000로 설정
+//        meta.setCustomModelData(customModelDataValue);
         check.setItemMeta(meta);
         return check;
     }

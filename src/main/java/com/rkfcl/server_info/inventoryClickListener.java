@@ -3,11 +3,8 @@ package com.rkfcl.server_info;
 import com.rkfcl.server_info.ItemManagerCost.ItemCost;
 import com.rkfcl.server_info.Manager.*;
 import dev.lone.itemsadder.api.ItemsAdder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.*;
+import com.rkfcl.server_info.Manager.ShopInventoryManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,14 +17,19 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
+
+import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
+import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
 public class inventoryClickListener implements Listener {
 
     private test pluginInstance;
     private PlayerDataManager playerDataManager;
     private final AbilityManager abilityManager;
+    ShopInventoryManager shopInventoryManager = new ShopInventoryManager();
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
 
     ItemCost itemCost = new ItemCost();
