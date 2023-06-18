@@ -7,6 +7,8 @@ import com.rkfcl.server_info.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,9 +24,11 @@ import java.sql.*;
 
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
+import static com.rkfcl.server_info.ProtectBlock.*;
 import static com.rkfcl.server_info.customcrops.*;
 
 public class test extends JavaPlugin implements Listener {
+    FileConfiguration config = getConfig();
     private final File PlayerBalanceFile = new File(getDataFolder(), "/playerdata.txt");
     private final File PlayerJobFile = new File(getDataFolder(), "/playerJobdata.txt");
     private final File CornFile = new File(getDataFolder(), "/corn.txt");
@@ -33,14 +37,15 @@ public class test extends JavaPlugin implements Listener {
     private final File Sweet_potatoFile = new File(getDataFolder(), "/Sweet_potato.txt");
     private final File TomatoFile = new File(getDataFolder(), "/Tomato.txt");
     private final File RiceFile = new File(getDataFolder(), "/Rice.txt");
+    private final File protectMapFile = new File(getDataFolder(), "/protectMap.txt");
+    private final File AllowprotectMapFile = new File(getDataFolder(), "/AllowprotectMap.txt");
+    private final File AccountprotectMapFile = new File(getDataFolder(), "/AccountprotectMap.txt");
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
-    private Connection connection;
     private PlayerDataManager playerDataManager;
     private AbilityManager abilityManager; // AbilityManager 인스턴스 추가
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
-    private NameChange nameChange; // NameChange 인스턴스 추가
     private FishingManager fishingManager;
     private LetterOfReturn letterOfReturn;
     private customcrops customcrops;
@@ -48,6 +53,7 @@ public class test extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
         playerDataManager = new PlayerDataManager();
         abilityManager = new AbilityManager(playerDataManager,this);
         makeFile(PlayerBalanceFile);
@@ -58,11 +64,16 @@ public class test extends JavaPlugin implements Listener {
         makeFile(Sweet_potatoFile);
         makeFile(TomatoFile);
         makeFile(RiceFile);
+        makeFile(protectMapFile);
+        makeFile(AllowprotectMapFile);
+        makeFile(AccountprotectMapFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
         fileToMapString(PlayerJobFile,playerJob);
-
+        loadProtectBlock(protectMapFile,protectMap);
+        loadAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
+        loadAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -209,6 +220,182 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
+    public void saveProtectBlock(File file, HashMap<Location, Location> map) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Map.Entry<Location, Location> entry : map.entrySet()) {
+                Location key = entry.getKey();
+                Location value = entry.getValue();
+                String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s%n",
+                        key.getWorld().getName(), key.getBlockX(), key.getBlockY(), key.getBlockZ(),
+                        value.getWorld().getName(), value.getBlockX(), value.getBlockY(), value.getBlockZ());
+                writer.write(line);
+            }
+            System.out.println("The protectMap has been successfully saved to a file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadProtectBlock(File file, HashMap<Location, Location> map) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 8) {
+                    String keyWorldName = data[0];
+                    int keyX = Integer.parseInt(data[1]);
+                    int keyY = Integer.parseInt(data[2]);
+                    int keyZ = Integer.parseInt(data[3]);
+                    String valueWorldName = data[4];
+                    int valueX = Integer.parseInt(data[5]);
+                    int valueY = Integer.parseInt(data[6]);
+                    int valueZ = Integer.parseInt(data[7]);
+
+                    World keyWorld = Bukkit.getWorld(keyWorldName);
+                    World valueWorld = Bukkit.getWorld(valueWorldName);
+
+                    if (keyWorld != null && valueWorld != null) {
+                        Location keyLocation = new Location(keyWorld, keyX, keyY, keyZ);
+                        Location valueLocation = new Location(valueWorld, valueX, valueY, valueZ);
+                        map.put(keyLocation, valueLocation);
+                    }
+                }
+            }
+            System.out.println("The protectMap has been successfully loaded from a file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveAllowprotectMap(File file, HashMap<UUID, List<Location>> map) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Map.Entry<UUID, List<Location>> entry : map.entrySet()) {
+                UUID playerUUID = entry.getKey();
+                List<Location> locations = entry.getValue();
+
+                // Write player UUID
+                writer.write(playerUUID.toString() + System.lineSeparator());
+
+                // Write each location in the list
+                for (Location location : locations) {
+                    String line = String.format("%s,%s,%s,%s",
+                            location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                    writer.write(line + System.lineSeparator());
+                }
+
+                // Write separator between each player's data
+                writer.write("===" + System.lineSeparator());
+            }
+            System.out.println("The AllowprotectMap has been successfully saved to a file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadAllowprotectMap(File file, HashMap<UUID, List<Location>> map) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            UUID currentPlayerUUID = null;
+            List<Location> currentLocations = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("===")) {
+                    // Separator found, add the collected data to the map
+                    if (currentPlayerUUID != null) {
+                        map.put(currentPlayerUUID, currentLocations);
+                    }
+                    currentPlayerUUID = null;
+                    currentLocations = new ArrayList<>();
+                } else if (currentPlayerUUID == null) {
+                    // Line contains player UUID
+                    currentPlayerUUID = UUID.fromString(line);
+                } else {
+                    // Line contains location data
+                    String[] parts = line.split(",");
+                    String worldName = parts[0];
+                    int blockX = Integer.parseInt(parts[1]);
+                    int blockY = Integer.parseInt(parts[2]);
+                    int blockZ = Integer.parseInt(parts[3]);
+
+                    Location location = new Location(Bukkit.getWorld(worldName), blockX, blockY, blockZ);
+                    currentLocations.add(location);
+                }
+            }
+
+            // Add the last player's data to the map (if any)
+            if (currentPlayerUUID != null) {
+                map.put(currentPlayerUUID, currentLocations);
+            }
+
+            System.out.println("The AllowprotectMap has been successfully loaded from the file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadAccountprotectMap(File file, HashMap<Location, List<UUID>> map) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            Location currentLocation = null;
+            List<UUID> currentPlayers = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("===")) {
+                    // Separator found, add the collected data to the map
+                    if (currentLocation != null) {
+                        map.put(currentLocation, currentPlayers);
+                    }
+                    currentLocation = null;
+                    currentPlayers = new ArrayList<>();
+                } else if (currentLocation == null) {
+                    // Line contains location data
+                    String[] parts = line.split(",");
+                    String worldName = parts[0];
+                    int blockX = Integer.parseInt(parts[1]);
+                    int blockY = Integer.parseInt(parts[2]);
+                    int blockZ = Integer.parseInt(parts[3]);
+
+                    currentLocation = new Location(Bukkit.getWorld(worldName), blockX, blockY, blockZ);
+                } else {
+                    // Line contains player UUID
+                    UUID playerUUID = UUID.fromString(line);
+                    currentPlayers.add(playerUUID);
+                }
+            }
+
+            // Add the last location's data to the map (if any)
+            if (currentLocation != null) {
+                map.put(currentLocation, currentPlayers);
+            }
+
+            System.out.println("The AccountprotectMap has been successfully loaded from the file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveAccountprotectMap(File file, HashMap<Location, List<UUID>> map) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Map.Entry<Location, List<UUID>> entry : map.entrySet()) {
+                Location location = entry.getKey();
+                List<UUID> players = entry.getValue();
+
+                // Write location data
+                String locationLine = String.format("%s,%d,%d,%d%n",
+                        location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                writer.write(locationLine);
+
+                // Write player UUIDs
+                for (UUID playerUUID : players) {
+                    String playerLine = playerUUID.toString() + System.lineSeparator();
+                    writer.write(playerLine);
+                }
+
+                // Write separator
+                writer.write("===" + System.lineSeparator());
+            }
+
+            System.out.println("The AccountprotectMap has been successfully saved to a file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadTasks(File f, HashMap<Location, Integer> map,String... growthStages) {
         taskMap.clear();
         cornstageMap.clear();
@@ -249,13 +436,16 @@ public class test extends JavaPlugin implements Listener {
         saveTasks(TomatoFile,TomatoMap);
         saveTasks(RiceFile,RiceMap);
         customcrops.cancelAllTasks();
-
+        saveProtectBlock(protectMapFile,protectMap);
+        saveAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
+        saveAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
         System.out.println("plugin off");
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
         mapToFile(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
+
 
     }
 

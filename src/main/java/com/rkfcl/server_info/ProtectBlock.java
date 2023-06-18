@@ -1,6 +1,6 @@
 package com.rkfcl.server_info;
 
-import com.rkfcl.server_info.Manager.ItemManager;
+
 import com.rkfcl.server_info.Manager.ShopInventoryManager;
 import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Bukkit;
@@ -121,7 +121,7 @@ public class ProtectBlock implements Listener {
             }
             Location SectorID = protectMap.get(location);
             List<Location> PlayerAllow = AllowprotectMap.get(player.getUniqueId());
-            if (PlayerAllow != null && !PlayerAllow.contains(SectorID)) {
+            if (PlayerAllow != null && PlayerAllow.contains(SectorID)) {
                 player.sendMessage("§6[ 건차 ] §f" + player.getName() + "님의 §c건설 차단 §f구역입니다.");
                 event.setCancelled(true);
             }
