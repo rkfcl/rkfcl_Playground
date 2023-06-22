@@ -96,6 +96,7 @@ public class ItemCost {
             return 2;
         } else if (itemType == Material.SWEET_BERRIES) {
             return 1;
+            //농부 2상점 아이템 가격
         } else if (itemType == Material.APPLE && customModelData == 10028) {
             return 28;
         } else if (itemType == Material.APPLE && customModelData == 10029) {
@@ -106,6 +107,8 @@ public class ItemCost {
             return 31;
         } else if (itemType == Material.APPLE && customModelData == 10032) {
             return 32;
+        } else if (itemType == Material.APPLE && customModelData == 10033) {
+            return 33;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10001) {
             return 1;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10002) {
@@ -116,6 +119,12 @@ public class ItemCost {
             return 4;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10005) {
             return 5;
+        } else if (itemType == Material.WHEAT_SEEDS && customModelData == 5) {
+            return 6;
+        } else if (itemType == Material.OAK_PLANKS && customModelData == 10000) {
+            return 60;
+        } else if (itemType == Material.SHEARS && customModelData == 101) {
+            return 1000;
         }
         return 0;
     }

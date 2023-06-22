@@ -56,11 +56,13 @@ public class ShopInventoryManager {
             "onion",
             "sweet_potato",
             "tomato",
+            "rice",
             "corn_seeds",
             "cabbage_seeds",
             "onion_seeds",
             "sweet_potato_seeds",
-            "tomato_seeds"
+            "tomato_seeds",
+            "rice_seeds"
 
 
     );
@@ -151,11 +153,11 @@ public class ShopInventoryManager {
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "농부2 상점");
 
-        for (int i=0;i<=4;i++) {
+        for (int i=0;i<=5;i++) {
             setItem(inventory, i, createItemsAdderItem(itemcropsNames.get(i)));
         }
-        for (int i=9;i<=13;i++) {
-            setItem(inventory, i, createSaleItemsAdderItem(itemcropsNames.get(i-4)));
+        for (int i=9;i<=14;i++) {
+            setItem(inventory, i, createSaleItemsAdderItem(itemcropsNames.get(i-3)));
         }
         setItem(inventory, 35, ItemManager.createSaleItem(Material.OAK_PLANKS,10000,"농토"));
         setItem(inventory, 44, createSaleItemsAdderItem("watering_can"));
@@ -267,6 +269,25 @@ public class ShopInventoryManager {
     public void lockdoorsettings(Player player,String key) {
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 45, "비밀번호 문 설정");
+        setItem(inventory, 4, ItemManager.locksign(key));
+        setItem(inventory, 40, ItemManager.locknum(0));
+        setItem(inventory, 12, ItemManager.locknum(1));
+        setItem(inventory, 13, ItemManager.locknum(2));
+        setItem(inventory, 14, ItemManager.locknum(3));
+        setItem(inventory, 21, ItemManager.locknum(4));
+        setItem(inventory, 22, ItemManager.locknum(5));
+        setItem(inventory, 23, ItemManager.locknum(6));
+        setItem(inventory, 30, ItemManager.locknum(7));
+        setItem(inventory, 31, ItemManager.locknum(8));
+        setItem(inventory, 32, ItemManager.locknum(9));
+        setItem(inventory, 36, ItemManager.lockdelete());
+        setItem(inventory, 44, ItemManager.lockconfirm());
+
+        player.openInventory(inventory);
+    }
+    public void lockdoor(Player player,String key) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 45, "비밀번호 문");
         setItem(inventory, 4, ItemManager.locksign(key));
         setItem(inventory, 40, ItemManager.locknum(0));
         setItem(inventory, 12, ItemManager.locknum(1));

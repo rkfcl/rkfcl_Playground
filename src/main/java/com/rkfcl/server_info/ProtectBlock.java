@@ -124,7 +124,8 @@ public class ProtectBlock implements Listener {
             Location SectorID = protectMap.get(location);
             List<Location> PlayerAllow = AllowprotectMap.get(player.getUniqueId());
             if (PlayerAllow != null && !PlayerAllow.contains(SectorID)) {
-                player.sendMessage("§6[ 건차 ] §f" + player.getName() + "님의 §c건설 차단 §f구역입니다.");
+
+                player.sendMessage("§6[ 건차 ] §f누군가의 §c건설 차단 §f구역입니다.");
                 event.setCancelled(true);
             }
         }
