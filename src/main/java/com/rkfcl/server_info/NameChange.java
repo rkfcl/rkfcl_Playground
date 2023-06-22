@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -55,17 +54,25 @@ public class NameChange implements Listener {
         }
     }
     private void handleChatInput(Player player, String message) {
-        // 이곳에서 message 값을 활용하여 적절한 처리를 수행하거나 커맨드를 실행할 수 있습니다.
-        // 예를 들면:
         Bukkit.getScheduler().runTask(plugin, () -> {
             String confirmMessage = "[ ! ] 이름을 " + message + " 으(로) 설정 하시겠습니까?";
             String playerName = player.getName();
 
             String jsonMessage = "[{\"text\":\"" + confirmMessage + "\"},{\"text\":\" [확인]\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/∬ " + message + "\"}},{\"text\":\" [취소]\",\"color\":\"red\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/∈ " + playerName + "\"}}]";
 
-            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-            Bukkit.dispatchCommand(console, "tellraw @p " + jsonMessage);
+            boolean isOp = player.isOp();
+            try {
+                player.setOp(true);
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "tellraw " + player.getName() + " " + jsonMessage);
+                isAwaitingChat.remove(player.getUniqueId());
+            } finally {
+                if (!isOp) {
+                    player.setOp(false);
+                }
+            }
         });
     }
+
 
 }

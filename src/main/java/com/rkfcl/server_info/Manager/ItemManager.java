@@ -293,4 +293,52 @@ public class ItemManager {
         check.setItemMeta(meta);
         return check;
     }
+    public static ItemStack lockdoor() {
+        ItemStack check = new ItemStack(Material.IRON_DOOR, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("비밀 번호 문");
+
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = 1; // 커스텀 모델 데이터 값 1로 설정
+        meta.setCustomModelData(customModelDataValue);
+
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack locksign(String key) {
+        ItemStack check = new ItemStack(Material.OAK_SIGN, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("비밀번호:"+key);
+
+
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack locknum(int key) {
+        ItemStack check = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName(String.valueOf(key));
+
+
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack lockdelete() {
+        ItemStack check = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName(ChatColor.RED+"삭제");
+
+
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack lockconfirm() {
+        ItemStack check = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN+"확인");
+
+
+        check.setItemMeta(meta);
+        return check;
+    }
 }

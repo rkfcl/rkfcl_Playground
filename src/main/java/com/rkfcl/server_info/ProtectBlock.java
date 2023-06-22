@@ -13,6 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -121,13 +123,32 @@ public class ProtectBlock implements Listener {
             }
             Location SectorID = protectMap.get(location);
             List<Location> PlayerAllow = AllowprotectMap.get(player.getUniqueId());
-            if (PlayerAllow != null && PlayerAllow.contains(SectorID)) {
+            if (PlayerAllow != null && !PlayerAllow.contains(SectorID)) {
                 player.sendMessage("§6[ 건차 ] §f" + player.getName() + "님의 §c건설 차단 §f구역입니다.");
                 event.setCancelled(true);
             }
         }
     }
+    //피스톤 작동 제한
+    @EventHandler
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            if (protectMap.containsKey(block.getLocation())) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+    }
 
+    @EventHandler
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        for (Block block : event.getBlocks()) {
+            if (protectMap.containsKey(block.getLocation())) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+    }
 
 
     @EventHandler

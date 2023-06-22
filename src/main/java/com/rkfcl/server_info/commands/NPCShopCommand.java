@@ -98,12 +98,17 @@ public class NPCShopCommand implements CommandExecutor, TabCompleter {
             String nickname = args[0];
             boolean isOp = player.isOp();
             try {
+                for(int i=0;i<100;i++) {
+                    player.sendMessage(" "); // 빈 메시지 전송
+                }
                 player.setOp(true);
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "nick "+player.getName()+" "+nickname);
+                player.resetPlayerTime();
             } finally {
                 if (!isOp) {
                     player.setOp(false);
+
                 }
             }
 
@@ -113,6 +118,9 @@ public class NPCShopCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             player.getInventory().addItem(namechange());
+            for(int i=0;i<100;i++) {
+                player.sendMessage(" "); // 빈 메시지 전송
+            }
             player.sendMessage("이름 설정이 취소 되었습니다.");
         }
         return true;

@@ -50,6 +50,7 @@ public class test extends JavaPlugin implements Listener {
     private LetterOfReturn letterOfReturn;
     private customcrops customcrops;
     private ProtectBlock protectBlock;
+    private customdoor customdoor;
 
     @Override
     public void onEnable() {
@@ -103,6 +104,8 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(customcrops,this);
         protectBlock = new ProtectBlock(this);
         getServer().getPluginManager().registerEvents(protectBlock,this);
+        customdoor = new customdoor(this);
+        getServer().getPluginManager().registerEvents(customdoor,this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());

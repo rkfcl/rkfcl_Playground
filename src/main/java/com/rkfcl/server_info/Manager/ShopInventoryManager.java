@@ -263,6 +263,27 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+
+    public void lockdoorsettings(Player player,String key) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 45, "비밀번호 문 설정");
+        setItem(inventory, 4, ItemManager.locksign(key));
+        setItem(inventory, 40, ItemManager.locknum(0));
+        setItem(inventory, 12, ItemManager.locknum(1));
+        setItem(inventory, 13, ItemManager.locknum(2));
+        setItem(inventory, 14, ItemManager.locknum(3));
+        setItem(inventory, 21, ItemManager.locknum(4));
+        setItem(inventory, 22, ItemManager.locknum(5));
+        setItem(inventory, 23, ItemManager.locknum(6));
+        setItem(inventory, 30, ItemManager.locknum(7));
+        setItem(inventory, 31, ItemManager.locknum(8));
+        setItem(inventory, 32, ItemManager.locknum(9));
+        setItem(inventory, 36, ItemManager.lockdelete());
+        setItem(inventory, 44, ItemManager.lockconfirm());
+
+        player.openInventory(inventory);
+    }
+
     private void setItem(Inventory inventory, int slot, ItemStack item) {
         inventory.setItem(slot, item);
     }
