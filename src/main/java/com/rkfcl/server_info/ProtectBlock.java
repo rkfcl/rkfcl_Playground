@@ -3,6 +3,7 @@ package com.rkfcl.server_info;
 
 import com.rkfcl.server_info.Manager.ShopInventoryManager;
 import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,7 +50,8 @@ public class ProtectBlock implements Listener {
         Block clickedBlock = event.getClickedBlock();
         Location location = clickedBlock.getLocation();
         ItemMeta itemMeta = event.getItem().getItemMeta();
-        if (itemMeta != null && itemMeta.getCustomModelData() == 166) {
+        ItemStack items = event.getPlayer().getInventory().getItemInMainHand();
+        if (items != null && items.isSimilar(CustomStack.getInstance("small_construction_block").getItemStack())) {
             // 좌표를 맨 아래 바닥 정 가운데로 설정합니다.
             int x = location.getBlockX() - 5;
             int y = location.getBlockY();
@@ -108,6 +110,12 @@ public class ProtectBlock implements Listener {
                         }
                     }
                 }
+            }
+            int amount = event.getItem().getAmount();
+            if (amount > 1) {
+                event.getItem().setAmount(amount - 1);
+            } else {
+                player.getInventory().removeItem(event.getItem());
             }
         }
     }

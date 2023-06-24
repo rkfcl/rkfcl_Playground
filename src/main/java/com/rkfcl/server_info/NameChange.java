@@ -1,6 +1,8 @@
 package com.rkfcl.server_info;
 
 
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 
 import org.bukkit.command.ConsoleCommandSender;
@@ -29,7 +31,8 @@ public class NameChange implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack items = event.getPlayer().getInventory().getItemInMainHand();
-        if (items != null && items.isSimilar(namechange())) {
+
+        if (items != null && items.isSimilar(CustomStack.getInstance("name_of_change").getItemStack())) {
             // 아이템이 "이름 설정권"인 경우
             player.sendMessage("§c [ ! ] 설정할 이름을 채팅에 입력해 주세요!");
 

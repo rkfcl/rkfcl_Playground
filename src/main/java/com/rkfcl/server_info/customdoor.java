@@ -60,7 +60,7 @@ public class customdoor implements Listener {
         Block clickedBlock = event.getClickedBlock();
         ItemStack itemStack = event.getItem();
         PlayerDoorLocationMap.put(player.getUniqueId(), clickedBlock.getLocation());
-        if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData() && itemStack.getItemMeta().getCustomModelData() == 1) {
+        if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData() && itemStack.getItemMeta().getCustomModelData() == 1 && itemStack.getType()==Material.IRON_DOOR) {
             Location doorLocation = clickedBlock.getLocation().add(0, 1, 0);
             PlayerDoorLocationMap.put(player.getUniqueId(), doorLocation);
             pasw = new StringBuilder(); // pasw 초기화

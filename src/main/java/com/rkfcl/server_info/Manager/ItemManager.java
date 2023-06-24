@@ -287,9 +287,19 @@ public class ItemManager {
         ItemStack check = new ItemStack(Material.PAPER, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("이름 설정권");
-        // 커스텀 모델 데이터 값 설정
-//        int customModelDataValue = 5000; // 커스텀 모델 데이터 값 1000로 설정
-//        meta.setCustomModelData(customModelDataValue);
+        //커스텀 모델 데이터 값 설정
+        int customModelDataValue = 5000; // 커스텀 모델 데이터 값 5000로 설정
+        meta.setCustomModelData(customModelDataValue);
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenSaveScroll() {
+        ItemStack check = new ItemStack(Material.PAPER, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("인벤 세이브권");
+        //커스텀 모델 데이터 값 설정
+        int customModelDataValue = 5000; // 커스텀 모델 데이터 값 5000로 설정
+        meta.setCustomModelData(customModelDataValue);
         check.setItemMeta(meta);
         return check;
     }

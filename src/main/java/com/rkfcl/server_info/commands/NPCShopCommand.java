@@ -1,5 +1,6 @@
 package com.rkfcl.server_info.commands;
 
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -117,7 +118,7 @@ public class NPCShopCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.RED + "잘못된 명령어 형식입니다. 사용법: /∈ [이름]");
                 return true;
             }
-            player.getInventory().addItem(namechange());
+            player.getInventory().addItem(CustomStack.getInstance("name_of_change").getItemStack());
             for(int i=0;i<100;i++) {
                 player.sendMessage(" "); // 빈 메시지 전송
             }

@@ -2,8 +2,10 @@ package com.rkfcl.server_info;
 
 import com.rkfcl.server_info.Manager.AbilityManager;
 import com.rkfcl.server_info.Manager.FishingManager;
+import com.rkfcl.server_info.Manager.ItemManager;
 import com.rkfcl.server_info.Manager.PlayerDataManager;
 import com.rkfcl.server_info.commands.*;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 
@@ -26,6 +29,7 @@ import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
 import static com.rkfcl.server_info.ProtectBlock.*;
 import static com.rkfcl.server_info.customcrops.*;
+import static com.rkfcl.server_info.customdoor.LockDoorMap;
 
 public class test extends JavaPlugin implements Listener {
     FileConfiguration config = getConfig();
@@ -40,6 +44,7 @@ public class test extends JavaPlugin implements Listener {
     private final File protectMapFile = new File(getDataFolder(), "/protectMap.txt");
     private final File AllowprotectMapFile = new File(getDataFolder(), "/AllowprotectMap.txt");
     private final File AccountprotectMapFile = new File(getDataFolder(), "/AccountprotectMap.txt");
+    private final File LockDoorMapFile = new File(getDataFolder(), "/LockDoorMap.txt");
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
@@ -68,6 +73,7 @@ public class test extends JavaPlugin implements Listener {
         makeFile(protectMapFile);
         makeFile(AllowprotectMapFile);
         makeFile(AccountprotectMapFile);
+        makeFile(LockDoorMapFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
@@ -75,6 +81,7 @@ public class test extends JavaPlugin implements Listener {
         loadProtectBlock(protectMapFile,protectMap);
         loadAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
         loadAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
+        loadLockDoorMapFromFile(LockDoorMapFile,LockDoorMap);
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -398,6 +405,49 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
+    public void saveLockDoorMapToFile(File file, HashMap<Location, String> lockDoorMap) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            for (Map.Entry<Location, String> entry : lockDoorMap.entrySet()) {
+                Location location = entry.getKey();
+                String password = entry.getValue();
+                String line = location.getWorld().getName() + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ() + "|" + password;
+                writer.write(line);
+                writer.newLine();
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadLockDoorMapFromFile(File file, HashMap<Location, String> lockDoorMap) {
+        lockDoorMap.clear(); // 기존 맵 내용 초기화
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 5) {
+                    String worldName = parts[0];
+                    int x = Integer.parseInt(parts[1]);
+                    int y = Integer.parseInt(parts[2]);
+                    int z = Integer.parseInt(parts[3]);
+                    String password = parts[4];
+
+                    World world = Bukkit.getWorld(worldName);
+                    if (world != null) {
+                        Location location = new Location(world, x, y, z);
+                        lockDoorMap.put(location, password);
+                    }
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void loadTasks(File f, HashMap<Location, Integer> map,String... growthStages) {
         taskMap.clear();
@@ -442,6 +492,7 @@ public class test extends JavaPlugin implements Listener {
         saveProtectBlock(protectMapFile,protectMap);
         saveAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
         saveAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
+        saveLockDoorMapToFile(LockDoorMapFile,LockDoorMap);
         System.out.println("plugin off");
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
@@ -459,8 +510,18 @@ public class test extends JavaPlugin implements Listener {
         if(!playerBalances.containsKey(player.getUniqueId())){
             playerDataManager.setPlayerBalance(player.getUniqueId(),0);
             playerDataManager.setPlayerJob(player.getUniqueId(),"초보자");
+            player.getInventory().addItem(CustomStack.getInstance("name_of_change").getItemStack());
+            player.getInventory().addItem(ItemManager.lockdoor());
+            player.getInventory().addItem(CustomStack.getInstance("small_construction_block").getItemStack());
+            player.getInventory().addItem(CustomStack.getInstance("letter_of_return").getItemStack());
+            ItemStack chur = CustomStack.getInstance("chur").getItemStack();
+            chur.setAmount(32);
+            player.getInventory().addItem(chur);
             System.out.println("new player join the game");
         }
+        // 환영 메시지 변경
+        String welcomeMessage = "§6" + player.getDisplayName() + "님이 게임에 참가 하였습니다.";
+        event.setJoinMessage(welcomeMessage);
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
     }

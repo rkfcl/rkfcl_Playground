@@ -1,6 +1,7 @@
 package com.rkfcl.server_info;
 
 
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,9 +27,9 @@ public class LetterOfReturn implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return; // 좌클릭인 경우 처리하지 않음
         }
-        if (player.getInventory().getItemInMainHand().getType() == Material.PAPER) {
-            ItemMeta itemMeta = player.getInventory().getItemInMainHand().getItemMeta();
-            if (itemMeta != null && itemMeta.hasCustomModelData() && itemMeta.getCustomModelData() == 100) {
+        ItemStack items = event.getPlayer().getInventory().getItemInMainHand();
+        if (items != null && items.isSimilar(CustomStack.getInstance("letter_of_return").getItemStack())){
+
                 Location spawnLocation = player.getWorld().getSpawnLocation(); // 스폰 위치 설정
                 Location initialLocation = player.getLocation();
                 ItemStack usedItem = player.getInventory().getItemInMainHand();
@@ -59,7 +60,7 @@ public class LetterOfReturn implements Listener {
                     }
                 }.runTaskTimer(plugin, 0, 20);
             }
-        }
+
     }
 
 

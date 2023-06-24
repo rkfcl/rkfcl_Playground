@@ -2,12 +2,15 @@ package com.rkfcl.server_info.commands;
 
 import com.rkfcl.server_info.Manager.ItemManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
@@ -63,5 +66,12 @@ public class MenuCommand implements CommandExecutor, Listener {
 
         player.openInventory(inventory);
     }
-
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (event.getAction() == Action.LEFT_CLICK_AIR && player.isSneaking()
+                && player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+            openMenu(player);
+        }
+    }
 }

@@ -22,8 +22,10 @@ commands:
   ∬:
     description: ∬
     usage: /∬ [이름]
+    permission: myplugin.∬
   ∈:
     description: ∈
     usage: /∈ [이름]
+    permission: myplugin.∈
 listeners:
   - com.rkfcl.server_info.MenuClickListener
