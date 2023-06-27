@@ -49,6 +49,14 @@ public class ItemManager {
         check.setItemMeta(meta);
         return check;
     }
+    public static ItemStack InvenDecoRED_STAINED_GLASS_PANE () {
+        ItemStack check = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("§c건차 회수");
+        meta.setLore(Arrays.asList("§f쉬프트 좌클릭시 건차 회수"));
+        check.setItemMeta(meta);
+        return check;
+    }
     public static ItemStack MenuCheck() {
         ItemStack check = new ItemStack(Material.HEART_OF_THE_SEA, 1);
         ItemMeta meta = check.getItemMeta();

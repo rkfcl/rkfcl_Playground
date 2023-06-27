@@ -4,10 +4,7 @@ package com.rkfcl.server_info;
 import com.rkfcl.server_info.Manager.ShopInventoryManager;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -195,6 +192,7 @@ public class ProtectBlock implements Listener {
             if (event.getSlot() == 31){
                 shopInventoryManager.AccountAddInventory(player);
             }
+
             if (clickType == ClickType.SHIFT_LEFT) {
                 ItemStack clickedItem = event.getCurrentItem();
                 if (clickedItem != null && clickedItem.getType() == Material.PLAYER_HEAD) {
@@ -211,6 +209,15 @@ public class ProtectBlock implements Listener {
                         }
                         shopInventoryManager.AccountInventory(player, sectorID);
                     }
+                }
+                if (event.getSlot() == 35){
+                    player.closeInventory();
+                    removeLocationsByValue(sectorID);
+                    removeLocationFromAllowprotectMap(player.getUniqueId(), sectorID);
+                    AccountprotectMap.remove(sectorID);
+                    CustomBlock.remove(sectorID.add(5,3,5));
+                    player.getInventory().addItem(CustomStack.getInstance("small_construction_block").getItemStack());
+
                 }
             }
         }
@@ -302,6 +309,18 @@ public class ProtectBlock implements Listener {
             }
         }
     }
+    public void removeLocationsByValue(Location value) {
+        Iterator<Map.Entry<Location, Location>> iterator = protectMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Location, Location> entry = iterator.next();
+            Location location = entry.getValue();
+            if (location.equals(value)) {
+                iterator.remove(); // 해당 값을 가지는 키를 protectMap에서 삭제
+            }
+        }
+    }
+
+
 
 
 }

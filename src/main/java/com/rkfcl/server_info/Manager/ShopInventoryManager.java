@@ -237,7 +237,7 @@ public class ShopInventoryManager {
         inventory.setItem(32, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
         inventory.setItem(33, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
         inventory.setItem(34, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
-        inventory.setItem(35, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
+        inventory.setItem(35, ItemManager.InvenDecoRED_STAINED_GLASS_PANE());
         player.openInventory(inventory);
     }
     public void AccountAddInventory(Player player) {
