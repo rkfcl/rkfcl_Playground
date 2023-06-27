@@ -1,5 +1,7 @@
 package com.rkfcl.server_info.Manager;
 
+import com.rkfcl.server_info.ItemRegistration;
+import com.rkfcl.server_info.commands.ExchangeCommand;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
@@ -66,8 +68,6 @@ public class ShopInventoryManager {
 
 
     );
-
-
     public void openShopJobInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, "전직교관 상점");
 
@@ -181,6 +181,32 @@ public class ShopInventoryManager {
 
         setGlassPanes(inventory);
         setClock(inventory, 49);
+
+        player.openInventory(inventory);
+    }
+    public void openexchangeInventory(Player player,int page) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "거래소 : "+page+"페이지");
+
+        Map<ItemStack, Integer> registeredItems = ItemRegistration.getRegisteredItems();
+
+        int slot = 0;
+        for (ItemStack item : registeredItems.keySet()) {
+            setItem(inventory, slot, item);
+            slot++;
+            if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
+                break;
+        }
+
+        setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
+        setItem(inventory, 46, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 47, ItemManager.InvenDeco_CHEST());
+        setItem(inventory, 48, ItemManager.InvenDeco_ENDERCHEST());
+        setItem(inventory, 49, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 50, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 51, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 52, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 53, ItemManager.InvenDecoGREEN_STAINED_GLASS_PANE_NEXT());
 
         player.openInventory(inventory);
     }

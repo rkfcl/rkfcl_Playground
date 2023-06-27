@@ -114,6 +114,138 @@ public class ProtectBlock implements Listener {
             } else {
                 player.getInventory().removeItem(event.getItem());
             }
+        }else if (items != null && items.isSimilar(CustomStack.getInstance("medium_construction_block").getItemStack())) {
+            // 좌표를 맨 아래 바닥 정 가운데로 설정합니다.
+            int x = location.getBlockX() - 10;
+            int y = location.getBlockY();
+            int z = location.getBlockZ() - 10;
+            Location SectorID = new Location(location.getWorld(), x , y , z );
+            boolean overlappingBlocks = false;
+
+            // 추가로 확인한 좌표가 protectMap에 이미 존재하는지 확인합니다.
+            for (int i = -10; i <= 30; i++) {
+                for (int j = -10; j <= 30; j++) {
+                    for (int k = -10; k <= 30; k++) {
+                        Location extraLocation = new Location(location.getWorld(), x + i, y + j, z + k);
+                        if (protectMap.containsKey(extraLocation)) {
+                            overlappingBlocks = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (overlappingBlocks) {
+                player.sendMessage("§c경고: 주변 건차랑 너무 가깝습니다!");
+                return; // 이미 보호된 영역이 있으므로 더 이상 진행하지 않습니다.
+            }
+            addLocationToAllowprotectMap(player.getUniqueId(),SectorID);
+            // 21x21x21 크기의 정사각형의 모든 좌표를 protectMap에 저장합니다.
+            for (int i = 0; i < 21; i++) {
+                for (int j = 0; j < 21; j++) {
+                    for (int k = 0; k < 21; k++) {
+                        Location blockLocation = new Location(location.getWorld(), x + i, y + j, z + k);
+                        // 중심 좌표 위로 3칸에 건차 관리 블럭 설치
+                        if (j == 3 && i == 10 && k == 10) {
+                            Block AccountBlock = blockLocation.getBlock().getRelative(0, 0, 0);
+                            CustomBlock.place("beacon",blockLocation);
+                            addUuidToAccountprotectMap(SectorID,player.getUniqueId());
+                        }
+                        // 특정 위치에 SectorID추가
+                        protectMap.put(blockLocation,SectorID);
+
+                        if (j == 0) {
+                            if (i == 0 || i == 20 || k == 0 || k == 20) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_CONCRETE);
+                            }
+                        } else if (j == 20) {
+                            if (i == 0 || i == 20 || k == 0 || k == 20) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_STAINED_GLASS);
+                            }
+                        }
+                        if (j>0) {
+                            if ((i == 0 && k == 0) || (i == 0 && k == 20) || (i == 20 && k == 0) || (i == 20 & k == 20)) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_STAINED_GLASS);
+                            }
+                        }
+                    }
+                }
+            }
+            int amount = event.getItem().getAmount();
+            if (amount > 1) {
+                event.getItem().setAmount(amount - 1);
+            } else {
+                player.getInventory().removeItem(event.getItem());
+            }
+        }else if (items != null && items.isSimilar(CustomStack.getInstance("large_construction_block").getItemStack())) {
+            // 좌표를 맨 아래 바닥 정 가운데로 설정합니다.
+            int x = location.getBlockX() - 15;
+            int y = location.getBlockY();
+            int z = location.getBlockZ() - 15;
+            Location SectorID = new Location(location.getWorld(), x , y , z );
+            boolean overlappingBlocks = false;
+
+            // 추가로 확인한 좌표가 protectMap에 이미 존재하는지 확인합니다.
+            for (int i = -10; i <= 40; i++) {
+                for (int j = -10; j <= 40; j++) {
+                    for (int k = -10; k <= 40; k++) {
+                        Location extraLocation = new Location(location.getWorld(), x + i, y + j, z + k);
+                        if (protectMap.containsKey(extraLocation)) {
+                            overlappingBlocks = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (overlappingBlocks) {
+                player.sendMessage("§c경고: 주변 건차랑 너무 가깝습니다!");
+                return; // 이미 보호된 영역이 있으므로 더 이상 진행하지 않습니다.
+            }
+            addLocationToAllowprotectMap(player.getUniqueId(),SectorID);
+            // 31x31x31 크기의 정사각형의 모든 좌표를 protectMap에 저장합니다.
+            for (int i = 0; i < 31; i++) {
+                for (int j = 0; j < 31; j++) {
+                    for (int k = 0; k < 31; k++) {
+                        Location blockLocation = new Location(location.getWorld(), x + i, y + j, z + k);
+                        // 중심 좌표 위로 3칸에 건차 관리 블럭 설치
+                        if (j == 3 && i == 15 && k == 15) {
+                            Block AccountBlock = blockLocation.getBlock().getRelative(0, 0, 0);
+                            CustomBlock.place("beacon",blockLocation);
+                            addUuidToAccountprotectMap(SectorID,player.getUniqueId());
+                        }
+                        // 특정 위치에 SectorID추가
+                        protectMap.put(blockLocation,SectorID);
+
+                        if (j == 0) {
+                            if (i == 0 || i == 30 || k == 0 || k == 30) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_CONCRETE);
+                            }
+                        } else if (j == 30) {
+                            if (i == 0 || i == 30 || k == 0 || k == 30) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_STAINED_GLASS);
+                            }
+                        }
+                        if (j>0) {
+                            if ((i == 0 && k == 0) || (i == 0 && k == 30) || (i == 30 && k == 0) || (i == 30 & k == 30)) {
+                                Block block = blockLocation.getBlock();
+                                block.setType(Material.RED_STAINED_GLASS);
+                            }
+                        }
+                    }
+                }
+            }
+            int amount = event.getItem().getAmount();
+            if (amount > 1) {
+                event.getItem().setAmount(amount - 1);
+            } else {
+                player.getInventory().removeItem(event.getItem());
+            }
         }
     }
 
@@ -192,7 +324,24 @@ public class ProtectBlock implements Listener {
             if (event.getSlot() == 31){
                 shopInventoryManager.AccountAddInventory(player);
             }
+            if (event.getSlot() == 35){
 
+                int count = countKeysWithSpecificValue(protectMap,sectorID);
+                removeLocationsByValue(sectorID);
+                removeLocationFromAllowprotectMap(player.getUniqueId(), sectorID);
+                AccountprotectMap.remove(sectorID);
+                if(count>27000){
+                    CustomBlock.remove(sectorID.add(15,3,15));
+                    player.getInventory().addItem(CustomStack.getInstance("large_construction_block").getItemStack());
+                } else if (count>8000) {
+                    CustomBlock.remove(sectorID.add(10,3,10));
+                    player.getInventory().addItem(CustomStack.getInstance("medium_construction_block").getItemStack());
+                } else if (count>100) {
+                    CustomBlock.remove(sectorID.add(5,3,5));
+                    player.getInventory().addItem(CustomStack.getInstance("small_construction_block").getItemStack());
+                }
+                player.closeInventory();
+            }
             if (clickType == ClickType.SHIFT_LEFT) {
                 ItemStack clickedItem = event.getCurrentItem();
                 if (clickedItem != null && clickedItem.getType() == Material.PLAYER_HEAD) {
@@ -210,15 +359,7 @@ public class ProtectBlock implements Listener {
                         shopInventoryManager.AccountInventory(player, sectorID);
                     }
                 }
-                if (event.getSlot() == 35){
-                    player.closeInventory();
-                    removeLocationsByValue(sectorID);
-                    removeLocationFromAllowprotectMap(player.getUniqueId(), sectorID);
-                    AccountprotectMap.remove(sectorID);
-                    CustomBlock.remove(sectorID.add(5,3,5));
-                    player.getInventory().addItem(CustomStack.getInstance("small_construction_block").getItemStack());
 
-                }
             }
         }
     }
@@ -319,7 +460,15 @@ public class ProtectBlock implements Listener {
             }
         }
     }
-
+    public static <K, V> int countKeysWithSpecificValue(Map<K, V> map, V value) {
+        int count = 0;
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 
 

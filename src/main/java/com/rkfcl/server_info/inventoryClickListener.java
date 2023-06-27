@@ -350,6 +350,27 @@ public class inventoryClickListener implements Listener {
                 // 채팅 입력 대기 상태로 설정
                 isAwaitingChat.put(player.getUniqueId(), true);
             }
+            if (event.getSlot() == 13){
+                shopInventoryManager.openexchangeInventory(player,1);
+            }
+        }
+    }
+    @EventHandler
+    public void exchangeInventory(InventoryClickEvent event) {
+        Inventory inventory = event.getClickedInventory();
+        Player player = (Player) event.getWhoClicked();
+        ClickType clickType = event.getClick();
+
+        if (event.getClickedInventory() == null) return;
+
+        // 메뉴 상점
+        if (event.getView().getTitle().contains("거래소")) {
+            event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
+                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
+                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            }
+
         }
     }
 

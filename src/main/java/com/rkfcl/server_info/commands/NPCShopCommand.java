@@ -10,14 +10,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.rkfcl.server_info.Manager.ItemManager.createOreItem;
-import static com.rkfcl.server_info.Manager.ItemManager.namechange;
 
 public class NPCShopCommand implements CommandExecutor, TabCompleter {
 
@@ -57,15 +53,6 @@ public class NPCShopCommand implements CommandExecutor, TabCompleter {
 
             String npcName = args[0];
             String professionArg = args[1];
-
-            // 직업 목록을 출력
-            if (professionArg.equalsIgnoreCase("list")) {
-                player.sendMessage(ChatColor.YELLOW + "직업 목록:");
-                for (String profession : professionList) {
-                    player.sendMessage(ChatColor.GRAY + "- " + profession);
-                }
-                return true;
-            }
 
             Villager.Profession profession;
             try {

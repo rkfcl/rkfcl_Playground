@@ -27,5 +27,8 @@ commands:
     description: ∈
     usage: /∈ [이름]
     permission: myplugin.∈
+  거래소:
+    description: 거래소 아이템 등록
+    usage: /거래소 등록 [가격] [수량]
 listeners:
   - com.rkfcl.server_info.MenuClickListener

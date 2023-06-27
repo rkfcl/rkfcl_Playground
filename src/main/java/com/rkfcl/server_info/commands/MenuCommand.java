@@ -1,6 +1,7 @@
 package com.rkfcl.server_info.commands;
 
 import com.rkfcl.server_info.Manager.ItemManager;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -53,6 +52,7 @@ public class MenuCommand implements CommandExecutor, Listener {
         inventory.setItem(10, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         inventory.setItem(11, ItemManager.MenuCheck());
         inventory.setItem(12, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        inventory.setItem(13, ItemManager.InvenDecoSign());
         inventory.setItem(14, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         inventory.setItem(16, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         inventory.setItem(19, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());

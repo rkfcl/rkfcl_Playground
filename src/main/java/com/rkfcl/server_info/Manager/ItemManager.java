@@ -28,10 +28,46 @@ public class ItemManager {
         stack.setItemMeta(meta);
         return stack;
     }
+    public static ItemStack InvenDecoSign () {
+        ItemStack check = new ItemStack(Material.OAK_SIGN, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("거래소");
+        check.setItemMeta(meta);
+        return check;
+    }
     public static ItemStack InvenDecoWHITE_STAINED_GLASS_PANE () {
         ItemStack check = new ItemStack(Material.WHITE_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName(" ");
+        check.setItemMeta(meta);
+        return check;
+    }
+
+    public static ItemStack InvenDecoGREEN_STAINED_GLASS_PANE_NEXT() {
+        ItemStack check = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("다음 페이지");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenDecoRED_STAINED_GLASS_PANE_BEFORE() {
+        ItemStack check = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("이전 페이지");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenDeco_CHEST() {
+        ItemStack check = new ItemStack(Material.CHEST, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("§l§6등록된 아이템");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack InvenDeco_ENDERCHEST() {
+        ItemStack check = new ItemStack(Material.ENDER_CHEST, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("§l§c반환된 아이템");
         check.setItemMeta(meta);
         return check;
     }
@@ -53,7 +89,7 @@ public class ItemManager {
         ItemStack check = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("§c건차 회수");
-        meta.setLore(Arrays.asList("§f쉬프트 좌클릭시 건차 회수"));
+        meta.setLore(Arrays.asList("§f클릭시 건차 회수"));
         check.setItemMeta(meta);
         return check;
     }
