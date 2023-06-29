@@ -5,6 +5,7 @@ import com.rkfcl.server_info.commands.ExchangeCommand;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,6 +17,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
+import static com.rkfcl.server_info.ItemRegistration.registeredItems;
+import static com.rkfcl.server_info.ItemRegistration.removeExpiredItems;
+import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
 import static com.rkfcl.server_info.Manager.ItemManager.createItemsAdderItem;
 import static com.rkfcl.server_info.Manager.ItemManager.createSaleItemsAdderItem;
 import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
@@ -185,10 +189,11 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openexchangeInventory(Player player,int page) {
+        removeExpiredItems();
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "거래소 : "+page+"페이지");
 
-        Map<ItemStack, Integer> registeredItems = ItemRegistration.getRegisteredItems();
+        Map<ItemStack, UUID> registeredItems = ItemRegistration.getRegisteredItems();
 
         int slot = 0;
         for (ItemStack item : registeredItems.keySet()) {
@@ -210,6 +215,69 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+    public void openRegisteredInventory(Player player, int page) {
+        removeExpiredItems();
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "등록된 아이템 : " + page + "페이지");
+
+
+
+        int slot = 0;
+        for (ItemStack item : registeredItems.keySet()) {
+            UUID uuid = registeredItems.get(item);
+            if (uuid.equals(player.getUniqueId())) {
+                setItem(inventory, slot, item);
+                slot++;
+                if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
+                    break;
+            }
+        }
+
+
+        setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
+        setItem(inventory, 46, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 47, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 48, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 49, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 50, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 51, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 52, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 53, ItemManager.InvenDecoGREEN_STAINED_GLASS_PANE_NEXT());
+
+        player.openInventory(inventory);
+    }
+    public void openReturnedInventory(Player player, int page) {
+        removeExpiredItems();
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "반환된 아이템 : " + page + "페이지");
+
+        int slot = 0;
+        for (ItemStack item : ReturnedItems.keySet()) {
+            UUID uuid = ReturnedItems.get(item);
+            if (uuid.equals(player.getUniqueId())) {
+                setItem(inventory, slot, item);
+                slot++;
+                if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
+                    break;
+            }
+        }
+
+
+        setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
+        setItem(inventory, 46, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 47, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 48, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 49, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 50, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 51, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 52, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 53, ItemManager.InvenDecoGREEN_STAINED_GLASS_PANE_NEXT());
+
+        player.openInventory(inventory);
+    }
+
+
+
     public void AccountInventory(Player player, Location location) {
         Inventory inventory = Bukkit.createInventory(null, 36, Bukkit.getPlayer(player.getUniqueId()).getDisplayName()+"님의 소유");
 

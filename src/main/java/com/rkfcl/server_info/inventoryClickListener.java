@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
+import static com.rkfcl.server_info.ItemRegistration.*;
 import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
 import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
@@ -30,6 +31,7 @@ public class inventoryClickListener implements Listener {
     private PlayerDataManager playerDataManager;
     private final AbilityManager abilityManager;
     ShopInventoryManager shopInventoryManager = new ShopInventoryManager();
+
     private Map<UUID, Boolean> isAwaitingChat = new HashMap<>();
 
     ItemCost itemCost = new ItemCost();
@@ -352,6 +354,11 @@ public class inventoryClickListener implements Listener {
             }
             if (event.getSlot() == 13){
                 shopInventoryManager.openexchangeInventory(player,1);
+                //거래소 기능에 대해서 설명하는 메세지 출력
+                player.sendMessage("§6[ 거래소 ] §f/거래소 : 거래소를 오픈합니다.");
+                player.sendMessage("§6[ 거래소 ] §f/거래소 등록 [가격] [수량] : 거래소에 판매할 아이템을 등록 합니다.");
+                player.sendMessage("§6[ 거래소 ] §f/거래소 등록아이템 : 등록한 아이템을 확인 및 관리합니다.");
+                player.sendMessage("§6[ 거래소 ] §f/거래소 반환아이템 : 반환된 아이템을 확인 및 수령합니다");
             }
         }
     }
@@ -370,10 +377,128 @@ public class inventoryClickListener implements Listener {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
             }
+            if (event.getSlot() == 47){
+                shopInventoryManager.openRegisteredInventory(player,1);
+            }
+            if (event.getSlot() == 48){
+                shopInventoryManager.openReturnedInventory(player,1);
+            }
+            if (event.getSlot() >= 0 && event.getSlot() <= 44) {
+                ItemStack clickedItem = event.getCurrentItem();
+                if (!registeredItems.get(clickedItem).equals(player.getUniqueId())) {
+                    if (clickedItem != null && clickedItem.hasItemMeta() && clickedItem.getItemMeta().hasLore()) {
+                        List<String> lore = clickedItem.getItemMeta().getLore();
+                        if (lore.size() >= 3) {
+                            String priceLine = lore.get(lore.size() - 5); // 가격이 있는 줄의 인덱스
+                            String priceText = ChatColor.stripColor(priceLine).replace("| 가격: ", "").replace(",", "");
+                            int price = Integer.parseInt(priceText);
+                            int playerBalance = playerDataManager.getPlayerBalance(player.getUniqueId());
 
+                            if (playerBalance >= price) {
+                                // 플레이어의 소지금이 가격 이상인 경우 아이템을 구매하고 소지금에서 차감
+                                ItemStack purchasedItem = clickedItem.clone();
+                                playerDataManager.increaseMoney(registeredItems.get(purchasedItem), price); //판매자 소지금 증가
+                                pluginInstance.updateScoreboard(Bukkit.getPlayer(registeredItems.get(purchasedItem))); // 판매자 스코어 보드 업데이트
+                                unregisterItem(purchasedItem);
+                                //아이템 설명 원래대로
+                                ItemMeta meta = purchasedItem.getItemMeta();
+                                if (meta != null && meta.hasLore()) {
+                                    List<String> lores = meta.getLore();
+
+                                    // 마지막 인덱스부터 6개의 줄 제거
+                                    int startIndex = Math.max(0, lores.size() - 6);
+                                    int endIndex = Math.max(0, lores.size() - 1);
+                                    if (startIndex < lores.size()) {
+                                        lores.subList(startIndex, endIndex + 1).clear();
+                                    }
+
+                                    meta.setLore(lores);
+                                    purchasedItem.setItemMeta(meta);
+                                }
+                                player.getInventory().addItem(purchasedItem);
+                                playerDataManager.decreaseMoney(player.getUniqueId(), price);
+                                player.sendMessage(ChatColor.GREEN + "아이템을 구매하였습니다.§e(-" + price + "$)");
+                                pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드를 업데이트합니다.
+                                // 구매 후 등록된 아이템 목록을 업데이트하고 새로운 등록된 아이템 메뉴를 열도록 함
+                                shopInventoryManager.openexchangeInventory(player, 1);
+                                // 소리 재생
+                                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+
+                            } else {
+                                player.sendMessage(ChatColor.RED + "소지금이 부족하여 아이템을 구매할 수 없습니다.");
+                            }
+                        }
+                    }
+                }else{
+                    player.sendMessage(ChatColor.RED + "자신이 등록한 아이템은 구매할 수 없습니다.");
+                }
+            }
         }
     }
 
+    @EventHandler
+    public void RegisteredInventory(InventoryClickEvent event) {
+        Inventory inventory = event.getClickedInventory();
+        Player player = (Player) event.getWhoClicked();
+        ClickType clickType = event.getClick();
+
+        if (event.getClickedInventory() == null) return;
+
+        // 메뉴 상점
+        if (event.getView().getTitle().contains("등록된 아이템")) {
+            event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
+                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
+                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            }
+            if (clickType == ClickType.SHIFT_LEFT){
+                ItemStack returnItem = event.getCurrentItem();
+                unregisterItem(returnItem);
+                ItemReturn.returnItem(returnItem,player.getUniqueId());
+                shopInventoryManager.openRegisteredInventory(player,1);
+            }
+        }
+    }
+    @EventHandler
+    public void ReturnedInventory(InventoryClickEvent event) {
+        Inventory inventory = event.getClickedInventory();
+        Player player = (Player) event.getWhoClicked();
+        ClickType clickType = event.getClick();
+
+        if (event.getClickedInventory() == null) return;
+
+        // 메뉴 상점
+        if (event.getView().getTitle().contains("반환된 아이템")) {
+            event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
+                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
+                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            }
+            if (clickType == ClickType.SHIFT_LEFT){
+
+                ItemStack returnItem = event.getCurrentItem();
+                ItemReturn.unReturnItem(returnItem);
+                ItemMeta meta = returnItem.getItemMeta();
+                if (meta != null && meta.hasLore()) {
+                    List<String> lore = meta.getLore();
+
+                    // 마지막 인덱스부터 6개의 줄 제거
+                    int startIndex = Math.max(0, lore.size() - 6);
+                    int endIndex = Math.max(0, lore.size() - 1);
+                    if (startIndex < lore.size()) {
+                        lore.subList(startIndex, endIndex + 1).clear();
+                    }
+
+                    meta.setLore(lore);
+                    returnItem.setItemMeta(meta);
+                }
+                player.getInventory().addItem(returnItem);
+                shopInventoryManager.openReturnedInventory(player,1);
+                // 소리 재생
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+            }
+        }
+    }
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();

@@ -32,6 +32,7 @@ public class ItemManager {
         ItemStack check = new ItemStack(Material.OAK_SIGN, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName("거래소");
+        meta.setLore(Arrays.asList("§f클릭 시 거래소 도움말을 확인합니다."));
         check.setItemMeta(meta);
         return check;
     }

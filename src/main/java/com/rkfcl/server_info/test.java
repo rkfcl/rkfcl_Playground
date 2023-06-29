@@ -20,11 +20,15 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.*;
 import java.util.*;
 import java.sql.*;
 
+import static com.rkfcl.server_info.ItemRegistration.registeredItems;
+import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
 import static com.rkfcl.server_info.ProtectBlock.*;
@@ -45,6 +49,9 @@ public class test extends JavaPlugin implements Listener {
     private final File AllowprotectMapFile = new File(getDataFolder(), "/AllowprotectMap.txt");
     private final File AccountprotectMapFile = new File(getDataFolder(), "/AccountprotectMap.txt");
     private final File LockDoorMapFile = new File(getDataFolder(), "/LockDoorMap.txt");
+    private final File ReturnedItemsFile = new File(getDataFolder(), "/ReturnedItems.txt");
+    private final File registeredItemsFile = new File(getDataFolder(), "/registeredItems.txt");
+
     private Scoreboard scoreboard;
     private Objective objective;
     // 플레이어별 소지금을 저장하는 HashMap
@@ -74,6 +81,8 @@ public class test extends JavaPlugin implements Listener {
         makeFile(AllowprotectMapFile);
         makeFile(AccountprotectMapFile);
         makeFile(LockDoorMapFile);
+        makeFile(ReturnedItemsFile);
+        makeFile(registeredItemsFile);
         mapToFile(PlayerBalanceFile,playerBalances);
         fileToMap(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
@@ -82,6 +91,8 @@ public class test extends JavaPlugin implements Listener {
         loadAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
         loadAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
         loadLockDoorMapFromFile(LockDoorMapFile,LockDoorMap);
+        loadMapFromFile(ReturnedItemsFile,ReturnedItems);
+        loadMapFromFile(registeredItemsFile,registeredItems);
         getServer().getPluginManager().registerEvents(this, this);
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -482,6 +493,70 @@ public class test extends JavaPlugin implements Listener {
         }
     }
 
+    // 거래소 map txt파일로 저장 및 로드
+    public static void saveMapToFile(File file, Map<ItemStack, UUID> map) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            for (Map.Entry<ItemStack, UUID> entry : map.entrySet()) {
+                ItemStack item = entry.getKey();
+                UUID uuid = entry.getValue();
+                String line = uuid.toString() + "|" + itemToString(item);
+                writer.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadMapFromFile(File file, Map<ItemStack, UUID> map) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 2) {
+                    UUID uuid = UUID.fromString(parts[0]);
+                    ItemStack item = stringToItem(parts[1]);
+                    if (item != null) {
+                        map.put(item, uuid);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String itemToString(ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             BukkitObjectOutputStream objectOutputStream = new BukkitObjectOutputStream(outputStream)) {
+            objectOutputStream.writeObject(item);
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ItemStack stringToItem(String string) {
+        if (string == null) {
+            return null;
+        }
+
+        byte[] data = Base64.getDecoder().decode(string);
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+             BukkitObjectInputStream objectInputStream = new BukkitObjectInputStream(inputStream)) {
+            return (ItemStack) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
     @Override
     public void onDisable() {
         saveTasks(CornFile,cornstageMap);
@@ -495,13 +570,14 @@ public class test extends JavaPlugin implements Listener {
         saveAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
         saveAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
         saveLockDoorMapToFile(LockDoorMapFile,LockDoorMap);
-        System.out.println("plugin off");
+        saveMapToFile(ReturnedItemsFile,ReturnedItems);
+        saveMapToFile(registeredItemsFile,registeredItems);
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
         mapToFile(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
-
+        System.out.println("갈치놀이터 플러그인 정상 종료");
 
     }
 
@@ -522,7 +598,7 @@ public class test extends JavaPlugin implements Listener {
             System.out.println("new player join the game");
         }
         // 환영 메시지 변경
-        String welcomeMessage = "§6" + player.getDisplayName() + "님이 게임에 참가 하였습니다.";
+        String welcomeMessage = "§6" + player.getName() + "님이 게임에 참가 하였습니다.";
         event.setJoinMessage(welcomeMessage);
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
