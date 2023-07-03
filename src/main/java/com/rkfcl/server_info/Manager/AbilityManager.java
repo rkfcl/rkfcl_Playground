@@ -17,6 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -514,6 +516,18 @@ public class AbilityManager implements Listener {
             }
         }
 
+    }
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        // 플레이어가 다른 플레이어를 공격할 때 이벤트 처리
+        if (event instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent damageByEntityEvent = (EntityDamageByEntityEvent) event;
+            if (damageByEntityEvent.getDamager() instanceof Player && damageByEntityEvent.getEntity() instanceof Player) {
+                // PvP 공격을 취소하고 데미지를 제거
+                event.setCancelled(true);
+                event.setDamage(0);
+            }
+        }
     }
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){

@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
 import static com.rkfcl.server_info.ItemReturn.returnItem;
 
 public class ItemRegistration {
-    public static Map<ItemStack, UUID> registeredItems = new HashMap<>();
+    public static Map<ItemStack, UUID> registeredItems = new LinkedHashMap<>();
 
     public static void registerItem(ItemStack item, int price, Player player) {
         // 가격 정보 설정

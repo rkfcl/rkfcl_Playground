@@ -59,17 +59,18 @@ public class customdoor implements Listener {
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         ItemStack itemStack = event.getItem();
-        PlayerDoorLocationMap.put(player.getUniqueId(), clickedBlock.getLocation());
+//        PlayerDoorLocationMap.put(player.getUniqueId(), clickedBlock.getLocation());
         if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData() && itemStack.getItemMeta().getCustomModelData() == 1 && itemStack.getType()==Material.IRON_DOOR) {
             Location doorLocation = clickedBlock.getLocation().add(0, 1, 0);
             PlayerDoorLocationMap.put(player.getUniqueId(), doorLocation);
             pasw = new StringBuilder(); // pasw 초기화
             shopInventoryManager.lockdoorsettings(player, pasw.toString());
+            LockDoorMap.put(PlayerDoorLocationMap.get(player.getUniqueId()), pasw.toString());
         }
         Location sectorId = protectMap.get(clickedBlock.getLocation());
         List<Location> locations = AllowprotectMap.get(player.getUniqueId());
         if (LockDoorMap.containsKey(clickedBlock.getLocation())) {
-            if (locations.contains(sectorId)) {
+            if (locations != null && locations.contains(sectorId)) {
                 if (clickedBlock != null && clickedBlock.getType() == Material.IRON_DOOR) {
                     BlockData blockData = clickedBlock.getBlockData();
                     if (blockData instanceof Openable) {
@@ -134,7 +135,6 @@ public class customdoor implements Listener {
         if (!event.getView().getTitle().equalsIgnoreCase("비밀번호 문 설정")) {
             return;
         }
-
         event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
 
         if (event.getSlot() < 0 || event.getSlot() >= inventory.getSize()) {
@@ -172,6 +172,7 @@ public class customdoor implements Listener {
         }
         shopInventoryManager.lockdoorsettings(player, pasw.toString());
     }
+
     @EventHandler
     public void LockDoor(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();

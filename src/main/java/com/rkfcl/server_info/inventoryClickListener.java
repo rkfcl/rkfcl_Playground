@@ -15,15 +15,12 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
 import java.util.*;
 
 import static com.rkfcl.server_info.ItemRegistration.*;
-import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
-import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
 public class inventoryClickListener implements Listener {
 
@@ -61,7 +58,6 @@ public class inventoryClickListener implements Listener {
                     switch (jobType) {
                         case 1:
                             player.getInventory().addItem(ItemManager.createMineJob1Item());
-                            player.getInventory().addItem(ItemManager.namechange());
                             break;
                         case 2:
                             player.getInventory().addItem(ItemManager.createMineJob2Item());
@@ -187,7 +183,7 @@ public class inventoryClickListener implements Listener {
         if (event.getClickedInventory() == null) return;
 
         // 어부 상점
-        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")) {
+        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")) {
             event.setCancelled(true);
 
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
@@ -299,6 +295,8 @@ public class inventoryClickListener implements Listener {
                                     // 플레이어에게 아이템 추가
                                     if (customModelData == 10000 && clickedItem.getType().equals(Material.OAK_PLANKS)) { //농토
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " customcrops:farmland " + setCount);
+                                    }else if (customModelData == 10000 && clickedItem.getType().equals(Material.BREAD)) { //츄르
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " customcrafting:chur " + setCount);
                                     } else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
                                         if (!remainingItems.isEmpty()) {
@@ -359,6 +357,8 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("§6[ 거래소 ] §f/거래소 등록 [가격] [수량] : 거래소에 판매할 아이템을 등록 합니다.");
                 player.sendMessage("§6[ 거래소 ] §f/거래소 등록아이템 : 등록한 아이템을 확인 및 관리합니다.");
                 player.sendMessage("§6[ 거래소 ] §f/거래소 반환아이템 : 반환된 아이템을 확인 및 수령합니다");
+                player.sendMessage("§6[ 거래소 ] §f아이템 클릭시 아이템을 구매 합니다");
+                player.sendMessage("§6[ 거래소 ] §f등록된 아이템은 쉬프트 좌클릭시 아이템을 반환 합니다.");
             }
         }
     }
@@ -377,12 +377,36 @@ public class inventoryClickListener implements Listener {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
             }
+            if (event.getSlot() == 45) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int previousPage = currentPage - 1;
+                shopInventoryManager.openexchangeInventory(player, previousPage);
+            }
             if (event.getSlot() == 47){
                 shopInventoryManager.openRegisteredInventory(player,1);
             }
             if (event.getSlot() == 48){
                 shopInventoryManager.openReturnedInventory(player,1);
             }
+            if (event.getSlot() == 53) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int nextPage = currentPage + 1;
+
+                Map<ItemStack, UUID> registeredItems = ItemRegistration.getRegisteredItems();
+                List<ItemStack> itemList = new ArrayList<>(registeredItems.keySet());
+                int maxSlotsPerPage = 45;
+                int startIndex = (nextPage - 1) * maxSlotsPerPage;
+
+                if (startIndex >= 0 && startIndex < itemList.size()) {
+                    shopInventoryManager.openexchangeInventory(player, nextPage);
+                }
+            }
+
+
             if (event.getSlot() >= 0 && event.getSlot() <= 44) {
                 ItemStack clickedItem = event.getCurrentItem();
                 if (!registeredItems.get(clickedItem).equals(player.getUniqueId())) {
@@ -398,6 +422,9 @@ public class inventoryClickListener implements Listener {
                                 // 플레이어의 소지금이 가격 이상인 경우 아이템을 구매하고 소지금에서 차감
                                 ItemStack purchasedItem = clickedItem.clone();
                                 playerDataManager.increaseMoney(registeredItems.get(purchasedItem), price); //판매자 소지금 증가
+                                //판매자에게 판매 메세지 출력
+                                String itemname = clickedItem.getType().name();
+                                Bukkit.getPlayer(registeredItems.get(purchasedItem)).sendMessage(itemname+ChatColor.GREEN+" 아이템 판매완료");
                                 pluginInstance.updateScoreboard(Bukkit.getPlayer(registeredItems.get(purchasedItem))); // 판매자 스코어 보드 업데이트
                                 unregisterItem(purchasedItem);
                                 //아이템 설명 원래대로
@@ -457,6 +484,31 @@ public class inventoryClickListener implements Listener {
                 ItemReturn.returnItem(returnItem,player.getUniqueId());
                 shopInventoryManager.openRegisteredInventory(player,1);
             }
+            if (event.getSlot() == 45) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int previousPage = currentPage - 1;
+                shopInventoryManager.openRegisteredInventory(player, previousPage);
+            }
+            if (event.getSlot() == 48){
+                shopInventoryManager.openReturnedInventory(player,1);
+            }
+            if (event.getSlot() == 53) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int nextPage = currentPage + 1;
+
+                Map<ItemStack, UUID> registeredItems = ItemRegistration.getRegisteredItems();
+                List<ItemStack> itemList = new ArrayList<>(registeredItems.keySet());
+                int maxSlotsPerPage = 45;
+                int startIndex = (nextPage - 1) * maxSlotsPerPage;
+
+                if (startIndex >= 0 && startIndex < itemList.size()) {
+                    shopInventoryManager.openRegisteredInventory(player, nextPage);
+                }
+            }
         }
     }
     @EventHandler
@@ -473,6 +525,31 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            }
+            if (event.getSlot() == 45) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int previousPage = currentPage - 1;
+                shopInventoryManager.openReturnedInventory(player, previousPage);
+            }
+            if (event.getSlot() == 47){
+                shopInventoryManager.openRegisteredInventory(player,1);
+            }
+            if (event.getSlot() == 53) {
+                InventoryView inventoryView = event.getView();
+                String title = inventoryView.getTitle();
+                int currentPage = Integer.parseInt(title.substring(title.lastIndexOf(":") + 2, title.lastIndexOf("페이지")).trim());
+                int nextPage = currentPage + 1;
+
+                Map<ItemStack, UUID> ReturnedItems = ItemReturn.getReturnedItemsItems();
+                List<ItemStack> itemList = new ArrayList<>(ReturnedItems.keySet());
+                int maxSlotsPerPage = 45;
+                int startIndex = (nextPage - 1) * maxSlotsPerPage;
+
+                if (startIndex >= 0 && startIndex < itemList.size()) {
+                    shopInventoryManager.openReturnedInventory(player, nextPage);
+                }
             }
             if (clickType == ClickType.SHIFT_LEFT){
 

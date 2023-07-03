@@ -597,9 +597,7 @@ public class test extends JavaPlugin implements Listener {
             player.getInventory().addItem(chur);
             System.out.println("new player join the game");
         }
-        // 환영 메시지 변경
-        String welcomeMessage = "§6" + player.getName() + "님이 게임에 참가 하였습니다.";
-        event.setJoinMessage(welcomeMessage);
+
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
     }

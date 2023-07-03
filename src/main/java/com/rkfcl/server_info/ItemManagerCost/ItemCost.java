@@ -8,55 +8,110 @@ public class ItemCost {
     public int itemCost(ItemStack itemStack,int customModelData) {
         Material itemType = itemStack.getType();
         ItemMeta meta = itemStack.getItemMeta();
-
-        if (itemType == Material.COD) {
+        if (itemType == Material.PAPER && customModelData == 167) {
+            return 10000;
+        } else if (itemType == Material.PAPER && customModelData == 168) {
+            return 30000;
+        } else if (itemType == Material.PAPER && customModelData == 169) {
+            return 50000;
+        } else if (itemType == Material.PAPER && customModelData == 100) {
+            return 500;
+        } else if (itemType == Material.BREAD && customModelData == 10000) {
+            return 3;
+        }else if (itemType == Material.COD) {
             return 1;
         } else if (itemType == Material.TROPICAL_FISH) {
             return 3;
         } else if (itemType == Material.PUFFERFISH) {
             return 3;
         } else if (itemType == Material.SALMON) {
-            return 3;
+            return 2;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 1) {
-            return 1;
+            return 2;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 2) {
             return 10;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 3) {
             return 5;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 4) {
+            return 4;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 5) {
+            return 7;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 6) {
+            return 5;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 7) {
+            return 4;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 8) {
+            return 3;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 9) {
+            return 3;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 10) {
+            return 2;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 11) {
+            return 3;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 12) {
+            return 8;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 13) {
+            return 8;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 14) {
+            return 10;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 15) {
+            return 16;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 16) {
+            return 32;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 17) {
+            return 20;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 18) {
             return 13;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 19) {
+            return 10;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 20) {
+            return 10;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 21) {
+            return 6;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 22) {
+            return 11;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 23) {
+            return 7;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 24) {
+            return 5;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 25) {
+            return 4;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 26) {
+            return 4;
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 27) {
+            return 8;
         }
         //광물 가격
         if (itemType == Material.FLINT) {
             return 1;
         } else if (itemType == Material.IRON_INGOT) {
-            return 3;
+            return 2;
         } else if (itemType == Material.GOLD_INGOT) {
-            return 0;
+            return 4;
         } else if (itemType == Material.DIAMOND) {
             return 50;
         } else if (itemType == Material.QUARTZ) {
-            return 0;
-        } else if (itemType == Material.AMETHYST_SHARD) {
-            return 0;
-        } else if (itemType == Material.COPPER_INGOT) {
             return 2;
+        } else if (itemType == Material.AMETHYST_SHARD) {
+            return 1;
+        } else if (itemType == Material.COPPER_INGOT) {
+            return 1;
         } else if (itemType == Material.EMERALD) {
-            return 0;
+            return 5;
         } else if (itemType == Material.NETHERITE_INGOT) {
-            return 0;
+            return 100;
         } else if (itemType == Material.COAL_BLOCK) {
-            return 0;
+            return 10;
         } else if (itemType == Material.LAPIS_BLOCK) {
-            return 0;
+            return 10;
         } else if (itemType == Material.REDSTONE_BLOCK) {
-            return 0;
+            return 10;
         } else if (itemType == Material.OBSIDIAN) {
-            return 0;
+            return 3;
         } else if (itemType == Material.CRYING_OBSIDIAN) {
-            return 0;
+            return 5;
         } else if (itemType == Material.GLOWSTONE) {
-            return 0;
+            return 3;
         }
 
         // 농부 상점 아이템 가격
@@ -98,29 +153,29 @@ public class ItemCost {
             return 1;
             //농부 2상점 아이템 가격
         } else if (itemType == Material.APPLE && customModelData == 10028) {
-            return 28;
+            return 15;
         } else if (itemType == Material.APPLE && customModelData == 10029) {
-            return 29;
+            return 15;
         } else if (itemType == Material.APPLE && customModelData == 10030) {
-            return 30;
+            return 15;
         } else if (itemType == Material.APPLE && customModelData == 10031) {
-            return 31;
+            return 15;
         } else if (itemType == Material.APPLE && customModelData == 10032) {
-            return 32;
+            return 15;
         } else if (itemType == Material.APPLE && customModelData == 10033) {
-            return 33;
+            return 15;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10001) {
-            return 1;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10002) {
-            return 2;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10003) {
-            return 3;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10004) {
-            return 4;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10005) {
-            return 5;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 5) {
-            return 6;
+            return 13;
         } else if (itemType == Material.OAK_PLANKS && customModelData == 10000) {
             return 60;
         } else if (itemType == Material.SHEARS && customModelData == 101) {

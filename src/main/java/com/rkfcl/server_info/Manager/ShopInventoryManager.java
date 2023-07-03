@@ -90,12 +90,16 @@ public class ShopInventoryManager {
         setItem(inventory, 18, ItemManager.createFisherJob3Item());
         setItem(inventory, 27, ItemManager.createFisherJob4Item());
 
-        setItem(inventory, 6, ItemManager.createCookerJob1Item());
-        setItem(inventory, 15, ItemManager.createCookerJob2Item());
-        setItem(inventory, 24, ItemManager.createCookerJob3Item());
-        setItem(inventory, 33, ItemManager.createCookerJob4Item());
+//        setItem(inventory, 6, ItemManager.createCookerJob1Item());
+//        setItem(inventory, 15, ItemManager.createCookerJob2Item());
+//        setItem(inventory, 24, ItemManager.createCookerJob3Item());
+//        setItem(inventory, 33, ItemManager.createCookerJob4Item());
 
         setItem(inventory, 39, ItemManager.createresetJobItem());
+
+//        setItem(inventory, 45, createItemsAdderItem("small_construction_block"));
+//        setItem(inventory, 46, createItemsAdderItem("medium_construction_block"));
+//        setItem(inventory, 47, createItemsAdderItem("large_construction_block"));
 
         player.openInventory(inventory);
     }
@@ -188,19 +192,38 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
-    public void openexchangeInventory(Player player,int page) {
+    public void openShopItemsInventory(Player player) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "잡화 상점");
+        setItem(inventory, 0, createSaleItemsAdderItem("small_construction_block"));
+        setItem(inventory, 1, createSaleItemsAdderItem("medium_construction_block"));
+        setItem(inventory, 2, createSaleItemsAdderItem("large_construction_block"));
+        setItem(inventory, 9, createSaleItemsAdderItem("letter_of_return"));
+        setItem(inventory, 18, createSaleItemsAdderItem("chur"));
+
+        setGlassPanes(inventory);
+        setClock(inventory, 49);
+
+        player.openInventory(inventory);
+    }
+    public void openexchangeInventory(Player player, int page) {
         removeExpiredItems();
         itemManager = new ItemManager();
-        Inventory inventory = Bukkit.createInventory(null, 54, "거래소 : "+page+"페이지");
+        Inventory inventory = Bukkit.createInventory(null, 54, "거래소 : " + page + "페이지");
 
         Map<ItemStack, UUID> registeredItems = ItemRegistration.getRegisteredItems();
 
         int slot = 0;
-        for (ItemStack item : registeredItems.keySet()) {
+        int maxSlotsPerPage = 45;
+
+        int startIndex = (page - 1) * maxSlotsPerPage;
+        int endIndex = startIndex + maxSlotsPerPage;
+
+        List<ItemStack> itemList = new ArrayList<>(registeredItems.keySet());
+        for (int i = startIndex; i < endIndex && i < itemList.size(); i++) {
+            ItemStack item = itemList.get(i);
             setItem(inventory, slot, item);
             slot++;
-            if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
-                break;
         }
 
         setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
@@ -220,24 +243,27 @@ public class ShopInventoryManager {
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "등록된 아이템 : " + page + "페이지");
 
-
-
         int slot = 0;
+        int maxSlotsPerPage = 45;
+        List<ItemStack> registeredItemList = new ArrayList<>();
         for (ItemStack item : registeredItems.keySet()) {
             UUID uuid = registeredItems.get(item);
             if (uuid.equals(player.getUniqueId())) {
-                setItem(inventory, slot, item);
-                slot++;
-                if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
-                    break;
+                registeredItemList.add(item);
             }
         }
+        int startIndex = (page - 1) * maxSlotsPerPage;
+        int endIndex = Math.min(startIndex + maxSlotsPerPage, registeredItemList.size());
 
-
+        for (int i = startIndex; i < endIndex; i++) {
+            ItemStack item = registeredItemList.get(i);
+            setItem(inventory, slot, item);
+            slot++;
+        }
         setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
         setItem(inventory, 46, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 47, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
-        setItem(inventory, 48, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 48, ItemManager.InvenDeco_ENDERCHEST());
         setItem(inventory, 49, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 50, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 51, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
@@ -246,35 +272,43 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+
     public void openReturnedInventory(Player player, int page) {
         removeExpiredItems();
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "반환된 아이템 : " + page + "페이지");
 
         int slot = 0;
+        int maxSlotsPerPage = 45;
+
+        List<ItemStack> returnedItemList = new ArrayList<>();
         for (ItemStack item : ReturnedItems.keySet()) {
             UUID uuid = ReturnedItems.get(item);
             if (uuid.equals(player.getUniqueId())) {
-                setItem(inventory, slot, item);
-                slot++;
-                if (slot >= 45) // 인벤토리 상단 5행까지만 표시하도록 설정 (0~44 슬롯)
-                    break;
+                returnedItemList.add(item);
             }
         }
 
+        int startIndex = (page - 1) * maxSlotsPerPage;
+        int endIndex = Math.min(startIndex + maxSlotsPerPage, returnedItemList.size());
 
+        for (int i = startIndex; i < endIndex; i++) {
+            ItemStack item = returnedItemList.get(i);
+            setItem(inventory, slot, item);
+            slot++;
+        }
         setItem(inventory, 45, ItemManager.InvenDecoRED_STAINED_GLASS_PANE_BEFORE());
         setItem(inventory, 46, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
-        setItem(inventory, 47, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        setItem(inventory, 47, ItemManager.InvenDeco_CHEST());
         setItem(inventory, 48, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 49, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 50, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 51, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 52, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         setItem(inventory, 53, ItemManager.InvenDecoGREEN_STAINED_GLASS_PANE_NEXT());
-
         player.openInventory(inventory);
     }
+
 
 
 
