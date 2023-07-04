@@ -1,11 +1,8 @@
 package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.ItemRegistration;
-import com.rkfcl.server_info.commands.ExchangeCommand;
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.ItemsAdder;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -103,7 +100,34 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+    public void openShopButcherInventory(Player player) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "도축업자 상점");
 
+        setItem(inventory, 0, ItemManager.createOreItem(Material.MUTTON,0));
+        setItem(inventory, 1, ItemManager.createOreItem(Material.CHICKEN,0));
+        setItem(inventory, 2, ItemManager.createOreItem(Material.RABBIT,0));
+        setItem(inventory, 3, ItemManager.createOreItem(Material.BEEF,0));
+        setItem(inventory, 4, ItemManager.createOreItem(Material.PORKCHOP,0));
+        setItem(inventory, 5, ItemManager.createOreItem(Material.EGG,0));
+        setItem(inventory, 6, ItemManager.createOreItem(Material.FEATHER,0));
+        setItem(inventory, 7, ItemManager.createOreItem(Material.HONEYCOMB,0));
+        setItem(inventory, 8, ItemManager.createOreItem(Material.HONEY_BOTTLE,0));
+        setItem(inventory, 9, ItemManager.createOreItem(Material.COOKED_MUTTON,0));
+        setItem(inventory, 10, ItemManager.createOreItem(Material.COOKED_CHICKEN,0));
+        setItem(inventory, 11, ItemManager.createOreItem(Material.COOKED_RABBIT,0));
+        setItem(inventory, 12, ItemManager.createOreItem(Material.COOKED_BEEF,0));
+        setItem(inventory, 13, ItemManager.createOreItem(Material.COOKED_PORKCHOP,0));
+        setItem(inventory, 18, ItemManager.createOreItem(Material.RABBIT_HIDE,0));
+        setItem(inventory, 19, ItemManager.createOreItem(Material.RABBIT_FOOT,0));
+        setItem(inventory, 20, ItemManager.createOreItem(Material.LEATHER,0));
+        setItem(inventory, 21, ItemManager.createOreItem(Material.SCUTE,0));
+
+        setGlassPanes(inventory);
+        setClock(inventory, 49);
+
+        player.openInventory(inventory);
+    }
     public void openShopMineInventory(Player player) {
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "광부 상점");
@@ -123,6 +147,7 @@ public class ShopInventoryManager {
         setItem(inventory, 12, ItemManager.createOreItem(Material.OBSIDIAN,0));
         setItem(inventory, 13, ItemManager.createOreItem(Material.CRYING_OBSIDIAN,0));
         setItem(inventory, 14, ItemManager.createOreItem(Material.GLOWSTONE,0));
+        setItem(inventory, 14, ItemManager.createOreItem(Material.AMETHYST_BLOCK,0));
 
         setGlassPanes(inventory);
         setClock(inventory, 49);
@@ -198,6 +223,7 @@ public class ShopInventoryManager {
         setItem(inventory, 0, createSaleItemsAdderItem("small_construction_block"));
         setItem(inventory, 1, createSaleItemsAdderItem("medium_construction_block"));
         setItem(inventory, 2, createSaleItemsAdderItem("large_construction_block"));
+        setItem(inventory, 3, ItemManager.createSaleItem(Material.IRON_DOOR,1,"비밀번호 문"));
         setItem(inventory, 9, createSaleItemsAdderItem("letter_of_return"));
         setItem(inventory, 18, createSaleItemsAdderItem("chur"));
 
@@ -432,6 +458,12 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+//    public void plaerquestlist(Player player) {
+//        itemManager = new ItemManager();
+//        Inventory inventory = Bukkit.createInventory(null, 9, "퀘스트");
+//
+//        player.openInventory(inventory);
+//    }
 
     private void setItem(Inventory inventory, int slot, ItemStack item) {
         inventory.setItem(slot, item);

@@ -18,12 +18,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import questcreate.questcreate.Quest;
+import questcreate.questcreate.QuestCreate;
+
 import java.util.*;
 
 import static com.rkfcl.server_info.ItemRegistration.*;
 
 public class inventoryClickListener implements Listener {
-
     private test pluginInstance;
     private PlayerDataManager playerDataManager;
     private final AbilityManager abilityManager;
@@ -183,7 +185,7 @@ public class inventoryClickListener implements Listener {
         if (event.getClickedInventory() == null) return;
 
         // 어부 상점
-        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")) {
+        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")||event.getView().getTitle().equalsIgnoreCase("도축업자 상점")) {
             event.setCancelled(true);
 
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
@@ -296,8 +298,10 @@ public class inventoryClickListener implements Listener {
                                     if (customModelData == 10000 && clickedItem.getType().equals(Material.OAK_PLANKS)) { //농토
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " customcrops:farmland " + setCount);
                                     }else if (customModelData == 10000 && clickedItem.getType().equals(Material.BREAD)) { //츄르
-                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " customcrafting:chur " + setCount);
-                                    } else {
+                                        ItemStack Item = ItemsAdder.getCustomItem("chur");
+                                        Item.setAmount(setCount);
+                                        player.getInventory().addItem(Item);
+                                    }else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
                                         if (!remainingItems.isEmpty()) {
                                             player.sendMessage("§6[상점] §f인벤토리에 공간이 부족합니다.");
@@ -311,6 +315,12 @@ public class inventoryClickListener implements Listener {
                                     pluginInstance.updateScoreboard(player);
                                     player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + "$)");
                                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                                    //지금 열어 있는 인벤토리 다시열기
+                                    if (event.getView().getTitle().equalsIgnoreCase("잡화 상점")){
+                                        shopInventoryManager.openShopItemsInventory(player);
+                                    }else if (event.getView().getTitle().equalsIgnoreCase("농부2 상점")){
+                                        shopInventoryManager.openShopFarmer2Inventory(player);
+                                    }
                                 } else {
                                     player.sendMessage("§6[상점] §f구매할 아이템이 없습니다.");
                                 }
@@ -359,6 +369,9 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("§6[ 거래소 ] §f/거래소 반환아이템 : 반환된 아이템을 확인 및 수령합니다");
                 player.sendMessage("§6[ 거래소 ] §f아이템 클릭시 아이템을 구매 합니다");
                 player.sendMessage("§6[ 거래소 ] §f등록된 아이템은 쉬프트 좌클릭시 아이템을 반환 합니다.");
+            }
+            if (event.getSlot() == 15){
+
             }
         }
     }
@@ -775,6 +788,7 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("어부 2차만 전직 가능합니다.");
                 return;
             }
+            AbilityManager.applyWaterResistance(player);
             playerDataManager.setPlayerJob(player.getUniqueId(), "어부 3차");
         }else if (jobName.equals("어부 4차")) {
             if (!playerJob.equals("어부 3차")) {

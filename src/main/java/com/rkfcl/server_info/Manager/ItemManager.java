@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -76,6 +77,13 @@ public class ItemManager {
         ItemStack check = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
         meta.setDisplayName(" ");
+        check.setItemMeta(meta);
+        return check;
+    }
+    public static ItemStack Menu_Quest () {
+        ItemStack check = new ItemStack(Material.BOOK, 1);
+        ItemMeta meta = check.getItemMeta();
+        meta.setDisplayName("퀘스트 목록");
         check.setItemMeta(meta);
         return check;
     }

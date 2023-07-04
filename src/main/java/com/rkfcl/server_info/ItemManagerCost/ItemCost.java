@@ -18,6 +18,8 @@ public class ItemCost {
             return 500;
         } else if (itemType == Material.BREAD && customModelData == 10000) {
             return 3;
+        }else if (itemType == Material.IRON_DOOR && customModelData == 1) {
+            return 1000;
         }else if (itemType == Material.COD) {
             return 1;
         } else if (itemType == Material.TROPICAL_FISH) {
@@ -97,19 +99,21 @@ public class ItemCost {
         } else if (itemType == Material.COPPER_INGOT) {
             return 1;
         } else if (itemType == Material.EMERALD) {
-            return 5;
+            return 70;
         } else if (itemType == Material.NETHERITE_INGOT) {
-            return 100;
+            return 500;
         } else if (itemType == Material.COAL_BLOCK) {
             return 10;
         } else if (itemType == Material.LAPIS_BLOCK) {
             return 10;
         } else if (itemType == Material.REDSTONE_BLOCK) {
             return 10;
+        } else if (itemType == Material.AMETHYST_BLOCK) {
+            return 4;
         } else if (itemType == Material.OBSIDIAN) {
             return 3;
         } else if (itemType == Material.CRYING_OBSIDIAN) {
-            return 5;
+            return 60;
         } else if (itemType == Material.GLOWSTONE) {
             return 3;
         }
@@ -127,8 +131,8 @@ public class ItemCost {
             return 1;
         } else if (itemType == Material.WHEAT) {
             return 2;
-        } else if (itemType == Material.BREAD) {
-            return 4;
+        } else if (itemType == Material.BREAD && customModelData == 0) {
+            return 6;
         } else if (itemType == Material.PUMPKIN_PIE) {
             return 1;
         } else if (itemType == Material.MELON) {
@@ -146,7 +150,7 @@ public class ItemCost {
         } else if (itemType == Material.NETHER_WART) {
             return 1;
         } else if (itemType == Material.CAKE) {
-            return 5;
+            return 25;
         } else if (itemType == Material.GLOW_BERRIES) {
             return 2;
         } else if (itemType == Material.SWEET_BERRIES) {
@@ -155,33 +159,70 @@ public class ItemCost {
         } else if (itemType == Material.APPLE && customModelData == 10028) {
             return 15;
         } else if (itemType == Material.APPLE && customModelData == 10029) {
-            return 15;
+            return 18;
         } else if (itemType == Material.APPLE && customModelData == 10030) {
             return 15;
         } else if (itemType == Material.APPLE && customModelData == 10031) {
-            return 15;
+            return 17;
         } else if (itemType == Material.APPLE && customModelData == 10032) {
-            return 15;
+            return 16;
         } else if (itemType == Material.APPLE && customModelData == 10033) {
-            return 15;
+            return 13;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10001) {
-            return 13;
+            return 3;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10002) {
-            return 13;
+            return 5;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10003) {
-            return 13;
+            return 3;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10004) {
-            return 13;
+            return 6;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 10005) {
-            return 13;
+            return 3;
         } else if (itemType == Material.WHEAT_SEEDS && customModelData == 5) {
-            return 13;
+            return 4;
         } else if (itemType == Material.OAK_PLANKS && customModelData == 10000) {
             return 60;
         } else if (itemType == Material.SHEARS && customModelData == 101) {
             return 1000;
+            //도축업자 아이템 가격
+        } else if (itemType == Material.MUTTON && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.CHICKEN && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.RABBIT && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.BEEF && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.PORKCHOP && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.EGG && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.FEATHER && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.HONEYCOMB && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.HONEY_BOTTLE && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.COOKED_MUTTON && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.COOKED_CHICKEN && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.COOKED_RABBIT && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.COOKED_BEEF && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.COOKED_PORKCHOP && customModelData == 0) {
+            return 2;
+        } else if (itemType == Material.RABBIT_HIDE && customModelData == 0) {
+            return 15;
+        } else if (itemType == Material.RABBIT_FOOT && customModelData == 0) {
+            return 16;
+        } else if (itemType == Material.LEATHER && customModelData == 0) {
+            return 1;
+        } else if (itemType == Material.SCUTE && customModelData == 0) {
+            return 15;
         }
-        return 0;
+            return 0;
     }
 
 }

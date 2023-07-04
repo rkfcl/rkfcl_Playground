@@ -95,6 +95,9 @@ public class AbilityManager implements Listener {
     public static void applyFireResistance(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, false));
     }
+    public static void applyWaterResistance(Player player) {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, false));
+    }
 
     private static int getBlockBreakCount(Player player) {
         return blockBreakCounts.getOrDefault(player, 0);
