@@ -17,8 +17,7 @@ import java.util.*;
 import static com.rkfcl.server_info.ItemRegistration.registeredItems;
 import static com.rkfcl.server_info.ItemRegistration.removeExpiredItems;
 import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
-import static com.rkfcl.server_info.Manager.ItemManager.createItemsAdderItem;
-import static com.rkfcl.server_info.Manager.ItemManager.createSaleItemsAdderItem;
+import static com.rkfcl.server_info.Manager.ItemManager.*;
 import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
 import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
@@ -458,12 +457,18 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
-//    public void plaerquestlist(Player player) {
-//        itemManager = new ItemManager();
-//        Inventory inventory = Bukkit.createInventory(null, 9, "퀘스트");
-//
-//        player.openInventory(inventory);
-//    }
+    public void coinshopinventory(Player player) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 45, "코인 상점");
+        setItem(inventory, 21, createSaleCoinItemsAdderItem("invensave"));
+        setItem(inventory, 3, createSaleCoinItemsAdderItem("small_construction_block"));
+        setItem(inventory, 4, createSaleCoinItemsAdderItem("medium_construction_block"));
+        setItem(inventory, 5, createSaleCoinItemsAdderItem("large_construction_block"));
+        setItem(inventory, 23, createSaleCoinItemsAdderItem("randombook"));
+
+
+        player.openInventory(inventory);
+    }
 
     private void setItem(Inventory inventory, int slot, ItemStack item) {
         inventory.setItem(slot, item);

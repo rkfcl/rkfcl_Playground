@@ -18,8 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import questcreate.questcreate.Quest;
-import questcreate.questcreate.QuestCreate;
 
 import java.util.*;
 
@@ -320,6 +318,109 @@ public class inventoryClickListener implements Listener {
                                         shopInventoryManager.openShopItemsInventory(player);
                                     }else if (event.getView().getTitle().equalsIgnoreCase("농부2 상점")){
                                         shopInventoryManager.openShopFarmer2Inventory(player);
+                                    }
+                                } else {
+                                    player.sendMessage("§6[상점] §f구매할 아이템이 없습니다.");
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        } else if (event.getView().getTitle().equalsIgnoreCase("코인 상점")) {
+            event.setCancelled(true);
+
+            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
+                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
+                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+            } else {
+                event.setCancelled(true);
+                ItemStack clickedItem = event.getCurrentItem();
+
+                if (clickedItem != null) {
+                    ItemMeta meta = clickedItem.getItemMeta();
+
+                    if (meta != null) {
+                        Material itemType = clickedItem.getType();
+                        int customModelData = clickedItem.getItemMeta().getCustomModelData();
+
+                        if (customModelData == getCustomModelData(clickedItem)) {
+                            if (clickEvent.isRightClick()) {
+
+                                // 아이템 설명에 "판매불가"가 있는지 확인
+                                List<String> lore = meta.getLore();
+                                boolean isSellBlocked = false;
+
+                                if (lore != null) {
+                                    for (String line : lore) {
+                                        if (line.contains("§c판매 불가")) {
+                                            isSellBlocked = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (isSellBlocked) {
+                                    player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
+                                    return; // 판매불가 아이템인 경우 처리 중단
+                                }
+                            } else if (clickEvent.isLeftClick()) {
+
+                                // 아이템 설명에 "구매불가"가 있는지 확인
+                                List<String> lore = meta.getLore();
+                                boolean isSellBlocked = false;
+
+                                if (lore != null) {
+                                    for (String line : lore) {
+                                        if (line.contains("§c구매 불가")) {
+                                            isSellBlocked = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (isSellBlocked) {
+                                    player.sendMessage("§6[상점] §f구매가 불가능한 아이템입니다.");
+                                    return; // 판매불가 아이템인 경우 처리 중단
+                                }
+                                // 구매 처리
+                                int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
+                                int individualCost = itemCost.itemCoinCost(clickedItem, customModelData);
+                                int totalCost = individualCost * setCount;
+                                int availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5001);
+                                // 플레이어의 돈 확인
+                                if (availableCoinCount < totalCost) {
+                                    player.sendMessage("§6[상점] §f코인이 부족합니다.");
+                                    return; // 코인이 부족한 경우 처리 중단
+                                }
+
+                                // 구매 처리
+                                if (setCount > 0) {
+                                    clickedItem.setAmount(setCount);
+                                    ItemMeta itemmeta = clickedItem.getItemMeta();
+                                    if (itemmeta != null) {
+                                        itemmeta.setLore(new ArrayList<>()); // 아이템 설명을 없애기 위해 빈 리스트로 설정
+                                        clickedItem.setItemMeta(itemmeta);
+                                    }
+                                    // 플레이어에게 아이템 추가
+                                    removeItems(player.getInventory(), Material.PAPER,5001,totalCost);
+                                    if (customModelData == 5003 && clickedItem.getType().equals(Material.ENCHANTED_BOOK)) { //농토
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:randombook " + setCount);
+                                    }else {
+                                        HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
+                                        if (!remainingItems.isEmpty()) {
+                                            player.sendMessage("§6[상점] §f인벤토리에 공간이 부족합니다.");
+                                            return; // 인벤토리 공간 부족한 경우 처리 중단
+                                        }
+                                    }
+
+
+
+
+                                    player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 갈치 코인)");
+                                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                                    //지금 열어 있는 인벤토리 다시열기
+                                    if (event.getView().getTitle().equalsIgnoreCase("코인 상점")){
+                                        shopInventoryManager.coinshopinventory(player);
                                     }
                                 } else {
                                     player.sendMessage("§6[상점] §f구매할 아이템이 없습니다.");
@@ -638,7 +739,7 @@ public class inventoryClickListener implements Listener {
         }
         return count;
     }
-    private void removeItems(Inventory inventory, Material itemType, int customModelData, int count) {
+    public static void removeItems(Inventory inventory, Material itemType, int customModelData, int count) {
         int remaining = count; // 남은 개수를 추적하기 위한 변수
 
         for (ItemStack itemStack : inventory.getContents()) {
@@ -657,7 +758,7 @@ public class inventoryClickListener implements Listener {
     }
 
     // 아이템의 CustomModelData 값을 가져오는 메서드
-    private int getCustomModelData(ItemStack itemStack) {
+    public static int getCustomModelData(ItemStack itemStack) {
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
             return itemStack.getItemMeta().getCustomModelData();
         }

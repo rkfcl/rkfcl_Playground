@@ -59,6 +59,7 @@ public class MenuCommand implements CommandExecutor, Listener {
         inventory.setItem(19, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         inventory.setItem(21, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         inventory.setItem(23, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
+        inventory.setItem(24, ItemManager.Menu_fishcollect());
         inventory.setItem(25, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());
         for (int i = 28; i <= 34; i++) {
             inventory.setItem(i, ItemManager.InvenDecoWHITE_STAINED_GLASS_PANE());

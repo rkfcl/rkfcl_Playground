@@ -87,6 +87,16 @@ public class ItemManager {
         check.setItemMeta(meta);
         return check;
     }
+    public static ItemStack Menu_fishcollect() {
+        // itemsadder에서 생성한 아이템을 가져오는 코드
+        ItemStack fishItem = ItemsAdder.getCustomItem("tuna");
+        ItemMeta meta = fishItem.getItemMeta();
+        meta.setDisplayName("물고기 도감");
+        fishItem.setItemMeta(meta);
+        // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
+
+        return fishItem;
+    }
     public static ItemStack InvenDecoGREEN_STAINED_GLASS_PANE () {
         ItemStack check = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
@@ -242,6 +252,18 @@ public class ItemManager {
         int customModelData = meta.getCustomModelData();
         // 커스텀 모델 데이터 값 사용
         meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCost(fishItem,customModelData) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        fishItem.setItemMeta(meta);
+        // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
+
+        return fishItem;
+    }
+    public static ItemStack createSaleCoinItemsAdderItem(String itemId) {
+        // itemsadder에서 생성한 아이템을 가져오는 코드
+        ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
+        ItemMeta meta = fishItem.getItemMeta();
+        int customModelData = meta.getCustomModelData();
+        // 커스텀 모델 데이터 값 사용
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCoinCost(fishItem,customModelData) +" §f갈치 코인" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
         fishItem.setItemMeta(meta);
         // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
 

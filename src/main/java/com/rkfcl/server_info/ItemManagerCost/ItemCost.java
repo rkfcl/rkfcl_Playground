@@ -20,6 +20,8 @@ public class ItemCost {
             return 3;
         }else if (itemType == Material.IRON_DOOR && customModelData == 1) {
             return 1000;
+        }else if (itemType == Material.PAPER && customModelData == 5002) {
+            return 2;
         }else if (itemType == Material.COD) {
             return 1;
         } else if (itemType == Material.TROPICAL_FISH) {
@@ -40,7 +42,7 @@ public class ItemCost {
             return 7;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 6) {
             return 5;
-        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 7) {
+        } else if (itemType == Material.ROTTEN_FLESH && customModelData == 70) {
             return 4;
         } else if (itemType == Material.ROTTEN_FLESH && customModelData == 8) {
             return 3;
@@ -223,6 +225,22 @@ public class ItemCost {
             return 15;
         }
             return 0;
+    }
+    public int itemCoinCost(ItemStack itemStack,int customModelData) {
+        Material itemType = itemStack.getType();
+        ItemMeta meta = itemStack.getItemMeta();
+        if (itemType == Material.PAPER && customModelData == 5002) {
+            return 2;
+        }else if (itemType == Material.PAPER && customModelData == 167) {
+            return 10;
+        }else if (itemType == Material.PAPER && customModelData == 168) {
+            return 30;
+        }else if (itemType == Material.PAPER && customModelData == 169) {
+            return 50;
+        }else if (itemType == Material.ENCHANTED_BOOK && customModelData == 5003) {
+            return 2;
+        }
+        return 0;
     }
 
 }

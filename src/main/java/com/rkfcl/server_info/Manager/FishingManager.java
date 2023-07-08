@@ -74,8 +74,6 @@ public class FishingManager implements Listener {
                             caughtFish.getType() == Material.TROPICAL_FISH ||
                             caughtFish.getType() == Material.PUFFERFISH) {
                         // 어부인 경우 물고기를 잡았을 때만 작동
-                        ItemStack fishItem = ItemsAdder.getCustomItem("tuna");
-                        player.getInventory().addItem(fishItem);
                         if (!isFisher(player).contains("1차")) {
                             if (Math.random() <= 0.1) { // 10% 확률로 작동
                                 giveRandomFish(player);
@@ -221,25 +219,6 @@ public class FishingManager implements Listener {
                     }
                 }
             }
-        }
-    }
-    @EventHandler
-    public void onItemPickup(EntityPickupItemEvent event) {
-        Entity entity = event.getEntity();
-        ItemStack item = event.getItem().getItemStack();
-
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            if (isFisher(player).contains("어부 1차")) {
-                if (additionalItem.isSimilar(ItemsAdder.getCustomItem("arapaima"))) {
-                    player.getInventory().removeItem(additionalItem);
-                    additionalItem = ItemsAdder.getCustomItem("tuna");
-                    player.getInventory().addItem(additionalItem);
-                }
-
-            }
-
-            additionalItem = item.clone(); // 주워진 아이템을 복제하여 추가 아이템 생성
         }
     }
 }

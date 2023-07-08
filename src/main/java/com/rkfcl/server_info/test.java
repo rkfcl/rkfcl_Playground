@@ -149,7 +149,7 @@ public class test extends JavaPlugin implements Listener {
             @Override
             public void run() {
                 try {
-                    System.out.println(ChatColor.GREEN + "Data saved");
+                    getLogger().info("§2Data saved");
                     FileWriter writer = new FileWriter(f, false);
                     for(UUID uuid : map.keySet()){
                         writer.write(uuid.toString()+"|"+map.get(uuid)+"\n");
@@ -187,7 +187,7 @@ public class test extends JavaPlugin implements Listener {
             @Override
             public void run() {
                 try {
-                    System.out.println(ChatColor.GREEN + "Data saved");
+                    getLogger().info("§2Data saved");
                     FileWriter writer = new FileWriter(f, false);
                     for(UUID uuid : map.keySet()){
                         writer.write(uuid.toString()+"|"+map.get(uuid)+"\n");
@@ -578,7 +578,7 @@ public class test extends JavaPlugin implements Listener {
         }
         mapToFile(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
-        System.out.println("갈치놀이터 플러그인 정상 종료");
+        getLogger().info(ChatColor.GREEN + "갈치놀이터 플러그인 정상 종료");
 
     }
 
@@ -596,7 +596,7 @@ public class test extends JavaPlugin implements Listener {
             ItemStack chur = CustomStack.getInstance("chur").getItemStack();
             chur.setAmount(32);
             player.getInventory().addItem(chur);
-            System.out.println("new player join the game");
+            getLogger().info(ChatColor.GREEN + "새로운 플레이어 입장");
         }
 
         player.setScoreboard(scoreboard);

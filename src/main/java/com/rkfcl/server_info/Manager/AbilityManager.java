@@ -1,6 +1,7 @@
 package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.commands.GiveCheckCommand;
+import com.rkfcl.server_info.inventoryClickListener;
 import com.rkfcl.server_info.test;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
@@ -494,32 +495,49 @@ public class AbilityManager implements Listener {
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
         int amount = playerDataManager.getPlayerBalance(player.getUniqueId());
         playerItemsMap.clear();
+
         if (job.equals("초보자")) {
             // 아이템 드롭 방지
             event.setKeepInventory(true);
             event.getDrops().clear();
-            //착용장비 드랍
+
+            // 착용장비 드롭
             for (ItemStack item : player.getInventory().getArmorContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);
                 }
             }
             player.getInventory().setArmorContents(null);
-        }else{
-            ItemStack check = ItemManager.createCheck(amount);
-            event.getDrops().add(check);
-            playerDataManager.setPlayerBalance(player.getUniqueId(),0);
-            plugin.updateScoreboard(player);
-        }
-        // 특정 아이템 드롭 방지 및 인벤토리에 추가
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.SHEARS && (item.getItemMeta().getCustomModelData() == 10 || item.getItemMeta().getCustomModelData() == 101)) {
-                event.getDrops().remove(item);
-                playerItemsMap.put(player.getUniqueId(), item);
+        } else {
+            boolean hasCustomItem = false;
+            ItemStack invensave = null; // 아이템을 저장할 변수 선언
+
+            // 특정 아이템 드롭 방지 및 인벤토리에 추가
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (item != null && item.getType() == Material.PAPER && item.getItemMeta().getCustomModelData() == 5002) {
+                    invensave = item; // 아이템 저장
+                    hasCustomItem = true;
+                    break;
+                }
+            }
+
+            if (hasCustomItem) {
+                // 아이템 드롭 방지
+                if (invensave != null) {
+                    inventoryClickListener.removeItems(player.getInventory(),Material.PAPER,5002,1);
+                }
+                event.setKeepInventory(true);
+                event.getDrops().clear();
+            } else {
+                ItemStack check = ItemManager.createCheck(amount);
+                event.getDrops().add(check);
+                playerDataManager.setPlayerBalance(player.getUniqueId(), 0);
+                plugin.updateScoreboard(player);
             }
         }
-
     }
+
+
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         // 플레이어가 다른 플레이어를 공격할 때 이벤트 처리

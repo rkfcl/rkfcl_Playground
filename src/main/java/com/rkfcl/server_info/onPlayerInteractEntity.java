@@ -52,6 +52,9 @@ public class onPlayerInteractEntity implements Listener {
                     case "도축업자":
                         shopInventoryManager.openShopButcherInventory(player);
                         break;
+                    case "코인상점":
+                        shopInventoryManager.coinshopinventory(player);
+                        break;
                     default:
                         event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
                         return;
