@@ -825,18 +825,21 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("직업을 초기화 해야 합니다");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 광부1차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "광부 1차");
         } else if (jobName.equals("광부 2차")) {
             if (!playerJob.equals("광부 1차")) {
                 player.sendMessage("광부 1차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 광부2차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "광부 2차");
         } else if (jobName.equals("광부 3차")) {
             if (!playerJob.equals("광부 2차")) {
                 player.sendMessage("광부 2차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 광부3차로 전직 했습니다.");
             abilityManager.applyFireResistance(player);
             playerDataManager.setPlayerJob(player.getUniqueId(), "광부 3차");
         } else if (jobName.equals("광부 4차")) {
@@ -844,18 +847,21 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("광부 3차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 광부4차로 전직 했습니다.");
            playerDataManager.setPlayerJob(player.getUniqueId(), "광부 4차");
         } else if (jobName.equals("농부 1차")) {
             if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
                 player.sendMessage("직업을 초기화 해야 합니다");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 농부1차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 1차");
         } else if (jobName.equals("농부 2차")) {
             if (!playerJob.equals("농부 1차")) {
                 player.sendMessage("농부 1차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 농부2차로 전직 했습니다.");
             ItemStack watering_can = ItemsAdder.getCustomItem("watering_can");
             player.getInventory().setItemInMainHand(watering_can);
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 2차");
@@ -864,31 +870,35 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("농부 2차만 전직 가능합니다.");
                 return;
             }
-
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 농부3차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 3차");
         } else if (jobName.equals("농부 4차")) {
             if (!playerJob.equals("농부 3차")) {
                 player.sendMessage("농부 3차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 농부4차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "농부 4차");
         } else if (jobName.equals("어부 1차")) {
             if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {
                 player.sendMessage("직업을 초기화 해야 합니다");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 어부1차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "어부 1차");
         }else if (jobName.equals("어부 2차")) {
             if (!playerJob.equals("어부 1차")) {
                 player.sendMessage("어부 1차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 어부2차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "어부 2차");
         }else if (jobName.equals("어부 3차")) {
             if (!playerJob.equals("어부 2차")) {
                 player.sendMessage("어부 2차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 어부3차로 전직 했습니다.");
             AbilityManager.applyWaterResistance(player);
             playerDataManager.setPlayerJob(player.getUniqueId(), "어부 3차");
         }else if (jobName.equals("어부 4차")) {
@@ -896,6 +906,7 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("어부 3차만 전직 가능합니다.");
                 return;
             }
+            Bukkit.getServer().broadcastMessage(player.getDisplayName()+"가 어부4차로 전직 했습니다.");
             playerDataManager.setPlayerJob(player.getUniqueId(), "어부 4차");
         } else if (jobName.equals("요리사 1차")) {
             if (!playerJob.equals("초보자") && !playerJob.equals("백수")) {

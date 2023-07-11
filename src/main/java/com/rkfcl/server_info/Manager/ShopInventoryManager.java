@@ -117,6 +117,7 @@ public class ShopInventoryManager {
         setItem(inventory, 11, ItemManager.createOreItem(Material.COOKED_RABBIT,0));
         setItem(inventory, 12, ItemManager.createOreItem(Material.COOKED_BEEF,0));
         setItem(inventory, 13, ItemManager.createOreItem(Material.COOKED_PORKCHOP,0));
+        setItem(inventory, 14, ItemManager.createOreItem(Material.WHITE_WOOL,0));
         setItem(inventory, 18, ItemManager.createOreItem(Material.RABBIT_HIDE,0));
         setItem(inventory, 19, ItemManager.createOreItem(Material.RABBIT_FOOT,0));
         setItem(inventory, 20, ItemManager.createOreItem(Material.LEATHER,0));

@@ -2,6 +2,7 @@ package com.rkfcl.server_info;
 
 import com.rkfcl.server_info.Manager.ItemManager;
 import com.rkfcl.server_info.Manager.ShopInventoryManager;
+import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -59,7 +60,7 @@ public class customdoor implements Listener {
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         ItemStack itemStack = event.getItem();
-//        PlayerDoorLocationMap.put(player.getUniqueId(), clickedBlock.getLocation());
+        PlayerDoorLocationMap.put(player.getUniqueId(), clickedBlock.getLocation());
         if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData() && itemStack.getItemMeta().getCustomModelData() == 1 && itemStack.getType()==Material.IRON_DOOR) {
             Location doorLocation = clickedBlock.getLocation().add(0, 1, 0);
             PlayerDoorLocationMap.put(player.getUniqueId(), doorLocation);
@@ -69,7 +70,7 @@ public class customdoor implements Listener {
         }
         Location sectorId = protectMap.get(clickedBlock.getLocation());
         List<Location> locations = AllowprotectMap.get(player.getUniqueId());
-        if (LockDoorMap.containsKey(clickedBlock.getLocation())) {
+        if (LockDoorMap.containsKey(clickedBlock.getLocation())||LockDoorMap.containsKey(clickedBlock.getLocation().subtract(0,1,0))) {
             if (locations != null && locations.contains(sectorId)) {
                 if (clickedBlock != null && clickedBlock.getType() == Material.IRON_DOOR) {
                     BlockData blockData = clickedBlock.getBlockData();
@@ -96,7 +97,7 @@ public class customdoor implements Listener {
                         clickedBlock.setBlockData(openable);
                         clickedBlock.getState().update();
                     } else {
-                        if (LockDoorMap.containsKey(clickedBlock.getLocation())) {
+                        if (LockDoorMap.containsKey(clickedBlock.getLocation())||LockDoorMap.containsKey(clickedBlock.getLocation().subtract(0,1,0))) {
                             pasw = new StringBuilder(); // pasw 초기화
                             shopInventoryManager.lockdoor(player, pasw.toString());
                         }
@@ -111,11 +112,35 @@ public class customdoor implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (block.getType() == Material.IRON_DOOR) {
+        Location location = block.getLocation();
+        Location sector = protectMap.get(location);
+        int x = sector.getBlockX();
+        int y = sector.getBlockY();
+        int z = sector.getBlockZ();
+        //권한 없으면 부수지 못하게 하는 코드
+        if (protectMap.containsKey(location)) {
+            Location SectorID = protectMap.get(location);
+            List<Location> PlayerAllow = AllowprotectMap.get(player.getUniqueId());
+            if (PlayerAllow != null && PlayerAllow.contains(SectorID)) {
+                if (block.getType() == Material.IRON_DOOR) {
+                    Location blockLocation = block.getLocation();
+                    if (LockDoorMap.containsKey(blockLocation)) {
+                        // 아이템 드롭 캔슬
+                        event.setDropItems(false);
+                        ItemStack lockdoordrop = ItemManager.lockdoor();
+                        // 플레이어에게 대체 아이템 주기
+                        player.getInventory().addItem(lockdoordrop);
+
+                        // 소리 재생
+                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
+                    }
+                }
+            }
+        }else if (block.getType() == Material.IRON_DOOR) {
             Location blockLocation = block.getLocation();
             if (LockDoorMap.containsKey(blockLocation)) {
-                Player player = event.getPlayer();
                 // 아이템 드롭 캔슬
                 event.setDropItems(false);
                 ItemStack lockdoordrop = ItemManager.lockdoor();
@@ -197,7 +222,8 @@ public class customdoor implements Listener {
                 player.sendMessage(ChatColor.RED + "1~6자리 숫자만 입력 가능합니다");
                 return;
             }
-            if (LockDoorMap.get(PlayerDoorLocationMap.get(player.getUniqueId())).equals(pasw.toString())){
+            Location location = PlayerDoorLocationMap.get(player.getUniqueId());
+            if (LockDoorMap.containsKey(location) && LockDoorMap.get(location).equals(pasw.toString())){
                 player.closeInventory();
 
                 // 철문 열기 작업
@@ -218,8 +244,32 @@ public class customdoor implements Listener {
                         }
                     }
                 }
-            } else {
-                player.sendMessage(ChatColor.RED + "비밀번호가 일치하지 않습니다.");
+            }else {
+                Location locationUp = PlayerDoorLocationMap.get(player.getUniqueId()).subtract(0, 1, 0);
+                if (LockDoorMap.containsKey(locationUp) && LockDoorMap.get(locationUp).equals(pasw.toString())) {
+                    player.closeInventory();
+
+                    // 철문 열기 작업
+                    Location doorLocation = PlayerDoorLocationMap.get(player.getUniqueId());
+                    Block doorBlock = doorLocation.getBlock();
+                    if (doorBlock.getType() == Material.IRON_DOOR) {
+                        BlockData blockData = doorBlock.getBlockData();
+                        if (blockData instanceof Openable) {
+                            Openable openable = (Openable) blockData;
+                            if (!openable.isOpen()) {
+                                openable.setOpen(true);
+                                doorBlock.setBlockData(openable);
+                                doorBlock.getState().update();
+                                player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
+                                player.sendMessage("철문이 열렸습니다.");
+                            } else {
+                                player.sendMessage("이미 열려있는 철문입니다.");
+                            }
+                        }
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "비밀번호가 일치하지 않습니다.");
+                }
             }
             return;
         } else {

@@ -69,7 +69,7 @@ public class ExchangeCommand implements CommandExecutor, TabCompleter {
                     int price = Integer.parseInt(priceString);
                     int quantity = Integer.parseInt(quantityString);
 
-                    if (price <= 0 || quantity <= 0) {
+                    if (price < 0 || quantity <= 0) {
                         player.sendMessage("§6[ 거래소 ] "+ChatColor.RED + "올바른 가격과 수량을 입력해주세요.");
                         return true;
                     }

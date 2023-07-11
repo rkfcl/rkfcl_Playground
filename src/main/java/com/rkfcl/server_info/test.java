@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -29,6 +31,8 @@ import java.sql.*;
 
 import static com.rkfcl.server_info.ItemRegistration.registeredItems;
 import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
+import static com.rkfcl.server_info.Manager.AbilityManager.applyFireResistance;
+import static com.rkfcl.server_info.Manager.AbilityManager.applyWaterResistance;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
 import static com.rkfcl.server_info.ProtectBlock.*;
@@ -63,7 +67,9 @@ public class test extends JavaPlugin implements Listener {
     private customcrops customcrops;
     private ProtectBlock protectBlock;
     private customdoor customdoor;
-
+    // 플레이어의 상태를 저장할 데이터 파일을 생성하고 불러옵니다.
+    File playerDataFile = new File(getDataFolder(), "player_buff.yml");
+    FileConfiguration playerData = YamlConfiguration.loadConfiguration(playerDataFile);
 
     @Override
     public void onEnable() {
@@ -132,6 +138,9 @@ public class test extends JavaPlugin implements Listener {
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
         for (Player player : players) {
             updateScoreboard(player);
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            loadPlayerBuffStatus(player);
         }
         loadTasks(CornFile,cornstageMap,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
         loadTasks(CabbageFile,CabbageMap,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
@@ -576,13 +585,44 @@ public class test extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            savePlayerBuffStatus(player);
+        }
         mapToFile(PlayerBalanceFile,playerBalances);
         mapToFileString(PlayerJobFile,playerJob);
         getLogger().info(ChatColor.GREEN + "갈치놀이터 플러그인 정상 종료");
 
     }
+    // 플레이어의 버프 상태를 저장합니다.
+    private void savePlayerBuffStatus(Player player) {
+        boolean hasFireResistance = player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        boolean hasWaterResistance = player.hasPotionEffect(PotionEffectType.WATER_BREATHING);
 
+        // 플레이어의 버프 상태를 데이터 파일에 저장합니다.
+        playerData.set(player.getUniqueId().toString() + ".fire_resistance", hasFireResistance);
+        playerData.set(player.getUniqueId().toString() + ".water_resistance", hasWaterResistance);
 
+        // 데이터 파일을 저장합니다.
+        try {
+            playerData.save(playerDataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // 저장된 플레이어 버프 상태를 불러와 적용합니다.
+    private void loadPlayerBuffStatus(Player player) {
+        String playerUUID = player.getUniqueId().toString();
+        boolean hasFireResistance = playerData.getBoolean(playerUUID + ".fire_resistance", false);
+        boolean hasWaterResistance = playerData.getBoolean(playerUUID + ".water_resistance", false);
+
+        // 저장된 버프 상태에 따라 버프를 적용합니다.
+        if (hasFireResistance) {
+            applyFireResistance(player);
+        }
+        if (hasWaterResistance) {
+            applyWaterResistance(player);
+        }
+    }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();

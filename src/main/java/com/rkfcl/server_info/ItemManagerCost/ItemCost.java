@@ -223,6 +223,8 @@ public class ItemCost {
             return 1;
         } else if (itemType == Material.SCUTE && customModelData == 0) {
             return 15;
+        } else if (itemType == Material.WHITE_WOOL && customModelData == 0) {
+            return 1;
         }
             return 0;
     }
