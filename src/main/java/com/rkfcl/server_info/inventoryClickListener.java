@@ -706,7 +706,7 @@ public class inventoryClickListener implements Listener {
                 int amount;
                 try {
                     amount = Integer.parseInt(message);
-                    if (amount <= 0 && amount > playerDataManager.getPlayerBalance(playerUUID)) {
+                    if (amount <= 0 || amount > playerDataManager.getPlayerBalance(playerUUID)) {
                         player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
                     } else {
                         playerDataManager.decreaseMoney(player.getUniqueId(), amount); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
