@@ -382,17 +382,35 @@ public class inventoryClickListener implements Listener {
                                     player.sendMessage("§6[상점] §f구매가 불가능한 아이템입니다.");
                                     return; // 판매불가 아이템인 경우 처리 중단
                                 }
+                                boolean whatcoin = false;
+                                if (lore != null) {
+                                    for (String line : lore) {
+                                        if (line.contains("사냥 코인")) {
+                                            whatcoin = true;
+                                            break;
+                                        }
+                                    }
+                                }
                                 // 구매 처리
                                 int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
                                 int individualCost = itemCost.itemCoinCost(clickedItem, customModelData);
                                 int totalCost = individualCost * setCount;
-                                int availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5001);
+                                int availableHuntCoinCount = 0;
+                                int availableCoinCount = 0;
                                 // 플레이어의 돈 확인
-                                if (availableCoinCount < totalCost) {
-                                    player.sendMessage("§6[상점] §f코인이 부족합니다.");
-                                    return; // 코인이 부족한 경우 처리 중단
+                                if (whatcoin) {
+                                    availableHuntCoinCount = countItems(player.getInventory(), Material.PAPER, 5004);
+                                    if (availableHuntCoinCount < totalCost) {
+                                        player.sendMessage("§6[상점] §f코인이 부족합니다.");
+                                        return; // 코인이 부족한 경우 처리 중단
+                                    }
+                                }else {
+                                    availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5001);
+                                    if (availableCoinCount < totalCost) {
+                                        player.sendMessage("§6[상점] §f코인이 부족합니다.");
+                                        return; // 코인이 부족한 경우 처리 중단
+                                    }
                                 }
-
                                 // 구매 처리
                                 if (setCount > 0) {
                                     clickedItem.setAmount(setCount);
@@ -402,9 +420,15 @@ public class inventoryClickListener implements Listener {
                                         clickedItem.setItemMeta(itemmeta);
                                     }
                                     // 플레이어에게 아이템 추가
-                                    removeItems(player.getInventory(), Material.PAPER,5001,totalCost);
-                                    if (customModelData == 5003 && clickedItem.getType().equals(Material.ENCHANTED_BOOK)) { //농토
+                                    if (whatcoin) {
+                                        removeItems(player.getInventory(), Material.PAPER, 5004, totalCost);
+                                    }else {
+                                        removeItems(player.getInventory(), Material.PAPER, 5001, totalCost);
+                                    }
+                                    if (customModelData == 5003 && clickedItem.getType().equals(Material.ENCHANTED_BOOK)) {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:randombook " + setCount);
+                                    }else if (customModelData == 6000 && clickedItem.getType().equals(Material.BOOK)) {
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:enhancement_scroll " + setCount);
                                     }else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
                                         if (!remainingItems.isEmpty()) {
@@ -412,11 +436,12 @@ public class inventoryClickListener implements Listener {
                                             return; // 인벤토리 공간 부족한 경우 처리 중단
                                         }
                                     }
-
-
-
-
-                                    player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 갈치 코인)");
+                                    if (whatcoin){
+                                        player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 사냥 코인)");
+                                    }else {
+                                        player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 갈치 코인)");
+                                    }
+                                    
                                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
                                     //지금 열어 있는 인벤토리 다시열기
                                     if (event.getView().getTitle().equalsIgnoreCase("코인 상점")){

@@ -157,6 +157,8 @@ public class ItemCost {
             return 2;
         } else if (itemType == Material.SWEET_BERRIES) {
             return 1;
+        } else if (itemType == Material.COCOA_BEANS) {
+            return 1;
             //농부 2상점 아이템 가격
         } else if (itemType == Material.APPLE && customModelData == 10028) {
             return 15;
@@ -240,6 +242,8 @@ public class ItemCost {
         }else if (itemType == Material.PAPER && customModelData == 169) {
             return 50;
         }else if (itemType == Material.ENCHANTED_BOOK && customModelData == 5003) {
+            return 2;
+        }else if (itemType == Material.BOOK && customModelData == 6000) {
             return 2;
         }
         return 0;

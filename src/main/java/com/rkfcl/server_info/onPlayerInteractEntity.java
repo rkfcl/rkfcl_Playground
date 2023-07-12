@@ -55,6 +55,14 @@ public class onPlayerInteractEntity implements Listener {
                     case "코인상점":
                         shopInventoryManager.coinshopinventory(player);
                         break;
+                    case "대장장이":
+                        player.sendMessage("§3[대장장이] §f1. 강화 무기를 §l선택(클릭)");
+                        player.sendMessage("§3[대장장이] §f2. 강화 재료를 §l선택(클릭)");
+                        player.sendMessage("§3[대장장이] §f3. 강화 모루를 §l선택(클릭)");
+                        player.sendMessage("§3[대장장이] §f4. 강화 완료후 완료된 무기§l선택(클릭)");
+                        player.sendMessage("§3[대장장이] §f5. 강화도중 §l§c절대§f로 §l§c창닫지 §f말 것!");
+                        player.sendMessage("§3[대장장이] §f6. 강화시스템창을 닫을시 무기와 강화권 돌려받음");
+                        break;
                     default:
                         event.setCancelled(true); // 기본 상호작용을 방지하기 위해 이벤트를 취소합니다
                         return;

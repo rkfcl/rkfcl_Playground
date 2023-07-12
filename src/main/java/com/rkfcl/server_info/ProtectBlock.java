@@ -41,15 +41,40 @@ public class ProtectBlock implements Listener {
         Block clickedBlock = event.getClickedBlock();
         Location location = clickedBlock.getLocation();
         ItemStack items = event.getPlayer().getInventory().getItemInMainHand();
+        World world = location.getWorld();
+        Location spawnLocation = world.getSpawnLocation();
 
-        Location spawnLocation = player.getWorld().getSpawnLocation();
 
         if (items != null && items.isSimilar(CustomStack.getInstance("small_construction_block").getItemStack())) {
-            ProtectBlockConstruction(location,player,event,10);
+            if (world == null || !world.getName().equalsIgnoreCase("world")) {
+                return;
+            }
+            if (location.distance(spawnLocation) <= 80) {
+                player.sendMessage("월드 스폰 지역에서는 해당 아이템을 사용할 수 없습니다.");
+                return; // 월드 스폰 지역에서는 무시합니다.
+            }else {
+                ProtectBlockConstruction(location, player, event, 10);
+            }
         }else if (items != null && items.isSimilar(CustomStack.getInstance("medium_construction_block").getItemStack())) {
-            ProtectBlockConstruction(location,player,event,20);
+            if (world == null || !world.getName().equalsIgnoreCase("world")) {
+                return;
+            }
+            if (location.distance(spawnLocation) <= 80) {
+                player.sendMessage("월드 스폰 지역에서는 해당 아이템을 사용할 수 없습니다.");
+                return; // 월드 스폰 지역에서는 무시합니다.
+            }else {
+                ProtectBlockConstruction(location, player, event, 20);
+            }
         }else if (items != null && items.isSimilar(CustomStack.getInstance("large_construction_block").getItemStack())) {
-            ProtectBlockConstruction(location,player,event,30);
+            if (world == null || !world.getName().equalsIgnoreCase("world")) {
+                return;
+            }
+            if (location.distance(spawnLocation) <= 80) {
+                player.sendMessage("월드 스폰 지역에서는 해당 아이템을 사용할 수 없습니다.");
+                return; // 월드 스폰 지역에서는 무시합니다.
+            }else {
+                ProtectBlockConstruction(location, player, event, 30);
+            }
         }
     }
     @EventHandler

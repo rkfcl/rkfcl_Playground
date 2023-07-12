@@ -121,7 +121,7 @@ public class AbilityManager implements Listener {
 
         // 플레이어의 직업을 가져옴
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
-        if (job.equals("광부 1차")) { // 블록 50개 캘 때마다 성급함 1 10초 부여
+        if (job.equals("광부 1차")||job.equals("광부 2차")) { // 블록 50개 캘 때마다 성급함 1 10초 부여
             int blockBreakCount = getBlockBreakCount(player);
             if (blockBreakCount % 50 == 0) {
                 blockBreakCounts.put(player, 0);

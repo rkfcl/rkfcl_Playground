@@ -147,7 +147,7 @@ public class ShopInventoryManager {
         setItem(inventory, 12, ItemManager.createOreItem(Material.OBSIDIAN,0));
         setItem(inventory, 13, ItemManager.createOreItem(Material.CRYING_OBSIDIAN,0));
         setItem(inventory, 14, ItemManager.createOreItem(Material.GLOWSTONE,0));
-        setItem(inventory, 14, ItemManager.createOreItem(Material.AMETHYST_BLOCK,0));
+        setItem(inventory, 15, ItemManager.createOreItem(Material.AMETHYST_BLOCK,0));
 
         setGlassPanes(inventory);
         setClock(inventory, 49);
@@ -176,6 +176,7 @@ public class ShopInventoryManager {
         setItem(inventory, 16, ItemManager.createOreItem(Material.CAKE,0));
         setItem(inventory, 18, ItemManager.createOreItem(Material.GLOW_BERRIES,0));
         setItem(inventory, 19, ItemManager.createOreItem(Material.SWEET_BERRIES,0));
+        setItem(inventory, 20, ItemManager.createOreItem(Material.COCOA_BEANS,0));
 
         setGlassPanes(inventory);
         setClock(inventory, 49);
@@ -466,8 +467,7 @@ public class ShopInventoryManager {
         setItem(inventory, 4, createSaleCoinItemsAdderItem("medium_construction_block"));
         setItem(inventory, 5, createSaleCoinItemsAdderItem("large_construction_block"));
         setItem(inventory, 23, createSaleCoinItemsAdderItem("randombook"));
-
-
+        setItem(inventory, 22, createSaleHuntCoinItemsAdderItem("enhancement_scroll"));
         player.openInventory(inventory);
     }
 
