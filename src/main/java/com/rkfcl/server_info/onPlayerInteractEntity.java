@@ -56,7 +56,7 @@ public class onPlayerInteractEntity implements Listener {
                         shopInventoryManager.coinshopinventory(player);
                         break;
                     case "대장장이":
-                        player.sendMessage("§3[대장장이] §f1. 강화 무기를 §l선택(클릭)");
+                        player.sendMessage("§3[대장장이] §f1. 강화 검을 §l선택(클릭)");
                         player.sendMessage("§3[대장장이] §f2. 강화 재료를 §l선택(클릭)");
                         player.sendMessage("§3[대장장이] §f3. 강화 모루를 §l선택(클릭)");
                         player.sendMessage("§3[대장장이] §f4. 강화 완료후 완료된 무기§l선택(클릭)");

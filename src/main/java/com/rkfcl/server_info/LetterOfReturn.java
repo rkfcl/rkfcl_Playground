@@ -2,9 +2,7 @@ package com.rkfcl.server_info;
 
 
 import dev.lone.itemsadder.api.CustomStack;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,7 +49,12 @@ public class LetterOfReturn implements Listener {
                                 player.sendMessage(ChatColor.YELLOW + "귀환까지 " + timeLeft + "초 남았습니다."); // 남은 시간 메시지 전송
                                 timeLeft--;
                             } else {
-                                player.teleport(spawnLocation); // 이동
+                                World overworld = Bukkit.getWorld("world"); // 오버월드를 나타내는 World 객체를 가져옵니다.
+                                Location spawnLocation = overworld.getSpawnLocation(); // 오버월드의 스폰 위치를 가져옵니다.
+
+                                // 플레이어를 오버월드의 스폰 위치로 이동시킵니다.
+                                player.teleport(spawnLocation);
+
                                 cancel(); // 타이머 종료
                             }
                         } else {
