@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -550,6 +551,18 @@ public class AbilityManager implements Listener {
             }
         }
     }
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) event.getDamager();
+            if (arrow.getShooter() instanceof Player && event.getEntity() instanceof Player) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+
+
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
