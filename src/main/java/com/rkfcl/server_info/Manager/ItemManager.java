@@ -252,8 +252,23 @@ public class ItemManager {
         ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
         ItemMeta meta = fishItem.getItemMeta();
         int customModelData = meta.getCustomModelData();
-        // 커스텀 모델 데이터 값 사용
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCost(fishItem,customModelData) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+
+        // 기존 아이템의 설명 가져오기
+        List<String> lore = meta.getLore();
+        if (lore == null) {
+            lore = new ArrayList<>();
+        }
+
+        // 추가 설명을 포함한 아이템 설명
+        lore.add(""); // 빈 줄 추가
+        lore.add("§l§a| §f구매 가격: §e" + itemCost.itemCost(fishItem, customModelData) + " §f$");
+        lore.add(" §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개");
+        lore.add("");
+        lore.add("§l§c| §f판매 가격: §c판매 불가");
+        lore.add(" §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체");
+
+        meta.setLore(lore);
+
         fishItem.setItemMeta(meta);
         // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
 

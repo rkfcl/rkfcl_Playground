@@ -22,6 +22,8 @@ public class ItemCost {
             return 1000;
         }else if (itemType == Material.PAPER && customModelData == 5002) {
             return 2;
+        }else if (itemType == Material.PAPER && customModelData == 5005) {
+            return 500;
         }else if (itemType == Material.COD) {
             return 1;
         } else if (itemType == Material.TROPICAL_FISH) {

@@ -189,6 +189,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             } else {
                 event.setCancelled(true);
                 ItemStack clickedItem = event.getCurrentItem();
@@ -299,6 +300,10 @@ public class inventoryClickListener implements Listener {
                                         ItemStack Item = ItemsAdder.getCustomItem("chur");
                                         Item.setAmount(setCount);
                                         player.getInventory().addItem(Item);
+                                    }else if (customModelData == 5005 && clickedItem.getType().equals(Material.PAPER)) { //츄르
+                                        ItemStack Item = ItemsAdder.getCustomItem("lock");
+                                        Item.setAmount(setCount);
+                                        player.getInventory().addItem(Item);
                                     }else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
                                         if (!remainingItems.isEmpty()) {
@@ -334,6 +339,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             } else {
                 event.setCancelled(true);
                 ItemStack clickedItem = event.getCurrentItem();
@@ -475,6 +481,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             }
 
             if (event.getCurrentItem().getType() == Material.HEART_OF_THE_SEA) {
@@ -515,6 +522,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             }
             if (event.getSlot() == 45) {
                 InventoryView inventoryView = event.getView();
@@ -616,6 +624,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             }
             if (clickType == ClickType.SHIFT_LEFT){
                 ItemStack returnItem = event.getCurrentItem();
@@ -664,6 +673,7 @@ public class inventoryClickListener implements Listener {
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
+                return;
             }
             if (event.getSlot() == 45) {
                 InventoryView inventoryView = event.getView();

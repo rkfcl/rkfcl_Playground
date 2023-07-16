@@ -225,6 +225,7 @@ public class ShopInventoryManager {
         setItem(inventory, 1, createSaleItemsAdderItem("medium_construction_block"));
         setItem(inventory, 2, createSaleItemsAdderItem("large_construction_block"));
         setItem(inventory, 3, ItemManager.createSaleItem(Material.IRON_DOOR,1,"비밀번호 문"));
+        setItem(inventory, 4, createSaleItemsAdderItem("lock"));
         setItem(inventory, 9, createSaleItemsAdderItem("letter_of_return"));
         setItem(inventory, 18, createSaleItemsAdderItem("chur"));
 
