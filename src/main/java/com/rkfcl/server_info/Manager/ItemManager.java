@@ -193,7 +193,7 @@ public class ItemManager {
         return createJobItem(
                 "§f초기화권",
                 "",
-                30000
+                10000
         );
     }
     public static ItemStack createOreItem(Material material,int data) {
