@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Random;
+
 public class ItemCost {
     public int itemCost(ItemStack itemStack,int customModelData) {
         Material itemType = itemStack.getType();

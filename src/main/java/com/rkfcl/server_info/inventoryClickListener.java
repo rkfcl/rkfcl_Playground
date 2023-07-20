@@ -183,7 +183,7 @@ public class inventoryClickListener implements Listener {
         if (event.getClickedInventory() == null) return;
 
         // 어부 상점
-        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")||event.getView().getTitle().equalsIgnoreCase("도축업자 상점")) {
+        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")||event.getView().getTitle().equalsIgnoreCase("도축업자 상점") || event.getView().getTitle().equalsIgnoreCase("요리 상점")) {
             event.setCancelled(true);
 
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {

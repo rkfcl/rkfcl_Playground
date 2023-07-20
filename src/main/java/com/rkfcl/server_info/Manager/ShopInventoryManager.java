@@ -183,6 +183,27 @@ public class ShopInventoryManager {
 
         player.openInventory(inventory);
     }
+    public void openShopCookingInventory(Player player) {
+        itemManager = new ItemManager();
+        Inventory inventory = Bukkit.createInventory(null, 54, "요리 상점");
+
+        setItem(inventory, 0, createItemsAdderItem("ptato_salad"));
+        setItem(inventory, 1, createItemsAdderItem("vegetable_salad"));
+        setItem(inventory, 2, createItemsAdderItem("fried_egg"));
+        setItem(inventory, 3, createItemsAdderItem("omelet"));
+        setItem(inventory, 4, createItemsAdderItem("baked_fish"));
+        setItem(inventory, 5, createItemsAdderItem("vegetable_medley"));
+        setItem(inventory, 6, createItemsAdderItem("rice_spaghetti"));
+        setItem(inventory, 7, createItemsAdderItem("carp_surprise"));
+        setItem(inventory, 8, createItemsAdderItem("pancakes"));
+
+
+
+        setGlassPanes(inventory);
+        setClock(inventory, 49);
+
+        player.openInventory(inventory);
+    }
     public void openShopFarmer2Inventory(Player player) {
         itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "농부2 상점");
