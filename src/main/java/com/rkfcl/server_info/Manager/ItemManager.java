@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.rkfcl.server_info.ItemManagerCost.ItemCost.itemDefaultPrices;
+import static com.rkfcl.server_info.ItemManagerCost.ItemCost.itemPrices;
+
 public class ItemManager {
 
     private static ItemCost itemCost;
@@ -196,18 +199,23 @@ public class ItemManager {
                 10000
         );
     }
-    public static ItemStack createOreItem(Material material,int data) {
+    public static ItemStack createOreItem(Material material, int data) {
         ItemStack oreItem = new ItemStack(material, 1);
         ItemMeta meta = oreItem.getItemMeta();
 
         // 커스텀 모델 데이터 값 설정
-        int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(oreItem,customModelDataValue) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        int customModelDataValue = data;
+        int currentPrice = itemPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0));
+
+        String priceText = currentPrice >= itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0) ? "§c(" + (currentPrice - itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0))+"▲)" : "§9(" + (itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0) - currentPrice)+"▼)";
+
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e"+ itemCost.getItemCost(oreItem,customModelDataValue) + "§f$" + priceText, " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
         meta.setCustomModelData(customModelDataValue);
         oreItem.setItemMeta(meta);
 
         return oreItem;
     }
+
 
     public static ItemStack createFishItem(Material material, int data) {
         ItemStack fishItem = new ItemStack(material, 1);
@@ -215,7 +223,11 @@ public class ItemManager {
 
         // 커스텀 모델 데이터 값 설정
         int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(fishItem,customModelDataValue) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        int currentPrice = itemPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0));
+
+        String priceText = currentPrice >= itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0) ? "§c(" + (currentPrice - itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0))+"▲)" : "§9(" + (itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelDataValue, 0) - currentPrice)+"▼)";
+
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e"+ itemCost.getItemCost(fishItem,customModelDataValue) + "§f$" + priceText, " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
         meta.setCustomModelData(customModelDataValue);
         fishItem.setItemMeta(meta);
 
@@ -227,7 +239,7 @@ public class ItemManager {
 
         // 커스텀 모델 데이터 값 설정
         int customModelDataValue = data; // 커스텀 모델 데이터 값 설정
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.itemCost(SaleItem,customModelDataValue) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §e"+ itemCost.getItemCost(SaleItem,customModelDataValue) +"§f$" ," §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §c판매 불가" , " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
         meta.setCustomModelData(customModelDataValue);
         // 디스플레이 이름 설정
         meta.setDisplayName(displayName);
@@ -237,15 +249,20 @@ public class ItemManager {
     }
     public static ItemStack createItemsAdderItem(String itemId) {
         // itemsadder에서 생성한 아이템을 가져오는 코드
-        ItemStack fishItem = ItemsAdder.getCustomItem(itemId);
-        ItemMeta meta = fishItem.getItemMeta();
+        ItemStack itemsadderItem = ItemsAdder.getCustomItem(itemId);
+        ItemMeta meta = itemsadderItem.getItemMeta();
+        Material material = itemsadderItem.getType();
         int customModelData = meta.getCustomModelData();
         // 커스텀 모델 데이터 값 사용
-        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e" + itemCost.itemCost(fishItem,customModelData) + "§f$", " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
-        fishItem.setItemMeta(meta);
+        int currentPrice = itemPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelData, itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelData, 0));
+
+        String priceText = currentPrice >= itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelData, 0) ? "§c(" + (currentPrice - itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelData, 0))+"▲)" : "§9(" + (itemDefaultPrices.getOrDefault(material.toString().toLowerCase() + "-" + customModelData, 0) - currentPrice)+"▼)";
+
+        meta.setLore(Arrays.asList("", "§l§a| §f구매 가격: §c구매 불가", " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개", "", "§l§c| §f판매 가격: §e"+ itemCost.getItemCost(itemsadderItem,customModelData) + "§f$" + priceText, " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 전체"));
+        itemsadderItem.setItemMeta(meta);
         // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
 
-        return fishItem;
+        return itemsadderItem;
     }
     public static ItemStack createSaleItemsAdderItem(String itemId) {
         // itemsadder에서 생성한 아이템을 가져오는 코드
@@ -261,7 +278,7 @@ public class ItemManager {
 
         // 추가 설명을 포함한 아이템 설명
         lore.add(""); // 빈 줄 추가
-        lore.add("§l§a| §f구매 가격: §e" + itemCost.itemCost(fishItem, customModelData) + " §f$");
+        lore.add("§l§a| §f구매 가격: §e" + itemCost.getItemCost(fishItem, customModelData) + " §f$");
         lore.add(" §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개");
         lore.add("");
         lore.add("§l§c| §f판매 가격: §c판매 불가");

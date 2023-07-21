@@ -1,5 +1,6 @@
 package com.rkfcl.server_info;
 
+import com.rkfcl.server_info.ItemManagerCost.ItemCost;
 import com.rkfcl.server_info.Manager.AbilityManager;
 import com.rkfcl.server_info.Manager.FishingManager;
 import com.rkfcl.server_info.Manager.ItemManager;
@@ -66,6 +67,7 @@ public class test extends JavaPlugin implements Listener {
     private customcrops customcrops;
     private ProtectBlock protectBlock;
     private customdoor customdoor;
+    private ItemCost itemCost;
     // 플레이어의 상태를 저장할 데이터 파일을 생성하고 불러옵니다.
     File playerDataFile = new File(getDataFolder(), "player_buff.yml");
     FileConfiguration playerData = YamlConfiguration.loadConfiguration(playerDataFile);
@@ -132,6 +134,7 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(protectBlock,this);
         customdoor = new customdoor(this);
         getServer().getPluginManager().registerEvents(customdoor,this);
+        itemCost = new ItemCost();
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());

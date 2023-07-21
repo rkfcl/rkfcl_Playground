@@ -230,7 +230,7 @@ public class inventoryClickListener implements Listener {
 
 
                                 int setCount = calculateSetCount(clickType, itemCount);
-                                int individualCost= itemCost.itemCost(clickedItem,customModelData);;
+                                int individualCost= itemCost.getItemCost(clickedItem,customModelData);;
                                 int totalCost = individualCost * setCount;
 
                                 // 판매할 아이템과 동일한 종류와 커스텀 모델 데이터 값을 가진 아이템을 찾아서 개수 확인
@@ -275,7 +275,7 @@ public class inventoryClickListener implements Listener {
                                 }
                                 // 구매 처리
                                 int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
-                                int individualCost = itemCost.itemCost(clickedItem, customModelData);
+                                int individualCost = itemCost.getItemCost(clickedItem, customModelData);
                                 int totalCost = individualCost * setCount;
 
                                 // 플레이어의 돈 확인

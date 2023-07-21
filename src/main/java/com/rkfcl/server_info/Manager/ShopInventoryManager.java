@@ -92,11 +92,6 @@ public class ShopInventoryManager {
 //        setItem(inventory, 33, ItemManager.createCookerJob4Item());
 
         setItem(inventory, 39, ItemManager.createresetJobItem());
-
-//        setItem(inventory, 45, createItemsAdderItem("small_construction_block"));
-//        setItem(inventory, 46, createItemsAdderItem("medium_construction_block"));
-//        setItem(inventory, 47, createItemsAdderItem("large_construction_block"));
-
         player.openInventory(inventory);
     }
     public void openShopButcherInventory(Player player) {
@@ -196,6 +191,17 @@ public class ShopInventoryManager {
         setItem(inventory, 6, createItemsAdderItem("rice_spaghetti"));
         setItem(inventory, 7, createItemsAdderItem("carp_surprise"));
         setItem(inventory, 8, createItemsAdderItem("pancakes"));
+        setItem(inventory, 9, createItemsAdderItem("trout_soup"));
+        setItem(inventory, 10, createItemsAdderItem("tortilla"));
+        setItem(inventory, 11, createItemsAdderItem("fish_taco"));
+        setItem(inventory, 12, createItemsAdderItem("fried_eel"));
+        setItem(inventory, 13, createItemsAdderItem("maki_roll"));
+        setItem(inventory, 14, createItemsAdderItem("rice_pudding"));
+        setItem(inventory, 15, createItemsAdderItem("ice_cream"));
+        setItem(inventory, 16, createItemsAdderItem("pumpkin_soup"));
+        setItem(inventory, 17, createItemsAdderItem("glazed_yams"));
+        setItem(inventory, 18, createItemsAdderItem("salmon_dinner"));
+        setItem(inventory, 19, createItemsAdderItem("crispy_bass"));
 
 
 
