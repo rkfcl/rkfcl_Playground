@@ -154,8 +154,7 @@ public class ItemCost {
         itemDefaultMinMaxValues("bread-10009",6,4,8);
         itemDefaultMinMaxValues("bread-10010",19,14,23);
         itemDefaultMinMaxValues("bread-10011",55,45,65);
-        itemDefaultMinMaxValues("bread-10012",1,1,1);
-        itemDefaultMinMaxValues("bread-10013",1,1,1);
+        itemDefaultMinMaxValues("bread-10021",1,1,1);
         itemDefaultMinMaxValues("bread-10013",13,10,16);
         itemDefaultMinMaxValues("bread-10014",15,10,20);
         itemDefaultMinMaxValues("bread-10015",15,10,20);

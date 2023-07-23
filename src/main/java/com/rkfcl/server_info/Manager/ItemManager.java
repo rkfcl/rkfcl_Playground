@@ -102,6 +102,16 @@ public class ItemManager {
 
         return fishItem;
     }
+    public static ItemStack Menu_foodcollect() {
+        // itemsadder에서 생성한 아이템을 가져오는 코드
+        ItemStack fishItem = ItemsAdder.getCustomItem("ice_cream");
+        ItemMeta meta = fishItem.getItemMeta();
+        meta.setDisplayName("요리 도감");
+        fishItem.setItemMeta(meta);
+        // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
+
+        return fishItem;
+    }
     public static ItemStack InvenDecoGREEN_STAINED_GLASS_PANE () {
         ItemStack check = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta meta = check.getItemMeta();
