@@ -168,7 +168,7 @@ public class inventoryClickListener implements Listener {
 
 
                 if (meta != null && meta.getDisplayName().equals("§6[ 직업 ] §f초기화권")) {
-                    handleJobPurchase(player, clickEvent, clickType, 9, 30000, 1);
+                    handleJobPurchase(player, clickEvent, clickType, 9, 10000, 1);
                 }
             }
         }
@@ -767,7 +767,7 @@ public class inventoryClickListener implements Listener {
 
     private int countItems(Inventory inventory, Material itemType, int customModelData) {
         int count = 0;
-        for (ItemStack itemStack : inventory.getContents()) {
+        for (ItemStack itemStack : inventory.getStorageContents()) {
             if (itemStack != null && itemStack.getType() == itemType && getCustomModelData(itemStack) == customModelData) {
                 count += itemStack.getAmount();
             }
@@ -777,7 +777,7 @@ public class inventoryClickListener implements Listener {
     public static void removeItems(Inventory inventory, Material itemType, int customModelData, int count) {
         int remaining = count; // 남은 개수를 추적하기 위한 변수
 
-        for (ItemStack itemStack : inventory.getContents()) {
+        for (ItemStack itemStack : inventory.getStorageContents()) {
             if (itemStack != null && itemStack.getType() == itemType && getCustomModelData(itemStack) == customModelData) {
                 int amount = itemStack.getAmount();
 

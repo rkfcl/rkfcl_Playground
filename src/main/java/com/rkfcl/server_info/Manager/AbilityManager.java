@@ -238,19 +238,19 @@ public class AbilityManager implements Listener {
                             additionalOreAmount = 2;
                             break;
                         case IRON_ORE:
-                            additionalOreMaterial = Material.IRON_INGOT;
+                            additionalOreMaterial = Material.RAW_IRON;
                             additionalOreAmount = 2;
                             break;
                         case DEEPSLATE_IRON_ORE:
-                            additionalOreMaterial = Material.IRON_INGOT;
+                            additionalOreMaterial = Material.RAW_IRON;
                             additionalOreAmount = 2;
                             break;
                         case GOLD_ORE:
-                            additionalOreMaterial = Material.GOLD_INGOT;
+                            additionalOreMaterial = Material.RAW_GOLD;
                             additionalOreAmount = 2;
                             break;
                         case DEEPSLATE_GOLD_ORE:
-                            additionalOreMaterial = Material.GOLD_INGOT;
+                            additionalOreMaterial = Material.RAW_GOLD;
                             additionalOreAmount = 2;
                             break;
                         case DIAMOND_ORE:

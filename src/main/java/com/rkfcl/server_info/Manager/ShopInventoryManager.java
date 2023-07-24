@@ -202,7 +202,7 @@ public class ShopInventoryManager {
         setItem(inventory, 17, createItemsAdderItem("glazed_yams"));
         setItem(inventory, 18, createItemsAdderItem("salmon_dinner"));
         setItem(inventory, 19, createItemsAdderItem("crispy_bass"));
-        setItem(inventory, 36, createItemsAdderItem("salt"));
+        setItem(inventory, 36, createSaleItemsAdderItem("salt"));
 
 
 
