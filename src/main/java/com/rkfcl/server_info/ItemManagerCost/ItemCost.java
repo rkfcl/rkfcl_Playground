@@ -6,10 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ItemCost {
     public static Map<String, Integer> itemPrices = new HashMap<>();
@@ -19,7 +17,6 @@ public class ItemCost {
 
     public ItemCost() {
         initItemValues();
-        updateItemCosts();
     }
 
     private void initItemValues() {
@@ -170,31 +167,37 @@ public class ItemCost {
         itemMinValues.put(type, Min);
         itemMaxValues.put(type, Max);
     }
-
-    private void updateItemCosts() {
-        Calendar cal = Calendar.getInstance();
-        int currentMinute = cal.get(Calendar.MINUTE);
-
-        if (currentMinute == 0) {
-            Random random = new Random();
-
-            for (String itemName : itemDefaultPrices.keySet()) {
-                int currentPrice = itemPrices.getOrDefault(itemName, itemDefaultPrices.get(itemName));
-                int minValue = itemMinValues.getOrDefault(itemName, 0);
-                int maxValue = itemMaxValues.getOrDefault(itemName, Integer.MAX_VALUE);
-
-                // 현재 가격에서 변동 범위 내의 새로운 가격 계산
-                int variation = new Random().nextInt(21) - 10;
-                int newPrice = Math.min(Math.max(currentPrice + variation, minValue), maxValue);
-
-                itemPrices.put(itemName, newPrice);
-            }
-        }
-
+    public void updateItemCosts() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("server_info");
-        Bukkit.getScheduler().runTaskLater(plugin, this::updateItemCosts, 20 * 60 * 60);
-    }
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            // 현재 시간을 가져옵니다.
+            Date now = new Date();
 
+            // 현재 시간을 분 단위로 변환합니다.
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            String currentTime = format.format(now);
+            int currentHour = Integer.parseInt(currentTime.split(":")[0]);
+            int currentMinute = Integer.parseInt(currentTime.split(":")[1]);
+
+            // 00:00에서 00:01 사이인지 확인합니다.
+            if (currentMinute >= 0 && currentMinute < 1) {
+                Random random = new Random();
+
+                for (String itemName : itemDefaultPrices.keySet()) {
+                    int currentPrice = itemPrices.getOrDefault(itemName, itemDefaultPrices.get(itemName));
+                    int minValue = itemMinValues.getOrDefault(itemName, 0);
+                    int maxValue = itemMaxValues.getOrDefault(itemName, Integer.MAX_VALUE);
+
+                    // 현재 가격에서 변동 범위 내의 새로운 가격 계산
+                    int variation = new Random().nextInt(21) - 10;
+                    int newPrice = Math.min(Math.max(currentPrice + variation, minValue), maxValue);
+
+                    itemPrices.put(itemName, newPrice);
+                }
+            }
+
+        }, 0L, 20 * 60L); // 1분(60초)마다 작업을 실행합니다.
+    }
 
     public int getItemCost(ItemStack itemStack, int customModelData) {
         Material itemType = itemStack.getType();

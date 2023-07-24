@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.rkfcl.server_info.ItemManagerCost.ItemCost.itemDefaultPrices;
@@ -107,6 +108,7 @@ public class ItemManager {
         ItemStack fishItem = ItemsAdder.getCustomItem("ice_cream");
         ItemMeta meta = fishItem.getItemMeta();
         meta.setDisplayName("요리 도감");
+        meta.setLore(Collections.emptyList()); // 기존에 있던 아이템 설명을 없애기 위해 빈 리스트로 설정
         fishItem.setItemMeta(meta);
         // 아이템 메타 수정 등 추가적인 작업을 수행할 수 있습니다.
 

@@ -135,6 +135,7 @@ public class test extends JavaPlugin implements Listener {
         customdoor = new customdoor(this);
         getServer().getPluginManager().registerEvents(customdoor,this);
         itemCost = new ItemCost();
+        itemCost.updateItemCosts();
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());

@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -70,11 +71,11 @@ public class MenuCommand implements CommandExecutor, Listener {
         player.openInventory(inventory);
     }
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        if (event.getAction() == Action.LEFT_CLICK_AIR && player.isSneaking()
-                && player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+        if (player.isSneaking()) {
             openMenu(player);
         }
     }
+
 }
