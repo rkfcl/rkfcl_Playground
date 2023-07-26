@@ -28,10 +28,12 @@ public class ItemCost {
         itemDefaultMinMaxValues("paper-100",500,500,500);
         itemDefaultMinMaxValues("paper-5005",500,500,500);
         itemDefaultMinMaxValues("bread-10000",3,3,3);
+        itemDefaultMinMaxValues("arrow-10000",30000,30000,300000);
+        itemDefaultMinMaxValues("tipped_arrow-10000",15000,15000,150000);
 
         //광부 상점 가격
         itemDefaultMinMaxValues("flint-0",1,0,2);
-        itemDefaultMinMaxValues("iron_ingot-0",2,0,4);
+        itemDefaultMinMaxValues("iron_ingot-0",2,1,4);
         itemDefaultMinMaxValues("gold_ingot-0",4,1,6);
         itemDefaultMinMaxValues("diamond-0",50,30,80);
         itemDefaultMinMaxValues("quartz-0",1,0,3);
@@ -49,24 +51,24 @@ public class ItemCost {
 
         //농부 상점 가격
         itemDefaultMinMaxValues("pumpkin-0",3,1,5);
-        itemDefaultMinMaxValues("carrot-0",1,0,2);
-        itemDefaultMinMaxValues("baked_potato-0",1,0,2);
+        itemDefaultMinMaxValues("carrot-0",1,1,2);
+        itemDefaultMinMaxValues("baked_potato-0",1,1,2);
         itemDefaultMinMaxValues("poisonous_potato-0",0,0,1);
-        itemDefaultMinMaxValues("beetroot-0",1,0,2);
+        itemDefaultMinMaxValues("beetroot-0",1,1,2);
         itemDefaultMinMaxValues("wheat-0",2,1,3);
         itemDefaultMinMaxValues("bread-0",6,1,9);
         itemDefaultMinMaxValues("pumpkin_pie-0",7,5,9);
         itemDefaultMinMaxValues("melon-0",3,1,5);
         itemDefaultMinMaxValues("golden_carrot-0",7,5,10);
-        itemDefaultMinMaxValues("sugar_cane-0",1,0,2);
+        itemDefaultMinMaxValues("sugar_cane-0",1,1,2);
         itemDefaultMinMaxValues("apple-0",1,1,2);
         itemDefaultMinMaxValues("golden_apple-0",30,15,45);
         itemDefaultMinMaxValues("glistering_melon_slice-0",3,1,5);
         itemDefaultMinMaxValues("nether_wart-0",3,1,5);
         itemDefaultMinMaxValues("cake-0",25,15,35);
         itemDefaultMinMaxValues("glow_berries-0",2,1,3);
-        itemDefaultMinMaxValues("sweet_berries-0",1,0,2);
-        itemDefaultMinMaxValues("cocoa_beans-0",1,0,2);
+        itemDefaultMinMaxValues("sweet_berries-0",1,1,2);
+        itemDefaultMinMaxValues("cocoa_beans-0",1,1,2);
 
         //농부 2상점 가격
         itemDefaultMinMaxValues("apple-10028",15,10,20); //옥수수
@@ -85,46 +87,46 @@ public class ItemCost {
         itemDefaultMinMaxValues("shears-101",5000,5000,5000);
 
         //어부 상점 가격
-        itemDefaultMinMaxValues("cod-0",1,0,2);
-        itemDefaultMinMaxValues("tropical_fish-0",3,2,4);
-        itemDefaultMinMaxValues("pufferfish-0",3,2,4);
-        itemDefaultMinMaxValues("salmon-0",2,1,3);
-        itemDefaultMinMaxValues("rotten_flesh-1",2,1,3);
-        itemDefaultMinMaxValues("rotten_flesh-2",10,7,13);
-        itemDefaultMinMaxValues("rotten_flesh-3",5,3,7);
-        itemDefaultMinMaxValues("rotten_flesh-4",4,2,6);
-        itemDefaultMinMaxValues("rotten_flesh-5",7,4,10);
-        itemDefaultMinMaxValues("rotten_flesh-6",5,3,7);
-        itemDefaultMinMaxValues("rotten_flesh-7",4,2,6);
-        itemDefaultMinMaxValues("rotten_flesh-8",3,1,5);
-        itemDefaultMinMaxValues("rotten_flesh-9",3,1,5);
-        itemDefaultMinMaxValues("rotten_flesh-10",2,1,3);
-        itemDefaultMinMaxValues("rotten_flesh-11",3,1,5);
-        itemDefaultMinMaxValues("rotten_flesh-12",8,5,13);
-        itemDefaultMinMaxValues("rotten_flesh-13",8,5,13);
-        itemDefaultMinMaxValues("rotten_flesh-14",10,8,12);
-        itemDefaultMinMaxValues("rotten_flesh-15",16,10,22);
-        itemDefaultMinMaxValues("rotten_flesh-16",32,17,47);
-        itemDefaultMinMaxValues("rotten_flesh-17",20,15,30);
-        itemDefaultMinMaxValues("rotten_flesh-18",13,10,16);
-        itemDefaultMinMaxValues("rotten_flesh-19",10,8,12);
-        itemDefaultMinMaxValues("rotten_flesh-20",10,7,13);
-        itemDefaultMinMaxValues("rotten_flesh-21",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-22",11,7,15);
-        itemDefaultMinMaxValues("rotten_flesh-23",7,5,9);
-        itemDefaultMinMaxValues("rotten_flesh-24",5,3,7);
-        itemDefaultMinMaxValues("rotten_flesh-25",4,3,5);
-        itemDefaultMinMaxValues("rotten_flesh-26",4,1,8);
-        itemDefaultMinMaxValues("rotten_flesh-27",8,4,12);
+        itemDefaultMinMaxValues("cod-0",2,1,3);
+        itemDefaultMinMaxValues("tropical_fish-0",4,3,5);
+        itemDefaultMinMaxValues("pufferfish-0",4,3,5);
+        itemDefaultMinMaxValues("salmon-0",3,2,4);
+        itemDefaultMinMaxValues("rotten_flesh-1",3,2,4);
+        itemDefaultMinMaxValues("rotten_flesh-2",11,8,14);
+        itemDefaultMinMaxValues("rotten_flesh-3",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-4",5,3,7);
+        itemDefaultMinMaxValues("rotten_flesh-5",8,5,11);
+        itemDefaultMinMaxValues("rotten_flesh-6",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-7",5,3,7);
+        itemDefaultMinMaxValues("rotten_flesh-8",4,2,6);
+        itemDefaultMinMaxValues("rotten_flesh-9",4,2,6);
+        itemDefaultMinMaxValues("rotten_flesh-10",3,2,4);
+        itemDefaultMinMaxValues("rotten_flesh-11",4,2,6);
+        itemDefaultMinMaxValues("rotten_flesh-12",9,6,14);
+        itemDefaultMinMaxValues("rotten_flesh-13",9,6,14);
+        itemDefaultMinMaxValues("rotten_flesh-14",11,9,13);
+        itemDefaultMinMaxValues("rotten_flesh-15",17,11,23);
+        itemDefaultMinMaxValues("rotten_flesh-16",33,18,48);
+        itemDefaultMinMaxValues("rotten_flesh-17",21,16,31);
+        itemDefaultMinMaxValues("rotten_flesh-18",14,11,17);
+        itemDefaultMinMaxValues("rotten_flesh-19",11,9,13);
+        itemDefaultMinMaxValues("rotten_flesh-20",11,8,14);
+        itemDefaultMinMaxValues("rotten_flesh-21",7,5,9);
+        itemDefaultMinMaxValues("rotten_flesh-22",13,9,17);
+        itemDefaultMinMaxValues("rotten_flesh-23",8,6,10);
+        itemDefaultMinMaxValues("rotten_flesh-24",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-25",5,4,6);
+        itemDefaultMinMaxValues("rotten_flesh-26",5,2,9);
+        itemDefaultMinMaxValues("rotten_flesh-27",9,5,13);
 
         //도축 상점 가격
-        itemDefaultMinMaxValues("mutton-0",1,0,2);
-        itemDefaultMinMaxValues("chicken-0",1,0,2);
-        itemDefaultMinMaxValues("rabbit-0",1,0,2);
-        itemDefaultMinMaxValues("beef-0",1,0,2);
-        itemDefaultMinMaxValues("porkchop-0",1,0,2);
-        itemDefaultMinMaxValues("egg-0",1,0,2);
-        itemDefaultMinMaxValues("feather-0",1,0,2);
+        itemDefaultMinMaxValues("mutton-0",1,1,2);
+        itemDefaultMinMaxValues("chicken-0",1,1,2);
+        itemDefaultMinMaxValues("rabbit-0",1,1,2);
+        itemDefaultMinMaxValues("beef-0",1,1,2);
+        itemDefaultMinMaxValues("porkchop-0",1,1,2);
+        itemDefaultMinMaxValues("egg-0",1,1,2);
+        itemDefaultMinMaxValues("feather-0",1,1,2);
         itemDefaultMinMaxValues("honeycomb-0",2,1,3);
         itemDefaultMinMaxValues("honey_bottle-0",3,1,6);
         itemDefaultMinMaxValues("cooked_mutton-0",2,1,3);
@@ -221,10 +223,16 @@ public class ItemCost {
             return 30;
         }else if (itemType == Material.PAPER && customModelData == 169) {
             return 50;
+        }else if (itemType == Material.PAPER && customModelData == 171) {
+            return 5;
         }else if (itemType == Material.ENCHANTED_BOOK && customModelData == 5003) {
             return 2;
         }else if (itemType == Material.BOOK && customModelData == 6000) {
             return 2;
+        }else if (itemType == Material.BOW && customModelData == 10000) {
+            return 20;
+        }else if (itemType == Material.SHIELD && customModelData == 10000) {
+            return 20;
         }
         return 0;
     }

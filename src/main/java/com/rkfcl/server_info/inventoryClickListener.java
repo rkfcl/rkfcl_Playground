@@ -435,6 +435,8 @@ public class inventoryClickListener implements Listener {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:randombook " + setCount);
                                     }else if (customModelData == 6000 && clickedItem.getType().equals(Material.BOOK)) {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:enhancement_scroll " + setCount);
+                                    }else if (customModelData == 171 && clickedItem.getType().equals(Material.PAPER)) {
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " elitecreatures:carnivoret_weapon_set_key " + setCount);
                                     }else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
                                         if (!remainingItems.isEmpty()) {

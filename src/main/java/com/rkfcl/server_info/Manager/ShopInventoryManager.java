@@ -256,6 +256,8 @@ public class ShopInventoryManager {
         setItem(inventory, 4, createSaleItemsAdderItem("lock"));
         setItem(inventory, 9, createSaleItemsAdderItem("letter_of_return"));
         setItem(inventory, 18, createSaleItemsAdderItem("chur"));
+        setItem(inventory, 27, createSaleItemsAdderItem("iron_arrow"));
+        setItem(inventory, 28, createSaleItemsAdderItem("area_damage_arrow"));
 
         setGlassPanes(inventory);
         setClock(inventory, 49);
@@ -497,6 +499,9 @@ public class ShopInventoryManager {
         setItem(inventory, 5, createSaleCoinItemsAdderItem("large_construction_block"));
         setItem(inventory, 23, createSaleCoinItemsAdderItem("randombook"));
         setItem(inventory, 22, createSaleHuntCoinItemsAdderItem("enhancement_scroll"));
+        setItem(inventory, 30, createSaleCoinItemsAdderItem("carnivoret_weapon_set_bow"));
+        setItem(inventory, 31, createSaleCoinItemsAdderItem("carnivoret_weapon_set_shield"));
+        setItem(inventory, 32, createSaleCoinItemsAdderItem("carnivoret_weapon_set_key"));
         player.openInventory(inventory);
     }
 

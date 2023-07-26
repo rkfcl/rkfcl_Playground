@@ -68,6 +68,7 @@ public class test extends JavaPlugin implements Listener {
     private ProtectBlock protectBlock;
     private customdoor customdoor;
     private ItemCost itemCost;
+
     // 플레이어의 상태를 저장할 데이터 파일을 생성하고 불러옵니다.
     File playerDataFile = new File(getDataFolder(), "player_buff.yml");
     FileConfiguration playerData = YamlConfiguration.loadConfiguration(playerDataFile);
@@ -136,6 +137,7 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(customdoor,this);
         itemCost = new ItemCost();
         itemCost.updateItemCosts();
+        getServer().getPluginManager().registerEvents(new DungeonKey(), this);
         // PlayerNameChanger 인스턴스 생성
         // 플레이어별 스코어보드 업데이트
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
