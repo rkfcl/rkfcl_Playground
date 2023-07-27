@@ -116,10 +116,17 @@ public class customdoor implements Listener {
         Block block = event.getBlock();
         Location location = block.getLocation();
         Location sector = protectMap.get(location);
+
+        // sector가 null이면 해당 위치에 보호 영역이 없으므로 return
+        if (sector == null) {
+            return;
+        }
+
         int x = sector.getBlockX();
         int y = sector.getBlockY();
         int z = sector.getBlockZ();
-        //권한 없으면 부수지 못하게 하는 코드
+
+        // 권한 없으면 부수지 못하게 하는 코드
         if (protectMap.containsKey(location)) {
             Location SectorID = protectMap.get(location);
             List<Location> PlayerAllow = AllowprotectMap.get(player.getUniqueId());
@@ -138,7 +145,7 @@ public class customdoor implements Listener {
                     }
                 }
             }
-        }else if (block.getType() == Material.IRON_DOOR) {
+        } else if (block.getType() == Material.IRON_DOOR) {
             Location blockLocation = block.getLocation();
             if (LockDoorMap.containsKey(blockLocation)) {
                 // 아이템 드롭 캔슬
@@ -152,6 +159,7 @@ public class customdoor implements Listener {
             }
         }
     }
+
     @EventHandler
     public void LockDoorSetting(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();

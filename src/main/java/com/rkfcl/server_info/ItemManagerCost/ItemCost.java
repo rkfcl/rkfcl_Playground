@@ -20,6 +20,30 @@ public class ItemCost {
     }
 
     private void initItemValues() {
+        //전직 교관 상점 가격
+        //광부
+        itemDefaultMinMaxValues("paper-200",3000,3000,3000);
+        itemDefaultMinMaxValues("paper-201",7000,7000,7000);
+        itemDefaultMinMaxValues("paper-202",30000,30000,30000);
+        itemDefaultMinMaxValues("paper-203",55000,55000,55000);
+        //농부
+        itemDefaultMinMaxValues("paper-204",5000,5000,5000);
+        itemDefaultMinMaxValues("paper-205",10000,10000,10000);
+        itemDefaultMinMaxValues("paper-206",30000,30000,30000);
+        itemDefaultMinMaxValues("paper-207",55000,55000,55000);
+        //어부
+        itemDefaultMinMaxValues("paper-208",5000,5000,5000);
+        itemDefaultMinMaxValues("paper-209",8000,8000,8000);
+        itemDefaultMinMaxValues("paper-210",30000,30000,30000);
+        itemDefaultMinMaxValues("paper-211",45000,45000,45000);
+        //요리사
+        itemDefaultMinMaxValues("paper-212",5000,5000,5000);
+        itemDefaultMinMaxValues("paper-213",10000,10000,10000);
+        itemDefaultMinMaxValues("paper-214",25000,25000,25000);
+        itemDefaultMinMaxValues("paper-215",4000,4000,4000);
+        //초기화
+        itemDefaultMinMaxValues("paper-216",10000,10000,10000);
+
         //잡화 상점 가격
         itemDefaultMinMaxValues("paper-167",10000,10000,10000);
         itemDefaultMinMaxValues("paper-168",30000,30000,30000);
@@ -87,37 +111,37 @@ public class ItemCost {
         itemDefaultMinMaxValues("shears-101",5000,5000,5000);
 
         //어부 상점 가격
-        itemDefaultMinMaxValues("cod-0",2,1,3);
-        itemDefaultMinMaxValues("tropical_fish-0",4,3,5);
-        itemDefaultMinMaxValues("pufferfish-0",4,3,5);
-        itemDefaultMinMaxValues("salmon-0",3,2,4);
-        itemDefaultMinMaxValues("rotten_flesh-1",3,2,4);
-        itemDefaultMinMaxValues("rotten_flesh-2",11,8,14);
-        itemDefaultMinMaxValues("rotten_flesh-3",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-4",5,3,7);
-        itemDefaultMinMaxValues("rotten_flesh-5",8,5,11);
-        itemDefaultMinMaxValues("rotten_flesh-6",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-7",5,3,7);
-        itemDefaultMinMaxValues("rotten_flesh-8",4,2,6);
-        itemDefaultMinMaxValues("rotten_flesh-9",4,2,6);
-        itemDefaultMinMaxValues("rotten_flesh-10",3,2,4);
-        itemDefaultMinMaxValues("rotten_flesh-11",4,2,6);
-        itemDefaultMinMaxValues("rotten_flesh-12",9,6,14);
-        itemDefaultMinMaxValues("rotten_flesh-13",9,6,14);
-        itemDefaultMinMaxValues("rotten_flesh-14",11,9,13);
-        itemDefaultMinMaxValues("rotten_flesh-15",17,11,23);
-        itemDefaultMinMaxValues("rotten_flesh-16",33,18,48);
-        itemDefaultMinMaxValues("rotten_flesh-17",21,16,31);
-        itemDefaultMinMaxValues("rotten_flesh-18",14,11,17);
-        itemDefaultMinMaxValues("rotten_flesh-19",11,9,13);
-        itemDefaultMinMaxValues("rotten_flesh-20",11,8,14);
-        itemDefaultMinMaxValues("rotten_flesh-21",7,5,9);
-        itemDefaultMinMaxValues("rotten_flesh-22",13,9,17);
-        itemDefaultMinMaxValues("rotten_flesh-23",8,6,10);
-        itemDefaultMinMaxValues("rotten_flesh-24",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-25",5,4,6);
-        itemDefaultMinMaxValues("rotten_flesh-26",5,2,9);
-        itemDefaultMinMaxValues("rotten_flesh-27",9,5,13);
+        itemDefaultMinMaxValues("cod-0",3,2,4);
+        itemDefaultMinMaxValues("tropical_fish-0",5,4,6);
+        itemDefaultMinMaxValues("pufferfish-0",5,4,6);
+        itemDefaultMinMaxValues("salmon-0",5,4,6);
+        itemDefaultMinMaxValues("rotten_flesh-1",5,4,6);
+        itemDefaultMinMaxValues("rotten_flesh-2",13,10,16);
+        itemDefaultMinMaxValues("rotten_flesh-3",8,6,10);
+        itemDefaultMinMaxValues("rotten_flesh-4",7,5,9);
+        itemDefaultMinMaxValues("rotten_flesh-5",10,7,13);
+        itemDefaultMinMaxValues("rotten_flesh-6",8,6,10);
+        itemDefaultMinMaxValues("rotten_flesh-7",7,5,9);
+        itemDefaultMinMaxValues("rotten_flesh-8",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-9",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-10",5,4,6);
+        itemDefaultMinMaxValues("rotten_flesh-11",6,4,8);
+        itemDefaultMinMaxValues("rotten_flesh-12",13,10,18);
+        itemDefaultMinMaxValues("rotten_flesh-13",12,9,17);
+        itemDefaultMinMaxValues("rotten_flesh-14",14,12,16);
+        itemDefaultMinMaxValues("rotten_flesh-15",20,14,26);
+        itemDefaultMinMaxValues("rotten_flesh-16",36,22,50);
+        itemDefaultMinMaxValues("rotten_flesh-17",23,18,33);
+        itemDefaultMinMaxValues("rotten_flesh-18",16,13,19);
+        itemDefaultMinMaxValues("rotten_flesh-19",13,11,15);
+        itemDefaultMinMaxValues("rotten_flesh-20",12,9,15);
+        itemDefaultMinMaxValues("rotten_flesh-21",9,7,11);
+        itemDefaultMinMaxValues("rotten_flesh-22",15,11,19);
+        itemDefaultMinMaxValues("rotten_flesh-23",10,8,12);
+        itemDefaultMinMaxValues("rotten_flesh-24",8,6,10);
+        itemDefaultMinMaxValues("rotten_flesh-25",7,5,9);
+        itemDefaultMinMaxValues("rotten_flesh-26",7,4,11);
+        itemDefaultMinMaxValues("rotten_flesh-27",11,7,15);
 
         //도축 상점 가격
         itemDefaultMinMaxValues("mutton-0",1,1,2);

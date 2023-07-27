@@ -19,10 +19,9 @@ import static com.rkfcl.server_info.ItemRegistration.removeExpiredItems;
 import static com.rkfcl.server_info.ItemReturn.ReturnedItems;
 import static com.rkfcl.server_info.Manager.ItemManager.*;
 import static com.rkfcl.server_info.ProtectBlock.AccountprotectMap;
-import static com.rkfcl.server_info.ProtectBlock.protectMap;
 
 public class ShopInventoryManager {
-    ItemManager itemManager;
+    ItemManager itemManager = new ItemManager();
     List<String> itemNames = Arrays.asList(
             "arapaima",
             "anglerfish",
@@ -70,7 +69,6 @@ public class ShopInventoryManager {
     );
     public void openShopJobInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, "전직교관 상점");
-
         setItem(inventory, 4, ItemManager.createMineJob1Item());
         setItem(inventory, 13, ItemManager.createMineJob2Item());
         setItem(inventory, 22, ItemManager.createMineJob3Item());
@@ -86,16 +84,15 @@ public class ShopInventoryManager {
         setItem(inventory, 18, ItemManager.createFisherJob3Item());
         setItem(inventory, 27, ItemManager.createFisherJob4Item());
 
-//        setItem(inventory, 6, ItemManager.createCookerJob1Item());
-//        setItem(inventory, 15, ItemManager.createCookerJob2Item());
-//        setItem(inventory, 24, ItemManager.createCookerJob3Item());
-//        setItem(inventory, 33, ItemManager.createCookerJob4Item());
+        setItem(inventory, 6, ItemManager.createCookerJob1Item());
+        setItem(inventory, 15, ItemManager.createCookerJob2Item());
+        setItem(inventory, 24, ItemManager.createCookerJob3Item());
+        setItem(inventory, 33, ItemManager.createCookerJob4Item());
 
         setItem(inventory, 39, ItemManager.createresetJobItem());
         player.openInventory(inventory);
     }
     public void openShopButcherInventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "도축업자 상점");
 
         setItem(inventory, 0, ItemManager.createOreItem(Material.MUTTON,0));
@@ -124,7 +121,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopMineInventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "광부 상점");
 
         setItem(inventory, 0, ItemManager.createOreItem(Material.FLINT,0));
@@ -150,7 +146,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopFarmer1Inventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "농부 상점");
 
         setItem(inventory, 0, ItemManager.createOreItem(Material.PUMPKIN,0));
@@ -179,7 +174,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopCookingInventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "요리 상점");
 
         setItem(inventory, 0, createItemsAdderItem("ptato_salad"));
@@ -212,7 +206,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopFarmer2Inventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "농부2 상점");
 
         for (int i=0;i<=5;i++) {
@@ -230,7 +223,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopFishInventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "어부 상점");
         setItem(inventory, 0, ItemManager.createFishItem(Material.COD, 0));
         setItem(inventory, 1, ItemManager.createFishItem(Material.SALMON, 0));
@@ -247,7 +239,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void openShopItemsInventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "잡화 상점");
         setItem(inventory, 0, createSaleItemsAdderItem("small_construction_block"));
         setItem(inventory, 1, createSaleItemsAdderItem("medium_construction_block"));
@@ -266,7 +257,6 @@ public class ShopInventoryManager {
     }
     public void openexchangeInventory(Player player, int page) {
         removeExpiredItems();
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "거래소 : " + page + "페이지");
 
         Map<ItemStack, UUID> registeredItems = ItemRegistration.getRegisteredItems();
@@ -298,7 +288,6 @@ public class ShopInventoryManager {
     }
     public void openRegisteredInventory(Player player, int page) {
         removeExpiredItems();
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "등록된 아이템 : " + page + "페이지");
 
         int slot = 0;
@@ -333,7 +322,6 @@ public class ShopInventoryManager {
 
     public void openReturnedInventory(Player player, int page) {
         removeExpiredItems();
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 54, "반환된 아이템 : " + page + "페이지");
 
         int slot = 0;
@@ -453,7 +441,6 @@ public class ShopInventoryManager {
     }
 
     public void lockdoorsettings(Player player,String key) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 45, "비밀번호 문 설정");
         setItem(inventory, 4, ItemManager.locksign(key));
         setItem(inventory, 40, ItemManager.locknum(0));
@@ -472,7 +459,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void lockdoor(Player player,String key) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 45, "비밀번호 문");
         setItem(inventory, 4, ItemManager.locksign(key));
         setItem(inventory, 40, ItemManager.locknum(0));
@@ -491,7 +477,6 @@ public class ShopInventoryManager {
         player.openInventory(inventory);
     }
     public void coinshopinventory(Player player) {
-        itemManager = new ItemManager();
         Inventory inventory = Bukkit.createInventory(null, 45, "코인 상점");
         setItem(inventory, 21, createSaleCoinItemsAdderItem("invensave"));
         setItem(inventory, 3, createSaleCoinItemsAdderItem("small_construction_block"));

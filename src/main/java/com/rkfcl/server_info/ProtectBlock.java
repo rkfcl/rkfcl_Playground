@@ -198,7 +198,8 @@ public class ProtectBlock implements Listener {
             sectorID = protectMap.get(location);
             UUID playerUUID = player.getUniqueId();
             List<UUID> playerUUIDs = AccountprotectMap.get(sectorID);
-            if (playerUUIDs != null && playerUUIDs.size() > 0 && playerUUIDs.get(0).equals(playerUUID)) {
+            // 플레이어가 OP일 경우도 허용
+            if (player.isOp() || (playerUUIDs != null && playerUUIDs.size() > 0 && playerUUIDs.get(0).equals(playerUUID))) {
                 shopInventoryManager.AccountInventory(player, sectorID);
             }
         }

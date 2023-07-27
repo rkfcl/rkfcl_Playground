@@ -6,6 +6,7 @@ import com.rkfcl.server_info.test;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,6 +23,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -83,6 +85,30 @@ public class AbilityManager implements Listener {
             Material.COCOA,
             Material.POTATOES
 
+    );
+    private List<String> foodNames = Arrays.asList(
+            "collection_ptato_salad:감자 샐러드",
+            "collection_vegetable_salad:야채 샐러드",
+            "collection_fried_egg:계란 후라이",
+            "collection_omelet:오믈렛",
+            "collection_baked_fish:생선구이",
+            "collection_perch_carp:도미,잉어",
+            "collection_vegetable_medley:야채의 메들리",
+            "collection_rice_spaghetti:스파게티",
+            "collection_carp_surprise:깜짝 잉어",
+            "collection_pancakes:팬케이크",
+            "collection_trout_soup:송어 스프",
+            "collection_tortilla:또띠아",
+            "collection_fish_taco:생선 타코",
+            "collection_salt:소금",
+            "collection_fried_eel:장어튀김",
+            "collection_maki_roll:마키 롤",
+            "collection_rice_pudding:라이스 푸딩",
+            "collection_ice_cream:아이스크림",
+            "collection_pumpkin_soup:호박 죽",
+            "collection_glazed_yams:고구마 맛탕",
+            "collection_salmon_dinner:연어 정찬",
+            "collection_crispy_bass:우럭 튀김"
     );
     private static final HashMap<Player, Integer> blockBreakCounts = new HashMap<>();
 
@@ -322,7 +348,6 @@ public class AbilityManager implements Listener {
             if (targetCropsTypes.contains(brokenCropsType)) {
                 // 농작물이 다 자란 상태인지 확인
                 boolean isFullyGrown = checkIfFullyGrown(block);
-                System.out.println(isFullyGrown);
                 // 농작물이 다 자란 상태일 때의 처리
                 if (isFullyGrown) {
                     // 추가될 작물의 종류와 양
@@ -478,6 +503,33 @@ public class AbilityManager implements Listener {
             }
         }
     }
+
+    //요리사 직업 능력
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack resultItem = event.getRecipe().getResult();
+        String foodName = resultItem.getItemMeta().getDisplayName();
+        String job = playerDataManager.getPlayerJob(player.getUniqueId());
+        if (job.equals("요리사 1차")) {
+            // 대소문자를 모두 소문자로 변환하고 색 코드 제거 후 공백을 모두 제거하여 처리
+            String formattedFoodName = ChatColor.stripColor(foodName).toLowerCase().replaceAll("\\s+", "");
+
+            for (String food : foodNames) {
+                String[] parts = food.split(":");
+                String itemName = parts[1].toLowerCase().replaceAll("\\s+", "");
+                if (formattedFoodName.equals(itemName)) {
+                    if (ThreadLocalRandom.current().nextDouble() < 0.9) {
+                        player.getInventory().addItem(resultItem);
+                        player.sendMessage("추가 요리가 주어졌습니다!");
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
     private boolean checkIfFullyGrown(Block block) {
         BlockState blockState = block.getState();
         if(block.getType()==Material.MELON||block.getType()==Material.PUMPKIN){
@@ -530,8 +582,12 @@ public class AbilityManager implements Listener {
                 event.setKeepInventory(true);
                 event.getDrops().clear();
             } else {
-                ItemStack check = ItemManager.createCheck(amount);
-                event.getDrops().add(check);
+                if (amount==0){
+
+                }else {
+                    ItemStack check = ItemManager.createCheck(amount);
+                    event.getDrops().add(check);
+                }
                 playerDataManager.setPlayerBalance(player.getUniqueId(), 0);
                 plugin.updateScoreboard(player);
             }

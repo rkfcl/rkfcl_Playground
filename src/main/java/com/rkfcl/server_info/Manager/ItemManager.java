@@ -5,9 +5,6 @@ import com.rkfcl.server_info.ItemManagerCost.ItemCost;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -152,31 +149,31 @@ public class ItemManager {
         check.setItemMeta(meta);
         return check;
     }
-    public static final ItemStack check = buildItem(Material.PAPER, 1, ChatColor.DARK_GREEN + "수표", "골드");
-
-    public static ItemStack createJobItem(String jobName, String jobDescription, int purchasePrice) {
+    public static ItemStack createJobItem(String jobName, String jobDescription, int customModelData) {
         ItemStack jobItem = new ItemStack(Material.PAPER, 1);
         ItemMeta meta = jobItem.getItemMeta();
+        // 커스텀 모델 데이터 값 설정
+        int ID = customModelData;
         meta.setDisplayName("§6[ 직업 ] " + jobName);
         meta.setLore(Arrays.asList(
                 "§f우클릭 시 " + jobName + "로 전직 합니다",
                 jobDescription,
                 "",
-                "§l§a| §f구매 가격: §e" + purchasePrice + "§f$",
+                "§l§a| §f구매 가격: §e" + itemCost.getItemCost(jobItem,ID) + "§f$",
                 " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개",
                 "",
                 "§l§c| §f판매 가격: §c판매 불가",
                 " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 64개"
         ));
+        meta.setCustomModelData(ID);
         jobItem.setItemMeta(meta);
         return jobItem;
     }
-
     public static ItemStack createMineJob1Item() {
         return createJobItem(
                 "§f광부 1차",
                 "§7광부 : §f블럭 50개를 캘때 마다 성급함1 효과를 얻습니다!",
-                3000
+                200
         );
     }
 
@@ -184,7 +181,7 @@ public class ItemManager {
         return createJobItem(
                 "§f광부 2차",
                 "§7광부 : §f10%확률로 광물을 한개 더 얻습니다!",
-                7000
+                201
         );
     }
 
@@ -192,7 +189,7 @@ public class ItemManager {
         return createJobItem(
                 "§f광부 3차",
                 "§7광부 : §f기본 패시브 화염저항이 생기며 블럭 50개를 캘때 마다 성급함2 효과를 얻습니다!",
-                30000
+                202
         );
     }
 
@@ -200,16 +197,115 @@ public class ItemManager {
         return createJobItem(
                 "§f광부 4차",
                 "§7광부 : §f10%확률로 광물을 두개 더 얻습니다!",
-                55000
+                203
+        );
+    }
+    public static ItemStack createFarmerJob1Item() {
+        return createJobItem(
+                "§f농부 1차",
+                "§7농부 : §f10% 확률로 농작물 추가+1",
+                204
         );
     }
 
-    public static ItemStack createresetJobItem() {
+    public static ItemStack createFarmerJob2Item() {
         return createJobItem(
-                "§f초기화권",
-                "",
-                10000
+                "§f농부 2차",
+                "§7농부 : §f귀속 물뿌리개 지급",
+                205
         );
+    }
+
+    public static ItemStack createFarmerJob3Item() {
+        return createJobItem(
+                "§f농부 3차",
+                "§7농부 : §f기본 작물 씨앗 자동 심기 기능 추가",
+                206
+        );
+    }
+
+    public static ItemStack createFarmerJob4Item() {
+        return createJobItem(
+                "§f농부 4차",
+                "§7농부 : §f10% 확률로 농작물 추가+2",
+                207
+        );
+    }
+
+    public static ItemStack createFisherJob1Item() {
+        return createJobItem(
+                "§f어부 1차",
+                "§7어부 : §f잡을 수 있는 물고기 개체 수 증가",
+                208
+        );
+    }
+    public static ItemStack createFisherJob2Item() {
+        return createJobItem(
+                "§f어부 2차",
+                "§7어부 : §f10% 확률로 추가 물고기+1",
+                209
+        );
+    }
+    public static ItemStack createFisherJob3Item() {
+        return createJobItem(
+                "§f어부 3차",
+                "§7어부 : §f기본 패시브 수중호흡 적용",
+                210
+        );
+    }
+    public static ItemStack createFisherJob4Item() {
+        return createJobItem(
+                "§f어부 4차",
+                "§7어부 : §f10% 확률로 추가 물고기+2",
+                211
+        );
+    }
+    public static ItemStack createCookerJob1Item() {
+        return createJobItem(
+                "§f요리사 1차",
+                "§7요리사 : §f10% 확률로 요리 추가 +1",
+                212
+        );
+    }
+    public static ItemStack createCookerJob2Item() {
+        return createJobItem(
+                "§f요리사 2차",
+                "§7요리사 : §f요리 한번에 5개 가능",
+                213
+        );
+    }
+    public static ItemStack createCookerJob3Item() {
+        return createJobItem(
+                "§f요리사 3차",
+                "§7요리사 : §f랜덤 레시피 북 1개+ 요리 한번에 10개 가능",
+                214
+        );
+    }
+    public static ItemStack createCookerJob4Item() {
+        return createJobItem(
+                "§f요리사 4차",
+                "§7요리사 : §f10% 확률로 요리 추가 +2",
+                215
+        );
+    }
+    public static ItemStack createresetJobItem() {
+        ItemStack jobItem = new ItemStack(Material.PAPER, 1);
+        ItemMeta meta = jobItem.getItemMeta();
+        // 커스텀 모델 데이터 값 설정
+        int customModelDataValue = 216;
+        meta.setDisplayName("§6[ 직업 ] §f초기화권" );
+        meta.setLore(Arrays.asList(
+                "§f우클릭 시 직업을 초기화 합니다",
+                "",
+                "§l§a| §f구매 가격: §e" + itemCost.getItemCost(jobItem,customModelDataValue) + "§f$",
+                " §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개",
+                "",
+                "§l§c| §f판매 가격: §c판매 불가",
+                " §l§7┗ §7우클릭시 1개, 쉬프트+우클릭 시 64개"
+        ));
+        meta.setCustomModelData(customModelDataValue);
+        jobItem.setItemMeta(meta);
+        return jobItem;
     }
     public static ItemStack createOreItem(Material material, int data) {
         ItemStack oreItem = new ItemStack(material, 1);
@@ -358,94 +454,7 @@ public class ItemManager {
         return fishItem;
     }
 
-    public static ItemStack createFarmerJob1Item() {
-        return createJobItem(
-                "§f농부 1차",
-                "§7농부 : §f10% 확률로 농작물 추가+1",
-                5000
-        );
-    }
 
-    public static ItemStack createFarmerJob2Item() {
-        return createJobItem(
-                "§f농부 2차",
-                "§7농부 : §f귀속 물뿌리개 지급",
-                10000
-        );
-    }
-
-    public static ItemStack createFarmerJob3Item() {
-        return createJobItem(
-                "§f농부 3차",
-                "§7농부 : §f기본 작물 씨앗 자동 심기 기능 추가",
-                30000
-        );
-    }
-
-    public static ItemStack createFarmerJob4Item() {
-        return createJobItem(
-                "§f농부 4차",
-                "§7농부 : §f10% 확률로 농작물 추가+2",
-                55000
-        );
-    }
-
-    public static ItemStack createFisherJob1Item() {
-        return createJobItem(
-                "§f어부 1차",
-                "§7어부 : §f잡을 수 있는 물고기 개체 수 증가",
-                5000
-        );
-    }
-    public static ItemStack createFisherJob2Item() {
-        return createJobItem(
-                "§f어부 2차",
-                "§7어부 : §f10% 확률로 추가 물고기+1",
-                8000
-        );
-    }
-    public static ItemStack createFisherJob3Item() {
-        return createJobItem(
-                "§f어부 3차",
-                "§7어부 : §f기본 패시브 수중호흡 적용",
-                30000
-        );
-    }
-    public static ItemStack createFisherJob4Item() {
-        return createJobItem(
-                "§f어부 4차",
-                "§7어부 : §f10% 확률로 추가 물고기+2",
-                45000
-        );
-    }
-    public static ItemStack createCookerJob1Item() {
-        return createJobItem(
-                "§f요리사 1차",
-                "§7요리사 : §f10% 확률로 요리 추가 +1",
-                7000
-        );
-    }
-    public static ItemStack createCookerJob2Item() {
-        return createJobItem(
-                "§f요리사 2차",
-                "§7요리사 : §f요리 한번에 5개 가능",
-                7000
-        );
-    }
-    public static ItemStack createCookerJob3Item() {
-        return createJobItem(
-                "§f요리사 3차",
-                "§7요리사 : §f랜덤 레시피 북 1개+ 요리 한번에 10개 가능",
-                7000
-        );
-    }
-    public static ItemStack createCookerJob4Item() {
-        return createJobItem(
-                "§f요리사 4차",
-                "§7요리사 : §f10% 확률로 요리 추가 +2",
-                7000
-        );
-    }
     public static ItemStack namechange() {
         ItemStack check = new ItemStack(Material.PAPER, 1);
         ItemMeta meta = check.getItemMeta();
