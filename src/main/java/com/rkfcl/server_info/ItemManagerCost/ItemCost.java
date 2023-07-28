@@ -40,7 +40,7 @@ public class ItemCost {
         itemDefaultMinMaxValues("paper-212",5000,5000,5000);
         itemDefaultMinMaxValues("paper-213",10000,10000,10000);
         itemDefaultMinMaxValues("paper-214",25000,25000,25000);
-        itemDefaultMinMaxValues("paper-215",4000,4000,4000);
+        itemDefaultMinMaxValues("paper-215",40000,40000,40000);
         //초기화
         itemDefaultMinMaxValues("paper-216",10000,10000,10000);
 

@@ -270,21 +270,21 @@ public class ItemManager {
     public static ItemStack createCookerJob2Item() {
         return createJobItem(
                 "§f요리사 2차",
-                "§7요리사 : §f요리 한번에 5개 가능",
+                "§7요리사 : §f10% 확률로 요리 추가 +2",
                 213
         );
     }
     public static ItemStack createCookerJob3Item() {
         return createJobItem(
                 "§f요리사 3차",
-                "§7요리사 : §f랜덤 레시피 북 1개+ 요리 한번에 10개 가능",
+                "§7요리사 : §f20% 확률로 요리 추가 +1",
                 214
         );
     }
     public static ItemStack createCookerJob4Item() {
         return createJobItem(
                 "§f요리사 4차",
-                "§7요리사 : §f10% 확률로 요리 추가 +2",
+                "§7요리사 : §f20% 확률로 요리 추가 +2",
                 215
         );
     }

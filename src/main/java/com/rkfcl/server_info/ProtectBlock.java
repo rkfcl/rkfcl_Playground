@@ -83,6 +83,10 @@ public class ProtectBlock implements Listener {
         Block block = event.getBlock();
         Location location = block.getLocation();
         Location sector = protectMap.get(location);
+        // sector가 null이면 해당 위치에 보호 영역이 없으므로 return
+        if (sector == null) {
+            return;
+        }
         int x = sector.getBlockX();
         int y = sector.getBlockY();
         int z = sector.getBlockZ();

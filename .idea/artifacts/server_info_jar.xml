@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="server_info:jar">
-    <output-path>$PROJECT_DIR$/../../../바탕 화면/rkfclplay_backup/rkfclplay/plugins</output-path>
+    <output-path>$PROJECT_DIR$/../../../바탕 화면/rkfclplay/plugins</output-path>
     <root id="archive" name="server_info.jar">
       <element id="module-output" name="server_info" />
     </root>
