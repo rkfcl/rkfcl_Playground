@@ -75,7 +75,7 @@ public class FishingManager implements Listener {
                             caughtFish.getType() == Material.PUFFERFISH) {
                         // 어부인 경우 물고기를 잡았을 때만 작동
                         if (!isFisher(player).contains("1차")) {
-                            if (Math.random() <= 1.0) { // 10% 확률로 작동
+                            if (Math.random() <= 0.1) { // 10% 확률로 작동
                                 giveRandomFish(player);
                             }
                         }
@@ -108,8 +108,8 @@ public class FishingManager implements Listener {
             // 플레이어가 잡은 물고기를 감지하고 additionalItem 변수에 저장
             if (
                     isFisher(player).contains("어부") && // 어부인지 확인
-                    !isFisher(player).contains("1차") && // 어부 1차가 아닌지 확인
-                    Math.random() <= 0.9) { // 10% 확률로 작동
+                    !isFisher(player).contains("1차") // 어부 1차가 아닌지 확인
+                    ) {
                 additionalItem = pickedUpItem;
             }
         }

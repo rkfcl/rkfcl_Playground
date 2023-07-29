@@ -234,7 +234,7 @@ public class AbilityManager implements Listener {
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
 
         // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
-        if (job.startsWith("농부") || targetCropsTypes.contains(brokenCropsType)) {
+        if (job.startsWith("농부") && targetCropsTypes.contains(brokenCropsType)) {
             int additionalCropsAmount = job.contains("4차") ? 2 : 1;
             // 농작물이 다 자란 상태인지 확인
             boolean isFullyGrown = checkIfFullyGrown(block);

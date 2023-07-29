@@ -2,7 +2,6 @@ package com.rkfcl.server_info;
 
 
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.rkfcl.server_info.Manager.ItemManager.namechange;
 
 
 public class NameChange implements Listener {

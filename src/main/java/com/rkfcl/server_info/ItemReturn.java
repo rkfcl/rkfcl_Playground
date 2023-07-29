@@ -2,7 +2,6 @@ package com.rkfcl.server_info;
 
 
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 
 import java.util.*;

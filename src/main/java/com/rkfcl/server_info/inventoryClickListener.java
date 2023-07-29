@@ -37,142 +37,6 @@ public class inventoryClickListener implements Listener {
         this.pluginInstance = pluginInstance;
         this.playerDataManager = playerDataManager;
     }
-
-
-
-//    private void handleJobPurchase(Player player, InventoryClickEvent clickEvent, ClickType clickType, int jobType, int jobCost, int itemCount) {
-//        if (clickEvent.isLeftClick()) {
-//            try {
-//                int setCount = (clickType == ClickType.SHIFT_LEFT) ? 64 : 1; // 구입할 세트 수
-//                int totalCost = jobCost * setCount; // 총 비용 계산
-//
-//                if (playerDataManager.getPlayerBalance(player.getUniqueId()) < totalCost) {
-//                    player.sendMessage(ChatColor.RED + "금액이 부족합니다.");
-//                    return;
-//                }
-//
-//                playerDataManager.decreaseMoney(player.getUniqueId(), totalCost); // 플레이어의 잔액을 데이터베이스에서 차감합니다.
-//                pluginInstance.updateScoreboard(player); // 새로운 잔액으로 스코어보드 업데이트
-//
-//                for (int i = 0; i < setCount; i++) {
-//                    switch (jobType) {
-//                        case 1:
-//                            player.getInventory().addItem(ItemManager.createMineJob1Item());
-//                            break;
-//                        case 2:
-//                            player.getInventory().addItem(ItemManager.createMineJob2Item());
-//                            break;
-//                        case 3:
-//                            player.getInventory().addItem(ItemManager.createMineJob3Item());
-//                            break;
-//                        case 4:
-//                            player.getInventory().addItem(ItemManager.createMineJob4Item());
-//                            break;
-//                        case 5:
-//                            player.getInventory().addItem(ItemManager.createFarmerJob1Item());
-//                            break;
-//                        case 6:
-//                            player.getInventory().addItem(ItemManager.createFarmerJob2Item());
-//                            break;
-//                        case 7:
-//                            player.getInventory().addItem(ItemManager.createFarmerJob3Item());
-//                            break;
-//                        case 8:
-//                            player.getInventory().addItem(ItemManager.createFarmerJob4Item());
-//                            break;
-//                        case 9:
-//                            player.getInventory().addItem(ItemManager.createresetJobItem());
-//                            break;
-//                        case 10:
-//                            player.getInventory().addItem(ItemManager.createFisherJob1Item());
-//                            break;
-//                        case 11:
-//                            player.getInventory().addItem(ItemManager.createFisherJob2Item());
-//                            break;
-//                        case 12:
-//                            player.getInventory().addItem(ItemManager.createFisherJob3Item());
-//                            break;
-//                        case 13:
-//                            player.getInventory().addItem(ItemManager.createFisherJob4Item());
-//                            break;
-//                    }
-//                }
-//            } catch (NumberFormatException e) {
-//                player.sendMessage(ChatColor.RED + "올바른 금액을 입력해주세요.");
-//                return;
-//            }
-//        } else if (clickEvent.isRightClick()) {
-//            if (clickEvent.isShiftClick()) {
-//                player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
-//            } else {
-//                player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
-//            }
-//        }
-//    }
-//    @EventHandler
-//    public void ShopJobInventory(InventoryClickEvent event) {
-//        Inventory inventory = event.getClickedInventory();
-//        Player player = (Player) event.getWhoClicked();
-//        InventoryClickEvent clickEvent = (InventoryClickEvent) event;
-//        ClickType clickType = event.getClick();
-//        if (event.getClickedInventory() == null) return;
-//
-//        //전직교관 상점
-//        if (event.getView().getTitle().equalsIgnoreCase("전직교관 상점")) {
-//            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
-//                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
-//                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
-//                return;
-//            }
-//
-//            if (event.getCurrentItem().getType() == Material.PAPER) {
-//                event.setCancelled(true);
-//                // 플레이어에게 전직 종이 주기
-//                ItemMeta meta = event.getCurrentItem().getItemMeta();
-//
-//                if (meta != null) {
-//                    String displayName = meta.getDisplayName();
-//
-//                    if (displayName.startsWith("§6[ 직업 ] §f광부")) {
-//                        if (displayName.endsWith("1차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 1, 3000, 1);
-//                        } else if (displayName.endsWith("2차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 2, 7000, 1);
-//                        } else if (displayName.endsWith("3차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 3, 30000, 1);
-//                        } else if (displayName.endsWith("4차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 4, 55000, 1);
-//                        }
-//                    } else if (displayName.startsWith("§6[ 직업 ] §f농부")) {
-//                        if (displayName.endsWith("1차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 5, 5000, 1);
-//                        } else if (displayName.endsWith("2차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 6, 10000, 1);
-//                        } else if (displayName.endsWith("3차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 7, 30000, 1);
-//                        } else if (displayName.endsWith("4차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 8, 55000, 1);
-//                        }
-//                    } else if (displayName.startsWith("§6[ 직업 ] §f어부")) {
-//                        if (displayName.endsWith("1차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 10, 5000, 1);
-//                        } else if (displayName.endsWith("2차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 11, 8000, 1);
-//                        } else if (displayName.endsWith("3차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 12, 30000, 1);
-//                        } else if (displayName.endsWith("4차")) {
-//                            handleJobPurchase(player, clickEvent, clickType, 13, 45000, 1);
-//                        }
-//                    }
-//                }
-//
-//
-//                if (meta != null && meta.getDisplayName().equals("§6[ 직업 ] §f초기화권")) {
-//                    handleJobPurchase(player, clickEvent, clickType, 9, 10000, 1);
-//                }
-//            }
-//        }
-//    }
     @EventHandler
     public void ShopInventory(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
@@ -182,10 +46,14 @@ public class inventoryClickListener implements Listener {
 
         if (event.getClickedInventory() == null) return;
 
-        // 어부 상점
-        if (event.getView().getTitle().equalsIgnoreCase("어부 상점")||event.getView().getTitle().equalsIgnoreCase("광부 상점")||event.getView().getTitle().equalsIgnoreCase("농부 상점")||event.getView().getTitle().equalsIgnoreCase("농부2 상점")||event.getView().getTitle().equalsIgnoreCase("잡화 상점")||event.getView().getTitle().equalsIgnoreCase("도축업자 상점") || event.getView().getTitle().equalsIgnoreCase("요리 상점")|| event.getView().getTitle().equalsIgnoreCase("전직교관 상점")) {
+        // 상점 이름
+        String shopTitle = event.getView().getTitle();
+        if (isShopTitle(shopTitle)) {
             event.setCancelled(true);
-
+            boolean isCoin = false;
+            if (event.getView().getTitle().equalsIgnoreCase("코인 상점")){
+                isCoin = true;
+            }
             if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
                 // 클릭한 인벤토리가 플레이어 인벤토리인 경우
                 event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
@@ -206,17 +74,7 @@ public class inventoryClickListener implements Listener {
 
                                 // 아이템 설명에 "판매불가"가 있는지 확인
                                 List<String> lore = meta.getLore();
-                                boolean isSellBlocked = false;
-
-                                if (lore != null) {
-                                    for (String line : lore) {
-                                        if (line.contains("§c판매 불가")) {
-                                            isSellBlocked = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (isSellBlocked) {
+                                if (isContainsLore(lore,"§c판매 불가")) {
                                     player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
                                     return; // 판매불가 아이템인 경우 처리 중단
                                 }
@@ -253,38 +111,42 @@ public class inventoryClickListener implements Listener {
                                     pluginInstance.updateScoreboard(player);
                                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
                                 } else {
-                                    player.sendMessage("§6[상점] §f판매할 아이템이 충분하지 않습니다.");
+                                    player.sendMessage("§6[상점] §f판매 할 아이템이 충분하지 않습니다.");
                                 }
                             } else if (clickEvent.isLeftClick()) {
 
                                 // 아이템 설명에 "구매불가"가 있는지 확인
                                 List<String> lore = meta.getLore();
-                                boolean isSellBlocked = false;
-
-                                if (lore != null) {
-                                    for (String line : lore) {
-                                        if (line.contains("§c구매 불가")) {
-                                            isSellBlocked = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (isSellBlocked) {
-                                    player.sendMessage("§6[상점] §f구매가 불가능한 아이템입니다.");
+                                if (isContainsLore(lore,"§c구매 불가")) {
+                                    player.sendMessage("§6[상점] §f구매 가 불가능한 아이템입니다.");
                                     return; // 판매불가 아이템인 경우 처리 중단
                                 }
                                 // 구매 처리
                                 int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
                                 int individualCost = itemCost.getItemCost(clickedItem, customModelData);
                                 int totalCost = individualCost * setCount;
-
-                                // 플레이어의 돈 확인
-                                int playerMoney = playerDataManager.getPlayerBalance(player.getUniqueId());
-                                if (playerMoney < totalCost) {
-                                    player.sendMessage("§6[상점] §f돈이 부족합니다.");
-                                    return; // 돈이 부족한 경우 처리 중단
+                                if (isCoin){ //코인 쿠매 처리
+                                    if (isContainsLore(lore,"갈치 코인")){
+                                        int availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5001);
+                                        if (availableCoinCount < totalCost) {
+                                            player.sendMessage("§6[상점] §f갈치 코인이 부족합니다.");
+                                            return; // 코인이 부족한 경우 처리 중단
+                                        }
+                                    }else {
+                                        int availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5004);
+                                        if (availableCoinCount < totalCost) {
+                                            player.sendMessage("§6[상점] §f사냥 코인이 부족합니다.");
+                                            return; // 코인이 부족한 경우 처리 중단
+                                        }
+                                    }
+                                }else {
+                                    // 플레이어의 돈 확인
+                                    int playerMoney = playerDataManager.getPlayerBalance(player.getUniqueId());
+                                    if (playerMoney < totalCost) {
+                                        player.sendMessage("§6[상점] §f돈이 부족합니다.");
+                                        return; // 돈이 부족한 경우 처리 중단
+                                    }
                                 }
-
                                 // 구매 처리
                                 if (setCount > 0) {
                                     clickedItem.setAmount(setCount);
@@ -298,7 +160,6 @@ public class inventoryClickListener implements Listener {
                                             clickedItem.setItemMeta(itemmeta);
                                         }
                                     }
-
                                     // 플레이어에게 아이템 추가
                                     if (customModelData == 10000 && clickedItem.getType().equals(Material.OAK_PLANKS)) { //농토
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " customcrops:farmland " + setCount);
@@ -306,144 +167,15 @@ public class inventoryClickListener implements Listener {
                                         ItemStack Item = ItemsAdder.getCustomItem("chur");
                                         Item.setAmount(setCount);
                                         player.getInventory().addItem(Item);
-                                    }else if (customModelData == 5005 && clickedItem.getType().equals(Material.PAPER)) { //츄르
+                                    }else if (customModelData == 5005 && clickedItem.getType().equals(Material.PAPER)) {
                                         ItemStack Item = ItemsAdder.getCustomItem("lock");
                                         Item.setAmount(setCount);
                                         player.getInventory().addItem(Item);
-                                    }else {
-                                        HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
-                                        if (!remainingItems.isEmpty()) {
-                                            player.sendMessage("§6[상점] §f인벤토리에 공간이 부족합니다.");
-                                            return; // 인벤토리 공간 부족한 경우 처리 중단
-                                        }
-                                    }
-
-
-                                    // 돈 차감 및 스코어보드 업데이트 등 추가 처리
-                                    playerDataManager.decreaseMoney(player.getUniqueId(), totalCost);
-                                    pluginInstance.updateScoreboard(player);
-                                    player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + "$)");
-                                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
-                                    //지금 열어 있는 인벤토리 다시열기
-                                    if (event.getView().getTitle().equalsIgnoreCase("잡화 상점")){
-                                        shopInventoryManager.openShopItemsInventory(player);
-                                    }else if (event.getView().getTitle().equalsIgnoreCase("농부2 상점")){
-                                        shopInventoryManager.openShopFarmer2Inventory(player);
-                                    }else if (event.getView().getTitle().equalsIgnoreCase("전직교관 상점")){
-                                        shopInventoryManager.openShopJobInventory(player);
-                                    }
-                                } else {
-                                    player.sendMessage("§6[상점] §f구매할 아이템이 없습니다.");
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        } else if (event.getView().getTitle().equalsIgnoreCase("코인 상점")) {
-            event.setCancelled(true);
-
-            if (inventory != null && inventory.getType() == InventoryType.PLAYER) {
-                // 클릭한 인벤토리가 플레이어 인벤토리인 경우
-                event.setCancelled(true); // 이벤트 취소하여 아이템을 메뉴로 옮기지 못하도록 함
-                return;
-            } else {
-                event.setCancelled(true);
-                ItemStack clickedItem = event.getCurrentItem();
-
-                if (clickedItem != null) {
-                    ItemMeta meta = clickedItem.getItemMeta();
-
-                    if (meta != null) {
-                        Material itemType = clickedItem.getType();
-                        int customModelData = clickedItem.getItemMeta().getCustomModelData();
-
-                        if (customModelData == getCustomModelData(clickedItem)) {
-                            if (clickEvent.isRightClick()) {
-
-                                // 아이템 설명에 "판매불가"가 있는지 확인
-                                List<String> lore = meta.getLore();
-                                boolean isSellBlocked = false;
-
-                                if (lore != null) {
-                                    for (String line : lore) {
-                                        if (line.contains("§c판매 불가")) {
-                                            isSellBlocked = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (isSellBlocked) {
-                                    player.sendMessage("§6[상점] §f판매가 불가능한 아이템입니다.");
-                                    return; // 판매불가 아이템인 경우 처리 중단
-                                }
-                            } else if (clickEvent.isLeftClick()) {
-
-                                // 아이템 설명에 "구매불가"가 있는지 확인
-                                List<String> lore = meta.getLore();
-                                boolean isSellBlocked = false;
-
-                                if (lore != null) {
-                                    for (String line : lore) {
-                                        if (line.contains("§c구매 불가")) {
-                                            isSellBlocked = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (isSellBlocked) {
-                                    player.sendMessage("§6[상점] §f구매가 불가능한 아이템입니다.");
-                                    return; // 판매불가 아이템인 경우 처리 중단
-                                }
-                                boolean whatcoin = false;
-                                if (lore != null) {
-                                    for (String line : lore) {
-                                        if (line.contains("사냥 코인")) {
-                                            whatcoin = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                // 구매 처리
-                                int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
-                                int individualCost = itemCost.itemCoinCost(clickedItem, customModelData);
-                                int totalCost = individualCost * setCount;
-                                int availableHuntCoinCount = 0;
-                                int availableCoinCount = 0;
-                                // 플레이어의 돈 확인
-                                if (whatcoin) {
-                                    availableHuntCoinCount = countItems(player.getInventory(), Material.PAPER, 5004);
-                                    if (availableHuntCoinCount < totalCost) {
-                                        player.sendMessage("§6[상점] §f코인이 부족합니다.");
-                                        return; // 코인이 부족한 경우 처리 중단
-                                    }
-                                }else {
-                                    availableCoinCount = countItems(player.getInventory(), Material.PAPER, 5001);
-                                    if (availableCoinCount < totalCost) {
-                                        player.sendMessage("§6[상점] §f코인이 부족합니다.");
-                                        return; // 코인이 부족한 경우 처리 중단
-                                    }
-                                }
-                                // 구매 처리
-                                if (setCount > 0) {
-                                    clickedItem.setAmount(setCount);
-                                    ItemMeta itemmeta = clickedItem.getItemMeta();
-                                    if (itemmeta != null) {
-                                        itemmeta.setLore(new ArrayList<>()); // 아이템 설명을 없애기 위해 빈 리스트로 설정
-                                        clickedItem.setItemMeta(itemmeta);
-                                    }
-                                    // 플레이어에게 아이템 추가
-                                    if (whatcoin) {
-                                        removeItems(player.getInventory(), Material.PAPER, 5004, totalCost);
-                                    }else {
-                                        removeItems(player.getInventory(), Material.PAPER, 5001, totalCost);
-                                    }
-                                    if (customModelData == 5003 && clickedItem.getType().equals(Material.ENCHANTED_BOOK)) {
+                                    }else if (customModelData == 5003 && clickedItem.getType().equals(Material.ENCHANTED_BOOK)) {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:randombook " + setCount);
                                     }else if (customModelData == 6000 && clickedItem.getType().equals(Material.BOOK)) {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " protectblock:enhancement_scroll " + setCount);
-                                    }else if (customModelData == 171 && clickedItem.getType().equals(Material.PAPER)) {
+                                    }else if (customModelData == 300 && clickedItem.getType().equals(Material.PAPER)) {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "iagive " + player.getName() + " elitecreatures:carnivoret_weapon_set_key " + setCount);
                                     }else {
                                         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(clickedItem);
@@ -452,15 +184,29 @@ public class inventoryClickListener implements Listener {
                                             return; // 인벤토리 공간 부족한 경우 처리 중단
                                         }
                                     }
-                                    if (whatcoin){
-                                        player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 사냥 코인)");
+                                    // 돈 차감 및 스코어보드 업데이트 등 추가 처리
+                                    if (isCoin){
+                                        if (isContainsLore(lore,"갈치 코인")){
+                                            removeItems(player.getInventory(), Material.PAPER, 5001, totalCost);
+                                            player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 갈치 코인)");
+                                        }else {
+                                            removeItems(player.getInventory(), Material.PAPER, 5004, totalCost);
+                                            player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 사냥 코인)");
+                                        }
                                     }else {
-                                        player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + " 갈치 코인)");
+                                        playerDataManager.decreaseMoney(player.getUniqueId(), totalCost);
+                                        pluginInstance.updateScoreboard(player);
+                                        player.sendMessage("§6[상점] §f아이템을 " + setCount + "개 구매하였습니다. §e(-" + totalCost + "$)");
                                     }
-                                    
                                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
                                     //지금 열어 있는 인벤토리 다시열기
-                                    if (event.getView().getTitle().equalsIgnoreCase("코인 상점")){
+                                    if (event.getView().getTitle().equalsIgnoreCase("잡화 상점")){
+                                        shopInventoryManager.openShopItemsInventory(player);
+                                    }else if (event.getView().getTitle().equalsIgnoreCase("농부2 상점")){
+                                        shopInventoryManager.openShopFarmer2Inventory(player);
+                                    }else if (event.getView().getTitle().equalsIgnoreCase("전직교관 상점")){
+                                        shopInventoryManager.openShopJobInventory(player);
+                                    }else if (event.getView().getTitle().equalsIgnoreCase("코인 상점")){
                                         shopInventoryManager.coinshopinventory(player);
                                     }
                                 } else {
@@ -474,7 +220,26 @@ public class inventoryClickListener implements Listener {
             }
         }
     }
+    private void handleSell(){
 
+    }
+    private boolean isShopTitle(String title) {
+        String[] shopTitles = {
+                "어부 상점", "광부 상점", "농부 상점", "농부2 상점", "잡화 상점",
+                "도축업자 상점", "요리 상점", "전직교관 상점", "코인 상점"
+        };
+        return Arrays.asList(shopTitles).contains(title);
+    }
+    private boolean isContainsLore(List<String> lore,String str) {
+        if (lore != null) {
+            for (String line : lore) {
+                if (line.contains(str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 
     @EventHandler

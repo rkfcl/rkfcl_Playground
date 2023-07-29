@@ -186,6 +186,17 @@ public class ItemCost {
         itemDefaultMinMaxValues("bread-10018",20,15,25);
         itemDefaultMinMaxValues("bread-10019",45,35,55);
         itemDefaultMinMaxValues("bread-10020",10,5,15);
+
+        //코인상점
+        itemDefaultMinMaxValues("paper-167",10,10,10);
+        itemDefaultMinMaxValues("paper-168",30,30,30);
+        itemDefaultMinMaxValues("paper-169",50,50,50);
+        itemDefaultMinMaxValues("paper-300",5,5,5);
+        itemDefaultMinMaxValues("paper-5002",2,2,2);
+        itemDefaultMinMaxValues("enchanted_book-5003",2,2,2);
+        itemDefaultMinMaxValues("book-6000",2,2,2);
+        itemDefaultMinMaxValues("bow-10000",20,20,20);
+        itemDefaultMinMaxValues("shield-10000",20,20,20);
     }
     private void itemDefaultMinMaxValues(String type,int Default,int Min,int Max) {
         // 아이템별 기본값 및 최소값과 최대값 설정

@@ -413,7 +413,7 @@ public class ItemManager {
 
         // 추가 설명을 포함한 아이템 설명
         lore.add(""); // 빈 줄 추가
-        lore.add("§l§a| §f구매 가격: §e" + itemCost.itemCoinCost(fishItem, customModelData) + " §f갈치 코인");
+        lore.add("§l§a| §f구매 가격: §e" + itemCost.getItemCost(fishItem, customModelData) + " §f갈치 코인");
         lore.add(" §l§7┗ §7좌클릭시 1개, 쉬프트+좌클릭 시 64개");
         lore.add("");
         lore.add("§l§c| §f판매 가격: §c판매 불가");
