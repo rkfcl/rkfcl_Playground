@@ -9,7 +9,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpectralArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -164,12 +166,12 @@ public class AbilityManager implements Listener {
                         break;
                     case IRON_ORE:
                     case DEEPSLATE_IRON_ORE:
-                        additionalOreMaterial = Material.IRON_INGOT;
+                        additionalOreMaterial = Material.RAW_IRON;
                         break;
                     case GOLD_ORE:
                         break;
                     case DEEPSLATE_GOLD_ORE:
-                        additionalOreMaterial = Material.GOLD_INGOT;
+                        additionalOreMaterial = Material.RAW_GOLD;
                         break;
                     case DIAMOND_ORE:
                     case DEEPSLATE_DIAMOND_ORE:
@@ -404,11 +406,18 @@ public class AbilityManager implements Listener {
     //pvp arrow damage cancel
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Arrow) {
-            Arrow arrow = (Arrow) event.getDamager();
-            if (arrow.getShooter() instanceof Player && event.getEntity() instanceof Player) {
-                event.setCancelled(true);
-            }
+        Entity damager = event.getDamager();
+        Entity damagedEntity = event.getEntity();
+
+        // 분광화살일 경우 피해를 입히는 대상이 플레이어인지 확인
+        if (damager instanceof SpectralArrow && damagedEntity instanceof Player) {
+            event.setCancelled(true);
+
+        }
+        // 일반 화살일 경우 피해를 받는 대상이 플레이어인지 확인
+        if (damager instanceof Arrow && damagedEntity instanceof Player) {
+            event.setCancelled(true);
         }
     }
+
 }
