@@ -145,12 +145,12 @@ public class test extends JavaPlugin implements Listener {
         for (Player player : players) {
             updateScoreboard(player);
         }
-        loadTasks(CornFile,cornstageMap,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
-        loadTasks(CabbageFile,CabbageMap,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
-        loadTasks(OnionFile,OnionMap,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
-        loadTasks(Sweet_potatoFile,Sweet_potatoMap,"sweet_potato_stage_2", "sweet_potato_stage_3");
-        loadTasks(TomatoFile,TomatoMap,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
-        loadTasks(RiceFile,RiceMap,"rice_stage_1", "rice_stage_2", "rice_stage_3","rice_stage_4","rice_stage_5","rice_stage_6","rice_stage_7");
+        loadTasks(CornFile,cornstageMap,3000,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
+        loadTasks(CabbageFile,CabbageMap,3800,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
+        loadTasks(OnionFile,OnionMap,4000,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
+        loadTasks(Sweet_potatoFile,Sweet_potatoMap,5000,"sweet_potato_stage_2", "sweet_potato_stage_3");
+        loadTasks(TomatoFile,TomatoMap,2400,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
+        loadTasks(RiceFile,RiceMap,2000,"rice_stage_1", "rice_stage_2", "rice_stage_3","rice_stage_4","rice_stage_5","rice_stage_6","rice_stage_7");
     }
 
 
@@ -475,7 +475,7 @@ public class test extends JavaPlugin implements Listener {
         }
     }
 
-    public void loadTasks(File f, HashMap<Location, Integer> map,String... growthStages) {
+    public void loadTasks(File f, HashMap<Location, Integer> map,int delay,String... growthStages) {
         taskMap.clear();
         cornstageMap.clear();
         CabbageMap.clear();
@@ -495,7 +495,7 @@ public class test extends JavaPlugin implements Listener {
                     int z = Integer.parseInt(parts[3]);
                     int stage = Integer.parseInt(parts[4]);
                     Location location = new Location(Bukkit.getWorld(worldName), x, y, z);
-                    int taskId = customcrops.createGrowthTask(location,map, stage,3000, growthStages);
+                    int taskId = customcrops.createGrowthTask(location,map, stage,delay, growthStages);
                     taskMap.put(location, taskId);
                     map.put(location,stage);
                 }
