@@ -150,7 +150,7 @@ public class test extends JavaPlugin implements Listener {
         loadTasks(OnionFile,OnionMap,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
         loadTasks(Sweet_potatoFile,Sweet_potatoMap,"sweet_potato_stage_2", "sweet_potato_stage_3");
         loadTasks(TomatoFile,TomatoMap,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
-        loadTasks(RiceFile,RiceMap,"Rice_stage_1", "Rice_stage_2", "Rice_stage_3","Rice_stage_4","Rice_stage_5","Rice_stage_6","Rice_stage_7");
+        loadTasks(RiceFile,RiceMap,"rice_stage_1", "rice_stage_2", "rice_stage_3","rice_stage_4","rice_stage_5","rice_stage_6","rice_stage_7");
     }
 
 
