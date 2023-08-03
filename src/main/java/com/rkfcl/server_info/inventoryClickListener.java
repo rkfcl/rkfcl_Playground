@@ -123,7 +123,12 @@ public class inventoryClickListener implements Listener {
                                 }
                                 // 구매 처리
                                 int setCount = clickEvent.isShiftClick() ? 64 : 1; // 쉬프트+좌클릭인 경우
-                                int individualCost = itemCost.getItemCost(clickedItem, customModelData);
+                                int individualCost;
+                                if (isContainsLore(lore,"갈치 코인")) {
+                                    individualCost = itemCost.itemCoinCost(clickedItem, customModelData);
+                                }else {
+                                    individualCost = itemCost.getItemCost(clickedItem, customModelData);
+                                }
                                 int totalCost = individualCost * setCount;
                                 if (isCoin){ //코인 쿠매 처리
                                     if (isContainsLore(lore,"갈치 코인")){
@@ -617,7 +622,7 @@ public class inventoryClickListener implements Listener {
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
             } else {
-                player.getInventory().remove(item);
+                item.setAmount(item.getAmount() - 1);
             }
             playerDataManager.increaseMoney(player.getUniqueId(), amount);
             pluginInstance.updateScoreboard(player);

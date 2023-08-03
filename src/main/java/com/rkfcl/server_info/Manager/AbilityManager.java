@@ -2,16 +2,15 @@ package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.inventoryClickListener;
 import com.rkfcl.server_info.test;
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -207,14 +206,38 @@ public class AbilityManager implements Listener {
     private static final Map<Material, Material> cropsToAdditionalItemMap = new HashMap<>();
     static {
         cropsToAdditionalItemMap.put(Material.WHEAT, Material.WHEAT);
-        cropsToAdditionalItemMap.put(Material.CARROTS, Material.CARROTS);
+        cropsToAdditionalItemMap.put(Material.CARROTS, Material.CARROT);
         cropsToAdditionalItemMap.put(Material.PUMPKIN, Material.PUMPKIN);
         cropsToAdditionalItemMap.put(Material.MELON, Material.MELON);
         cropsToAdditionalItemMap.put(Material.BEETROOTS, Material.BEETROOT);
         cropsToAdditionalItemMap.put(Material.COCOA, Material.COCOA_BEANS);
         cropsToAdditionalItemMap.put(Material.POTATOES, Material.POTATO);
     }
+    // 커스텀 작물 타입
+    public enum CustomCropType {
+        CORN("corn_seed_stage_5", "corn"),
+        CABBAGE("cabbage_seed_stage_4", "cabbage"),
+        ONION("onion_seed_stage_4", "onion"),
+        SWEET_POTATO("sweet_potato_stage_3", "sweet_potato"),
+        TOMATO("tomato_stage_6", "tomato"),
+        RICE("rice_stage_7", "rice");
 
+        private final String namespacedID;
+        private final String cropType;
+
+        CustomCropType(String namespacedID, String cropType) {
+            this.namespacedID = namespacedID;
+            this.cropType = cropType;
+        }
+
+        public String getNamespacedID() {
+            return namespacedID;
+        }
+
+        public String getCropType() {
+            return cropType;
+        }
+    }
     // 농작물 추가 메서드
     private void handleAdditionalCrops(Player player, Material brokenCropsType, int additionalCropsAmount) {
         Material additionalCropsMaterial = cropsToAdditionalItemMap.get(brokenCropsType);
@@ -231,19 +254,25 @@ public class AbilityManager implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         Material brokenCropsType = event.getBlock().getType();
-
         // 플레이어의 직업을 가져옴
         String job = playerDataManager.getPlayerJob(player.getUniqueId());
-
         // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
-        if (job.startsWith("농부") && targetCropsTypes.contains(brokenCropsType)) {
+        if (job.startsWith("농부")) {
             int additionalCropsAmount = job.contains("4차") ? 2 : 1;
-            // 농작물이 다 자란 상태인지 확인
-            boolean isFullyGrown = checkIfFullyGrown(block);
-            // 농작물이 다 자란 상태일 때의 처리
-            if (isFullyGrown && ThreadLocalRandom.current().nextDouble() < 0.1) { // 10% 확률로 농작물 추가+1
-                handleAdditionalCrops(player, brokenCropsType, additionalCropsAmount);
+            CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
+            if(customBlock != null) {
+                if (isRandomSuccess(0.05)) { // 10% 확률로 농작물 추가+1
+                    handleAdditionalCropsByCustomBlock(player, customBlock, additionalCropsAmount);
+                }
+            } else if (targetCropsTypes.contains(brokenCropsType)) {
+                    // 농작물이 다 자란 상태인지 확인
+                    boolean isFullyGrown = checkIfFullyGrown(block);
+                    // 농작물이 다 자란 상태일 때의 처리
+                    if (isFullyGrown && isRandomSuccess(0.1)) { // 10% 확률로 농작물 추가+1
+                        handleAdditionalCrops(player, brokenCropsType, additionalCropsAmount);
+                    }
             }
+
         }
         if (job.equals("농부 3차") || job.equals("농부 4차")) { // 일반 작물 자동 심기
             // 플레이어가 캐는 농작물이 타겟 농작물인지 확인
@@ -286,8 +315,24 @@ public class AbilityManager implements Listener {
             }
         }
     }
-
-
+    // 주어진 확률에 따라 성공 여부를 반환하는 메서드
+    private boolean isRandomSuccess(double probability) {
+        return Math.random() < probability;
+    }
+    // 커스텀 블럭에 따라 작물을 추가하는 메서드
+    private void handleAdditionalCropsByCustomBlock(Player player, CustomBlock customBlock, int additionalAmount) {
+        String namespacedID = customBlock.getNamespacedID();
+        for (CustomCropType cropType : CustomCropType.values()) {
+            if (namespacedID.contains(cropType.getNamespacedID())) {
+                String cropTypeName = cropType.getCropType();
+                player.sendMessage("추가 농작물이 주어졌습니다!");
+                ItemStack cropItem = ItemsAdder.getCustomItem(cropTypeName);
+                cropItem.setAmount(additionalAmount);
+                player.getInventory().addItem(cropItem);
+                break;
+            }
+        }
+    }
     //요리사 직업 능력
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
@@ -409,13 +454,8 @@ public class AbilityManager implements Listener {
         Entity damager = event.getDamager();
         Entity damagedEntity = event.getEntity();
 
-        // 분광화살일 경우 피해를 입히는 대상이 플레이어인지 확인
-        if (damager instanceof SpectralArrow && damagedEntity instanceof Player) {
-            event.setCancelled(true);
-
-        }
-        // 일반 화살일 경우 피해를 받는 대상이 플레이어인지 확인
-        if (damager instanceof Arrow && damagedEntity instanceof Player) {
+        // 데미지를 입히는 대상이 플레이어이고, 데미지를 받는 대상도 플레이어인 경우에만 데미지를 취소
+        if (damager instanceof Arrow && ((Arrow) damager).getShooter() instanceof Player && damagedEntity instanceof Player) {
             event.setCancelled(true);
         }
     }

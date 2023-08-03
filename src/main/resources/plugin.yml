@@ -30,5 +30,8 @@ commands:
   거래소:
     description: 거래소 아이템 등록
     usage: /거래소 등록 [가격] [수량]
+  updateCosts:
+    description: 아이템 가격 업데이트
+    permission: myplugin.updateCosts
 listeners:
   - com.rkfcl.server_info.MenuClickListener

@@ -1,6 +1,7 @@
 package com.rkfcl.server_info;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,6 +45,7 @@ public class customcrops implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return; // 우클릭한 블럭이 아닌 경우 무시합니다.
         }
+        Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         CustomBlock custom = CustomBlock.getInstance("water_farmland");
 
@@ -52,7 +54,9 @@ public class customcrops implements Listener {
         }
         Location location = clickedBlock.getLocation().add(0, 1, 0);
         ItemMeta itemMeta = event.getItem().getItemMeta();
-            if (itemMeta != null && itemMeta.getCustomModelData() == 10001) {
+        ItemStack itemStack = event.getItem();
+            if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("corn_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("corn_seed_stage_1");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -61,7 +65,8 @@ public class customcrops implements Listener {
                     taskMap.put(location, taskId);
                     cornstageMap.put(location,initialStage);
                 }
-            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10002) {
+            }else if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("cabbage_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("cabbage_seed_stage_1");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -70,7 +75,8 @@ public class customcrops implements Listener {
                     taskMap.put(location, taskId);
                     CabbageMap.put(location,initialStage);
                 }
-            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10003) {
+            }else if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("onion_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("onion_seed_stage_1");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -79,7 +85,8 @@ public class customcrops implements Listener {
                     taskMap.put(location, taskId);
                     OnionMap.put(location,initialStage);
                 }
-            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10004) {
+            }else if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("sweet_potato_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("sweet_potato_stage_1");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -88,7 +95,8 @@ public class customcrops implements Listener {
                     taskMap.put(location, taskId);
                     Sweet_potatoMap.put(location,initialStage);
                 }
-            }else if (itemMeta != null && itemMeta.getCustomModelData() == 10005) {
+            }else if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("tomato_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("tomato_stage_1");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -97,7 +105,8 @@ public class customcrops implements Listener {
                     taskMap.put(location, taskId);
                     TomatoMap.put(location,initialStage);
                 }
-            }else if (itemMeta != null && itemMeta.getCustomModelData() == 5) {
+            }else if (itemMeta != null && itemMeta.equals(CustomStack.getInstance("rice_seeds").getItemStack().getItemMeta())) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 CustomBlock customBlock = CustomBlock.getInstance("rice_stage_0");
                 int initialStage = 0;
                 if (customBlock != null) {
@@ -107,7 +116,6 @@ public class customcrops implements Listener {
                     RiceMap.put(location,initialStage);
                 }
             }
-//        }
     }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {

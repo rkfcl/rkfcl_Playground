@@ -112,6 +112,7 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginCommand("메뉴").setExecutor(new MenuCommand(this));
         getServer().getPluginCommand("수표").setExecutor(new GiveCheckCommand(this,playerDataManager));
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this,playerDataManager));
+        getServer().getPluginCommand("updateCosts").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("rmnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("∬").setExecutor(new NPCShopCommand(this));
@@ -143,9 +144,6 @@ public class test extends JavaPlugin implements Listener {
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
         for (Player player : players) {
             updateScoreboard(player);
-        }
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            loadPlayerBuffStatus(player);
         }
         loadTasks(CornFile,cornstageMap,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
         loadTasks(CabbageFile,CabbageMap,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
@@ -643,7 +641,7 @@ public class test extends JavaPlugin implements Listener {
             player.getInventory().addItem(chur);
             getLogger().info(ChatColor.GREEN + "새로운 플레이어 입장");
         }
-
+        loadPlayerBuffStatus(player);
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
     }
@@ -659,6 +657,7 @@ public class test extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
+        loadPlayerBuffStatus(player);
         Bukkit.getScheduler().runTaskLater(this, () -> {
 
         }, 20); // 1초 후에 실행되도록 지연 작업 예약

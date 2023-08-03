@@ -115,33 +115,33 @@ public class ItemCost {
         itemDefaultMinMaxValues("tropical_fish-0",5,4,6);
         itemDefaultMinMaxValues("pufferfish-0",5,4,6);
         itemDefaultMinMaxValues("salmon-0",5,4,6);
-        itemDefaultMinMaxValues("rotten_flesh-1",5,4,6);
-        itemDefaultMinMaxValues("rotten_flesh-2",13,10,16);
-        itemDefaultMinMaxValues("rotten_flesh-3",8,6,10);
-        itemDefaultMinMaxValues("rotten_flesh-4",7,5,9);
-        itemDefaultMinMaxValues("rotten_flesh-5",10,7,13);
-        itemDefaultMinMaxValues("rotten_flesh-6",8,6,10);
-        itemDefaultMinMaxValues("rotten_flesh-7",7,5,9);
-        itemDefaultMinMaxValues("rotten_flesh-8",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-9",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-10",5,4,6);
-        itemDefaultMinMaxValues("rotten_flesh-11",6,4,8);
-        itemDefaultMinMaxValues("rotten_flesh-12",13,10,18);
-        itemDefaultMinMaxValues("rotten_flesh-13",12,9,17);
-        itemDefaultMinMaxValues("rotten_flesh-14",14,12,16);
-        itemDefaultMinMaxValues("rotten_flesh-15",20,14,26);
-        itemDefaultMinMaxValues("rotten_flesh-16",36,22,50);
-        itemDefaultMinMaxValues("rotten_flesh-17",23,18,33);
-        itemDefaultMinMaxValues("rotten_flesh-18",16,13,19);
-        itemDefaultMinMaxValues("rotten_flesh-19",13,11,15);
-        itemDefaultMinMaxValues("rotten_flesh-20",12,9,15);
-        itemDefaultMinMaxValues("rotten_flesh-21",9,7,11);
-        itemDefaultMinMaxValues("rotten_flesh-22",15,11,19);
-        itemDefaultMinMaxValues("rotten_flesh-23",10,8,12);
-        itemDefaultMinMaxValues("rotten_flesh-24",8,6,10);
-        itemDefaultMinMaxValues("rotten_flesh-25",7,5,9);
-        itemDefaultMinMaxValues("rotten_flesh-26",7,4,11);
-        itemDefaultMinMaxValues("rotten_flesh-27",11,7,15);
+        itemDefaultMinMaxValues("rotten_flesh-1",15,14,16);
+        itemDefaultMinMaxValues("rotten_flesh-2",22,19,25);
+        itemDefaultMinMaxValues("rotten_flesh-3",18,16,20);
+        itemDefaultMinMaxValues("rotten_flesh-4",17,15,19);
+        itemDefaultMinMaxValues("rotten_flesh-5",20,17,23);
+        itemDefaultMinMaxValues("rotten_flesh-6",20,15,25);
+        itemDefaultMinMaxValues("rotten_flesh-7",17,15,19);
+        itemDefaultMinMaxValues("rotten_flesh-8",16,14,19);
+        itemDefaultMinMaxValues("rotten_flesh-9",18,16,20);
+        itemDefaultMinMaxValues("rotten_flesh-10",15,14,17);
+        itemDefaultMinMaxValues("rotten_flesh-11",16,14,18);
+        itemDefaultMinMaxValues("rotten_flesh-12",23,20,28);
+        itemDefaultMinMaxValues("rotten_flesh-13",22,19,26);
+        itemDefaultMinMaxValues("rotten_flesh-14",23,22,26);
+        itemDefaultMinMaxValues("rotten_flesh-15",30,25,36);
+        itemDefaultMinMaxValues("rotten_flesh-16",48,34,62);
+        itemDefaultMinMaxValues("rotten_flesh-17",35,30,45);
+        itemDefaultMinMaxValues("rotten_flesh-18",28,25,31);
+        itemDefaultMinMaxValues("rotten_flesh-19",23,21,25);
+        itemDefaultMinMaxValues("rotten_flesh-20",23,20,26);
+        itemDefaultMinMaxValues("rotten_flesh-21",20,18,22);
+        itemDefaultMinMaxValues("rotten_flesh-22",26,22,31);
+        itemDefaultMinMaxValues("rotten_flesh-23",22,20,24);
+        itemDefaultMinMaxValues("rotten_flesh-24",18,16,20);
+        itemDefaultMinMaxValues("rotten_flesh-25",17,15,19);
+        itemDefaultMinMaxValues("rotten_flesh-26",17,14,21);
+        itemDefaultMinMaxValues("rotten_flesh-27",23,19,28);
 
         //도축 상점 가격
         itemDefaultMinMaxValues("mutton-0",1,1,2);
@@ -188,9 +188,9 @@ public class ItemCost {
         itemDefaultMinMaxValues("bread-10020",10,5,15);
 
         //코인상점
-        itemDefaultMinMaxValues("paper-167",10,10,10);
-        itemDefaultMinMaxValues("paper-168",30,30,30);
-        itemDefaultMinMaxValues("paper-169",50,50,50);
+//        itemDefaultMinMaxValues("paper-167",10,10,10);
+//        itemDefaultMinMaxValues("paper-168",30,30,30);
+//        itemDefaultMinMaxValues("paper-169",50,50,50);
         itemDefaultMinMaxValues("paper-300",5,5,5);
         itemDefaultMinMaxValues("paper-5002",2,2,2);
         itemDefaultMinMaxValues("enchanted_book-5003",2,2,2);
@@ -236,6 +236,19 @@ public class ItemCost {
         }, 0L, 20 * 60L); // 1분(60초)마다 작업을 실행합니다.
     }
 
+    public void updateCosts(){
+        for (String itemName : itemDefaultPrices.keySet()) {
+            int currentPrice = itemPrices.getOrDefault(itemName, itemDefaultPrices.get(itemName));
+            int minValue = itemMinValues.getOrDefault(itemName, 0);
+            int maxValue = itemMaxValues.getOrDefault(itemName, Integer.MAX_VALUE);
+
+            // 현재 가격에서 변동 범위 내의 새로운 가격 계산
+            int variation = new Random().nextInt(21) - 10;
+            int newPrice = Math.min(Math.max(currentPrice + variation, minValue), maxValue);
+
+            itemPrices.put(itemName, newPrice);
+        }
+    }
     public int getItemCost(ItemStack itemStack, int customModelData) {
         Material itemType = itemStack.getType();
         String itemKey = itemType.toString().toLowerCase() + "-" + customModelData;
@@ -258,7 +271,7 @@ public class ItemCost {
             return 30;
         }else if (itemType == Material.PAPER && customModelData == 169) {
             return 50;
-        }else if (itemType == Material.PAPER && customModelData == 171) {
+        }else if (itemType == Material.PAPER && customModelData == 300) {
             return 5;
         }else if (itemType == Material.ENCHANTED_BOOK && customModelData == 5003) {
             return 2;
