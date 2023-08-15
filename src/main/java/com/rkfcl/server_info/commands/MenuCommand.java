@@ -1,7 +1,9 @@
 package com.rkfcl.server_info.commands;
 
 import com.rkfcl.server_info.Manager.ItemManager;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +35,9 @@ public class MenuCommand implements CommandExecutor, Listener {
     }
 
     private void openMenu(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 36, "[ 갈치의 놀이터 ] 메뉴");
+        FontImageWrapper fw = new FontImageWrapper("customcrops:test_menu");
+        fw.setColor(ChatColor.WHITE);
+        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.WHITE + fw.applyPixelsOffset(-16));
         inventory.setItem(0, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
         inventory.setItem(8, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());
         inventory.setItem(9, ItemManager.InvenDecoBLACK_STAINED_GLASS_PANE());

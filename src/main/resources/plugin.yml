@@ -33,5 +33,8 @@ commands:
   updateCosts:
     description: 아이템 가격 업데이트
     permission: myplugin.updateCosts
+  rkfcl:
+    description: 플러그인 리로드
+    permission: rkfcl.reload
 listeners:
   - com.rkfcl.server_info.MenuClickListener

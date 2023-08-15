@@ -95,19 +95,19 @@ public class ItemCost {
         itemDefaultMinMaxValues("cocoa_beans-0",1,1,2);
 
         //농부 2상점 가격
-        itemDefaultMinMaxValues("apple-10028",15,10,20); //옥수수
+        itemDefaultMinMaxValues("apple-10028",20,15,25); //옥수수
         itemDefaultMinMaxValues("apple-10029",18,13,23); //양배추
-        itemDefaultMinMaxValues("apple-10030",15,10,20); //양파
-        itemDefaultMinMaxValues("apple-10031",17,12,22); //고구마
-        itemDefaultMinMaxValues("apple-10032",16,11,21); //토마토
-        itemDefaultMinMaxValues("apple-10033",13,8,18); //쌀
-        itemDefaultMinMaxValues("wheat_seeds-1",5,5,5);
-        itemDefaultMinMaxValues("wheat_seeds-2",6,6,6);
-        itemDefaultMinMaxValues("wheat_seeds-3",5,5,5);
-        itemDefaultMinMaxValues("wheat_seeds-4",6,6,6);
-        itemDefaultMinMaxValues("wheat_seeds-5",5,5,5);
-        itemDefaultMinMaxValues("wheat_seeds-6",4,4,4);
-        itemDefaultMinMaxValues("oak_planks-10000",60,60,60);
+        itemDefaultMinMaxValues("apple-10030",18,13,23); //양파
+        itemDefaultMinMaxValues("apple-10031",15,12,20); //고구마
+        itemDefaultMinMaxValues("apple-10032",22,17,27); //토마토
+        itemDefaultMinMaxValues("apple-10033",26,21,22); //쌀
+        itemDefaultMinMaxValues("wheat_seeds-1",13,13,13);
+        itemDefaultMinMaxValues("wheat_seeds-2",11,11,11);
+        itemDefaultMinMaxValues("wheat_seeds-3",11,11,11);
+        itemDefaultMinMaxValues("wheat_seeds-4",10,10,10);
+        itemDefaultMinMaxValues("wheat_seeds-5",14,14,14);
+        itemDefaultMinMaxValues("wheat_seeds-6",17,17,17);
+        itemDefaultMinMaxValues("oak_planks-10000",100,100,100);
         itemDefaultMinMaxValues("shears-101",5000,5000,5000);
 
         //어부 상점 가격

@@ -88,6 +88,19 @@ public class opcommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("updateCosts")) {
             ItemCost itemCost = new ItemCost();
             itemCost.updateCosts();
+
+        }
+        if (label.equalsIgnoreCase("rkfcl")) {
+            if (args.length >= 1 && args[0].equalsIgnoreCase("reload")) {
+                if (sender.hasPermission("rkfcl.reload")) {
+//                    plugin.getPluginLoader().disablePlugin(plugin); // 플러그인 리로드
+//                    plugin.getPluginLoader().enablePlugin(plugin);
+//                    sender.sendMessage("플러그인 리로드했습니다.~");
+                } else {
+                    sender.sendMessage("권한이 없습니다.");
+                }
+                return true;
+            }
         }
         return true;
     }

@@ -2,7 +2,10 @@ package com.rkfcl.server_info.Manager;
 
 import com.rkfcl.server_info.ItemRegistration;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import dev.lone.itemsadder.api.FontImages.TexturedInventoryWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -489,7 +492,14 @@ public class ShopInventoryManager {
         setItem(inventory, 32, createSaleCoinItemsAdderItem("carnivoret_weapon_set_key"));
         player.openInventory(inventory);
     }
-
+    public void testgui(Player player) {
+        TexturedInventoryWrapper inventory = new TexturedInventoryWrapper(null,
+                54,
+                ChatColor.BLACK + "test",
+                new FontImageWrapper("customcrops:test_menu")
+        );
+        inventory.showInventory(player);
+    }
     private void setItem(Inventory inventory, int slot, ItemStack item) {
         inventory.setItem(slot, item);
     }

@@ -252,7 +252,6 @@ public class inventoryClickListener implements Listener {
         Inventory inventory = event.getClickedInventory();
         Player player = (Player) event.getWhoClicked();
         ClickType clickType = event.getClick();
-
         if (event.getClickedInventory() == null) return;
 
         // 메뉴 상점
@@ -283,10 +282,8 @@ public class inventoryClickListener implements Listener {
                 player.sendMessage("§6[ 거래소 ] §f아이템 클릭시 아이템을 구매 합니다");
                 player.sendMessage("§6[ 거래소 ] §f등록된 아이템은 쉬프트 좌클릭시 아이템을 반환 합니다.");
             }
-            if (event.getSlot() == 15){
-
-            }
         }
+
     }
     @EventHandler
     public void exchangeInventory(InventoryClickEvent event) {

@@ -36,19 +36,12 @@ import static com.rkfcl.server_info.Manager.AbilityManager.applyWaterResistance;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerBalances;
 import static com.rkfcl.server_info.Manager.PlayerDataManager.playerJob;
 import static com.rkfcl.server_info.ProtectBlock.*;
-import static com.rkfcl.server_info.customcrops.*;
 import static com.rkfcl.server_info.customdoor.LockDoorMap;
 
 public class test extends JavaPlugin implements Listener {
-    FileConfiguration config = getConfig();
     private final File PlayerBalanceFile = new File(getDataFolder(), "/playerdata.txt");
     private final File PlayerJobFile = new File(getDataFolder(), "/playerJobdata.txt");
-    private final File CornFile = new File(getDataFolder(), "/corn.txt");
-    private final File CabbageFile = new File(getDataFolder(), "/cabbage.txt");
-    private final File OnionFile = new File(getDataFolder(), "/Onion.txt");
-    private final File Sweet_potatoFile = new File(getDataFolder(), "/Sweet_potato.txt");
-    private final File TomatoFile = new File(getDataFolder(), "/Tomato.txt");
-    private final File RiceFile = new File(getDataFolder(), "/Rice.txt");
+    private final File CropsFile = new File(getDataFolder(), "/crops.txt");
     private final File protectMapFile = new File(getDataFolder(), "/protectMap.txt");
     private final File AllowprotectMapFile = new File(getDataFolder(), "/AllowprotectMap.txt");
     private final File AccountprotectMapFile = new File(getDataFolder(), "/AccountprotectMap.txt");
@@ -64,7 +57,6 @@ public class test extends JavaPlugin implements Listener {
     private onPlayerInteractEntity interactEntity; // onPlayerInteractEntity 인스턴스 추가
     private FishingManager fishingManager;
     private LetterOfReturn letterOfReturn;
-    private customcrops customcrops;
     private ProtectBlock protectBlock;
     private customdoor customdoor;
     private ItemCost itemCost;
@@ -80,12 +72,7 @@ public class test extends JavaPlugin implements Listener {
         abilityManager = new AbilityManager(playerDataManager,this);
         makeFile(PlayerBalanceFile);
         makeFile(PlayerJobFile);
-        makeFile(CornFile);
-        makeFile(CabbageFile);
-        makeFile(OnionFile);
-        makeFile(Sweet_potatoFile);
-        makeFile(TomatoFile);
-        makeFile(RiceFile);
+        makeFile(CropsFile);
         makeFile(protectMapFile);
         makeFile(AllowprotectMapFile);
         makeFile(AccountprotectMapFile);
@@ -113,6 +100,7 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginCommand("수표").setExecutor(new GiveCheckCommand(this,playerDataManager));
         getServer().getPluginCommand("setmoney").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("updateCosts").setExecutor(new opcommand(this,playerDataManager));
+        getServer().getPluginCommand("rkfcl").setExecutor(new opcommand(this,playerDataManager));
         getServer().getPluginCommand("setnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("rmnpcshop").setExecutor(new NPCShopCommand(this));
         getServer().getPluginCommand("∬").setExecutor(new NPCShopCommand(this));
@@ -130,8 +118,6 @@ public class test extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(fishingManager, this);
         letterOfReturn = new LetterOfReturn(this);
         getServer().getPluginManager().registerEvents(letterOfReturn,this);
-        customcrops = new customcrops(this);
-        getServer().getPluginManager().registerEvents(customcrops,this);
         protectBlock = new ProtectBlock(this);
         getServer().getPluginManager().registerEvents(protectBlock,this);
         customdoor = new customdoor(this);
@@ -145,12 +131,6 @@ public class test extends JavaPlugin implements Listener {
         for (Player player : players) {
             updateScoreboard(player);
         }
-        loadTasks(CornFile,cornstageMap,3000,"corn_seed_stage_2", "corn_seed_stage_3", "corn_seed_stage_4", "corn_seed_stage_5");
-        loadTasks(CabbageFile,CabbageMap,3800,"cabbage_seed_stage_2", "cabbage_seed_stage_3", "cabbage_seed_stage_4");
-        loadTasks(OnionFile,OnionMap,4000,"onion_seed_stage_2", "onion_seed_stage_3", "onion_seed_stage_4");
-        loadTasks(Sweet_potatoFile,Sweet_potatoMap,5000,"sweet_potato_stage_2", "sweet_potato_stage_3");
-        loadTasks(TomatoFile,TomatoMap,2400,"tomato_stage_2", "tomato_stage_3", "tomato_stage_4","tomato_stage_5","tomato_stage_6");
-        loadTasks(RiceFile,RiceMap,2000,"rice_stage_1", "rice_stage_2", "rice_stage_3","rice_stage_4","rice_stage_5","rice_stage_6","rice_stage_7");
     }
 
 
@@ -243,13 +223,13 @@ public class test extends JavaPlugin implements Listener {
             }
         }
     }
-    public void saveTasks(File f, HashMap<Location, Integer> map) {
+    public void saveTasks(File f, HashMap<Location, String> map) {
 
         try (FileWriter writer = new FileWriter(f)) {
-            for (Map.Entry<Location, Integer> entry : map.entrySet()) {
+            for (Map.Entry<Location, String> entry : map.entrySet()) {
                 Location location = entry.getKey();
-                int taskId = entry.getValue();
-                String taskLine = location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + "," + taskId;
+                String cropStageName = entry.getValue();
+                String taskLine = location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + "," + cropStageName;
                 writer.write(taskLine + System.lineSeparator());
             }
         } catch (IOException e) {
@@ -421,7 +401,6 @@ public class test extends JavaPlugin implements Listener {
                     String playerLine = playerUUID.toString() + System.lineSeparator();
                     writer.write(playerLine);
                 }
-
                 // Write separator
                 writer.write("===" + System.lineSeparator());
             }
@@ -446,7 +425,6 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
-
     public void loadLockDoorMapFromFile(File file, HashMap<Location, String> lockDoorMap) {
         lockDoorMap.clear(); // 기존 맵 내용 초기화
 
@@ -474,38 +452,6 @@ public class test extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
-
-    public void loadTasks(File f, HashMap<Location, Integer> map,int delay,String... growthStages) {
-        taskMap.clear();
-        cornstageMap.clear();
-        CabbageMap.clear();
-        OnionMap.clear();
-        Sweet_potatoMap.clear();
-        TomatoMap.clear();
-        RiceMap.clear();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 5) {
-                    String worldName = parts[0];
-                    int x = Integer.parseInt(parts[1]);
-                    int y = Integer.parseInt(parts[2]);
-                    int z = Integer.parseInt(parts[3]);
-                    int stage = Integer.parseInt(parts[4]);
-                    Location location = new Location(Bukkit.getWorld(worldName), x, y, z);
-                    int taskId = customcrops.createGrowthTask(location,map, stage,delay, growthStages);
-                    taskMap.put(location, taskId);
-                    map.put(location,stage);
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // 거래소 map txt파일로 저장 및 로드
     public static void saveMapToFile(File file, Map<ItemStack, UUID> map) {
         try (PrintWriter writer = new PrintWriter(file)) {
@@ -568,17 +514,8 @@ public class test extends JavaPlugin implements Listener {
         return null;
     }
 
-
-
     @Override
     public void onDisable() {
-        saveTasks(CornFile,cornstageMap);
-        saveTasks(CabbageFile,CabbageMap);
-        saveTasks(OnionFile,OnionMap);
-        saveTasks(Sweet_potatoFile,Sweet_potatoMap);
-        saveTasks(TomatoFile,TomatoMap);
-        saveTasks(RiceFile,RiceMap);
-        customcrops.cancelAllTasks();
         saveProtectBlock(protectMapFile,protectMap);
         saveAllowprotectMap(AllowprotectMapFile,AllowprotectMap);
         saveAccountprotectMap(AccountprotectMapFile,AccountprotectMap);
@@ -645,9 +582,6 @@ public class test extends JavaPlugin implements Listener {
         player.setScoreboard(scoreboard);
         updateScoreboard(player);
     }
-
-
-
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -657,14 +591,10 @@ public class test extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
-        loadPlayerBuffStatus(player);
         Bukkit.getScheduler().runTaskLater(this, () -> {
-
+            loadPlayerBuffStatus(player);
         }, 20); // 1초 후에 실행되도록 지연 작업 예약
     }
-
-
-
 
     public void updateScoreboard(Player player) {
         Scoreboard scoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
